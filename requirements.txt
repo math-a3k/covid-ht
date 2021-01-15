@@ -1,5 +1,5 @@
 Django==3.1.5
--e git+https://github.com/math-a3k/django-ai.git@53e85a92c143813fcf9bbeaaf2f89881d7c6a659#egg=django_ai
+-e git+https://github.com/math-a3k/django-ai.git@1d23c1b39249f701f84da07825ffa802e41cd02a#egg=django_ai
 django-heroku==0.3.1
 django-materializecss-form==1.1.17
 djangorestframework==3.12.2
