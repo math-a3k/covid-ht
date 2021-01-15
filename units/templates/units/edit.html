@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+
+{% load i18n materializecss %}
+
+{% block content %}
+	<h2>{% trans "Editing Unit" %}</h2>
+
+	<div class="row">
+		<div class="col">
+			<form action="" method="post">
+				{% csrf_token %}
+
+				{{ form|materializecss }}
+
+				<p class="center">
+					<button class="btn waves-effect waves-light blue darken-3" type="submit" name="action">{% trans "Submit" %}
+			    	<i class="material-icons right">send</i>
+			  		</button>
+				</p>
+			</form>
+		</div>
+	</div>
+{% endblock content %}

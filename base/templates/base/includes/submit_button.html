@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<p class="center">
+	<button class="btn waves-effect waves-light blue darken-3" type="submit" name="action">
+		{% if not label %}
+		{% translate "Submit" %}
+		{% else %}
+		{% translate label %}
+		{% endif %}
+	   	<i class="material-icons right">{{ icon }}</i>
+	</button>
+</p>

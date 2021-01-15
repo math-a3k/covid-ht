@@ -1,0 +1,25 @@
+{% load static i18n %}
+
+<div class="container">
+    <div class="row" style="padding-bottom: 10px;">
+
+        <div class="col m4 l4 s12">
+          <a href="/"><h5 class="brand-logo footer-title white-text">covid-ht</h5></a>
+        </div>
+
+        <div class="col m8 l8 s12 right-align">
+          {% if request.user.pk %}
+            <h6 class="footer-title white-text">{{ request.user.name }}<br>{{ request.user.unit }}</h6>
+          {% else %}
+            <a href="{% url 'base:login' %}" class="btn blue">
+              <i class="material-icons white-text small right">login</i>
+              {% trans "Login" %}
+            </a>
+          {% endif %}
+          <a href="#" class="btn btn-floating grey">
+              <i class="material-icons white-text small">keyboard_arrow_up</i>
+          </a>
+        </div>
+
+    </div>
+</div>

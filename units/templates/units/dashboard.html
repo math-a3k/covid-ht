@@ -1,0 +1,77 @@
+{% extends "base/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+	<h2>
+		<i class="material-icons circle text-darken-4 orange-text icon-primary">dashboard</i>
+		{% if not unit %}
+			{% translate "No Unit has been selected" %}
+			{% else %}
+			{{ unit.name }} {% translate "Dashboard" %}
+		{% endif %}
+	</h2>
+
+	<p>{% translate "Timezone" %}: {{ unit.timezone }} </p>
+
+	<div class="row">
+		<div class="col s12 m6">
+			<h4>{% translate "Members" %}</h4>
+
+			<p><b>{% translate "Managers" %}</b>: {{ members_m_size }} </p>
+
+            <p><b>{% translate "Data Input" %}</b>: {{ members_di_size }}</p>
+
+			<p>
+				<a href="{% url 'units:current:users-list' %}" class="btn waves-effect waves-light blue darken-3">
+					<i class="material-icons right">people</i>
+					{% translate "Members" %}
+				</a>
+			</p>
+		</div>
+
+		<div class="col s12 m6">
+			<h4>{% translate "Data" %}</h4>
+
+			<p><b>{% translate "Dataset Size" %}</b>: {{ data_size }} </p>
+
+            <p><b>{% translate "Last Updated" %}</b>: {{ data_last_updated }}</p>
+
+			<p>
+				<a href="{% url 'units:current:data' %}" class="btn waves-effect waves-light green darken-3">
+					<i class="material-icons right">people</i>
+					{% translate "Unit's Data" %}
+				</a>
+			</p>
+		</div>
+	</div>
+
+    {% if request.user.is_manager %}
+
+    <div class="fixed-action-btn">
+	  <a class="btn-floating btn-large red">
+	    <i class="large material-icons">more_horiz</i>
+	  </a>
+	  <ul>
+	    <li><a href="{% url 'units:current:edit' %}" class="btn-floating blue darken-1">
+	    	<i class="material-icons">mode_edit</i></a>
+	    </li>
+	  </ul>
+	</div>
+
+    {% endif %}
+
+{% endblock content %}
+
+{% block extra_js %}
+	{% if request.user.is_manager %}
+	<script>
+	  document.addEventListener('DOMContentLoaded', function() {
+	    var elems = document.querySelectorAll('.fixed-action-btn');
+	    var instances = M.FloatingActionButton.init(elems, {
+	      direction: 'left'
+	    });
+	  });
+	</script>
+	{% endif %}
+{% endblock extra_js %}

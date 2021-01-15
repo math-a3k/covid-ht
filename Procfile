@@ -1,0 +1,1 @@
+web: gunicorn covid_ht.wsgi --preload --log-file -

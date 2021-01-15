@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+	<h2>
+		<i class="material-icons circle text-darken-4 orange-text icon-primary">home</i>
+		{{ unit.name }}
+	</h2>
+
+	<h4 class="cellphone-number blue-grey-text text-darken-2 indent-small">
+    	<i class="material-icons prefix" style="vertical-align: bottom;">chevron_right</i>
+    	{{ unit.description }}
+    </h4>
+
+    <p>{% translate "Timezone" %}: {{ unit.timezone }} </p>
+
+	<div class="row">
+		<div class="col s12 m6">
+			<h4>{% translate "Members" %}</h4>
+
+			<p><b>{% translate "Managers" %}</b>: {{ members_m_size }} </p>
+
+            <p><b>{% translate "Data Input" %}</b>: {{ members_di_size }}</p>
+
+		</div>
+
+		<div class="col s12 m6">
+			<h4>{% translate "Data" %}</h4>
+
+			<p><b>{% translate "Dataset Size" %}</b>: {{ data_size }} </p>
+
+            <p><b>{% translate "Last Updated" %}</b>: {{ data_last_updated }}</p>
+		</div>
+	</div>
+
+{% endblock content %}

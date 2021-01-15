@@ -1,0 +1,58 @@
+{% extends "base/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+	<h2>
+		<i class="material-icons circle text-darken-4 orange-text icon-primary">person</i>
+		{{ user.name }} ({{user.username}})
+	</h2>
+	{% if user.email %}
+	<h4 class="cellphone-number blue-grey-text text-darken-2 indent-small">
+    	<i class="material-icons prefix valign-bottom" >email</i>
+    	{{ user.email }}
+    </h4>
+    {% endif %}
+	{% if user.cellphone %}
+	<h4 class="cellphone-number blue-grey-text text-darken-2 indent-small">
+    	<i class="material-icons prefix" style="vertical-align: bottom;">phone</i>
+    	{{ user.cellphone }}
+    </h4>
+    {% endif %}
+
+    {% if request.user.user_type == request.user.MANAGER or request.user == user %}
+    <div class="fixed-action-btn">
+	  <a class="btn-floating btn-large red">
+	    <i class="large material-icons">more_horiz</i>
+	  </a>
+	  <ul>
+	    <li><a href="{% url 'units:current:users-edit' user.pk %}" class="btn-floating blue darken-1">
+	    	<i class="material-icons">mode_edit</i></a>
+	    </li>
+	  </ul>
+	</div>
+
+	<h4>{{ user.get_user_type_display }}</h4>
+    <p>
+    	{% if not user.password %}
+    	<blockquote>
+    		{% trans "USER WITHOUT PASSWORD" %}
+    	</blockquote>
+    	{% endif %}
+    	<a class="btn btn-large red {% if user.password %}lighten-2{% else %}darken-2{% endif %}" href="{% url 'units:current:users-set-password' user.pk %}">{% trans "Set Password" %}</a>
+    </p>
+    {% endif %}
+
+{% endblock content %}
+
+{% block extra_js %}
+	<script>
+	  document.addEventListener('DOMContentLoaded', function() {
+	    var elems = document.querySelectorAll('.fixed-action-btn');
+	    var instances = M.FloatingActionButton.init(elems, {
+	      direction: 'left'
+	    });
+	  });
+
+	</script>
+{% endblock extra_js %}

@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% load i18n data_tags %}
+
+{% block content %}
+	<h1>{% translate "Units" %}</h1>
+
+	<table class="table">
+
+        <thead>
+          <tr>
+           	<th class="s2">
+           		id
+            </th>
+            <th>
+           		{% translate "Name" %}
+            </th>
+            <th>
+           		{% translate "# Data" %}
+            </th>
+            <th>
+           		{% translate "Last Updated" %}
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for unit in units %}
+          <tr>
+          	<td><a href="{% url "units:detail" unit.pk%}">{{ unit.id }}</a></td>
+          	<td><a href="{% url "units:detail" unit.pk%}">{{ unit.name }}</a></td>
+          	<td>{{ unit.data_amount }}</td>
+          	<td>{{ unit.last_updated }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+    </table>
+
+    {% include "base/includes/paginator.html" with page_obj=units view="units:list" %}
+
+{% endblock content %}

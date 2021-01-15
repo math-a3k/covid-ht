@@ -1,0 +1,268 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-15 21:26+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: data/models.py:13
+msgid "Not Available"
+msgstr "No Disponible"
+
+#: data/models.py:14
+msgid "Female"
+msgstr "Femenino"
+
+#: data/models.py:15
+msgid "Male"
+msgstr "Masculino"
+
+#: data/models.py:20
+msgid "Unit"
+msgstr "Unidad"
+
+#: data/models.py:26
+msgid "User"
+msgstr "Usuario"
+
+#: data/models.py:30
+msgid "Unit Internal Identifier"
+msgstr "Identificador Interno de Unidad"
+
+#: data/models.py:33
+msgid "Unit Internal Identifier for mapping to physical record"
+msgstr "Identificador Interno de Unidad para mapear al registro físico."
+
+#: data/models.py:40
+msgid "Timestamp"
+msgstr "Marca de Tiempo"
+
+#: data/models.py:44
+msgid "Is COVID19?"
+msgstr "Es COVID19?"
+
+#: data/models.py:47
+msgid "Age"
+msgstr "Edad"
+
+#: data/models.py:51
+msgid "Sex"
+msgstr "Sexo"
+
+#: data/models.py:56
+msgid "Is Diabetic?"
+msgstr "Es Diabético?"
+
+#: data/models.py:60
+msgid "Is Hypertense?"
+msgstr "Es Hipertenso?"
+
+#: data/models.py:64
+msgid "Is Overweight Patient?"
+msgstr "Es Paciente con Sobrepeso?"
+
+#: data/models.py:68
+msgid "Is at Altitude?"
+msgstr "Está en Altitud?"
+
+#: data/models.py:70
+msgid "Is the Patient at High Altitude (> 1500m)"
+msgstr "Está el Paciente en Alta Altitud (> 1500m)"
+
+#: data/models.py:73
+msgid "Is with other Relevant Conditions?"
+msgstr "Tiene otras Condiciones Relevantes?"
+
+#: data/models.py:75
+msgid ""
+"Is the Patient with other Relevant Conditions? (Transplantation, Blood "
+"disorders, etc.)"
+msgstr ""
+"Tiene el Paciente otras Condiciones Relevantes? (Transplante, Enfermedades "
+"en la sangre, etc.)"
+
+#: data/models.py:79
+msgid "RBC (x10^12/L)"
+msgstr "RBC (x10^12/L)"
+
+#: data/models.py:82
+msgid "Red Blood Cells (x10^12/L)"
+msgstr "Glóbulos Rojos (x10^12/L)"
+
+#: data/models.py:86
+msgid "WBC (x10^9/L)"
+msgstr "WBC (x10^9/L)"
+
+#: data/models.py:89
+msgid "White Blood Cells (x10^12/L)"
+msgstr "Glóbulos Blancos (x10^12/L)"
+
+#: data/models.py:93
+msgid "HGB (g/L)"
+msgstr "HGB (g/L)"
+
+#: data/models.py:95
+msgid "Hemoglobin (g/L)"
+msgstr "Hemoglobina (g/L)"
+
+#: data/models.py:99
+msgid "HCT (L/L)"
+msgstr "HCT (L/L)"
+
+#: data/models.py:102
+msgid "Hematocrit (g/L)"
+msgstr "Hematocrito (g/L)"
+
+#: data/models.py:106
+msgid "MCV (fL)"
+msgstr "MCV (fL)"
+
+#: data/models.py:108
+msgid "Mean Cell Volume (fL)"
+msgstr "Volúmen Celular Medio (fL)"
+
+#: data/models.py:112
+msgid "MCH (pg)"
+msgstr "MCH (pg)"
+
+#: data/models.py:114
+msgid "Mean Corpuscular Hemoglobin (pg)"
+msgstr "Hemoglobina Corpuscular Media (pg)"
+
+#: data/models.py:118
+msgid "MCHC (g/L)"
+msgstr "MCHC (g/L)"
+
+#: data/models.py:120
+msgid "Mean Corpuscular Hemoglobin Concentration (g/L)"
+msgstr "Concentración de Hemoglobina Corpuscular Media (g/L)"
+
+#: data/models.py:124
+msgid "RDW (%)"
+msgstr "RDW (%)"
+
+#: data/models.py:127
+msgid "Red Blood Cell Distribution Width (%)"
+msgstr "Amplitud de la Distribución Eritrocitaria (ADE) (%)"
+
+#: data/models.py:131
+msgid "PLT (x10^9/L)"
+msgstr "PLT (x10^9/L)"
+
+#: data/models.py:133
+msgid "Platelets (x10^9/L)"
+msgstr "Plaquetas (x10^9/L)"
+
+#: data/models.py:137
+msgid "NEUT (x10^9/L)"
+msgstr "NEUT (x10^9/L)"
+
+#: data/models.py:140
+msgid "Neutrophils (x10^9/L)"
+msgstr "Neutrófilos (x10^9/L)"
+
+#: data/models.py:144
+msgid "LYMPH (x10^9/L)"
+msgstr "LYMPH (x10^9/L)"
+
+#: data/models.py:147
+msgid "Lymphocytes (x10^9/L)"
+msgstr "Linfocitos (x10^9/L)"
+
+#: data/models.py:151
+msgid "MONO (x10^9/L)"
+msgstr "MONO (x10^9/L)"
+
+#: data/models.py:154
+msgid "Monocytes (x10^9/L)"
+msgstr "Monocitos (x10^9/L)"
+
+#: data/models.py:158
+msgid "EO (x10^9/L)"
+msgstr "EO (x10^9/L)"
+
+#: data/models.py:161
+msgid "Eosinophils (x10^9/L)"
+msgstr "Eonsinófilos (x10^9/L)"
+
+#: data/models.py:165
+msgid "BASO (x10^9/L)"
+msgstr "BASO (x10^9/L)"
+
+#: data/models.py:168
+msgid "Basophils (x10^9/L)"
+msgstr "Basófilos (x10^9/L)"
+
+#: data/models.py:172
+msgid "IGA (x10^9/L)"
+msgstr "IGA (x10^9/L)"
+
+#: data/models.py:175
+msgid "Inmunoglobulines - Active (x10^9/L)"
+msgstr "Inmunoglubulinas - Activas (x10^9/L)"
+
+#: data/models.py:179
+msgid "IGM (x10^9/L)"
+msgstr "IGM (x10^9/L)"
+
+#: data/models.py:182
+msgid "Inmunoglobulines - Memory (x10^9/L)"
+msgstr "Inmunoglobulinas - Memoria (x10^9/L)"
+
+#: data/models.py:187 data/models.py:188
+msgid "Data"
+msgstr "Datos"
+
+#: data/templates/data/edit.html:7 data/templates/data/input.html:17
+msgid "Data Input"
+msgstr "Ingreso de Datos"
+
+#: data/templates/data/edit.html:14 data/templates/data/input.html:24
+msgid "Errors prevented saving the data, check below:"
+msgstr "Errores previnieron de guardar los datos, chequee abajo:"
+
+#: data/templates/data/edit.html:19 data/templates/data/input.html:30
+msgid "Save"
+msgstr "Guardar"
+
+#: data/templates/data/input.html:9
+msgid "A unit must be selected for a User in order to input data."
+msgstr ""
+"Una unidad debe ser seleccionada para un Usuario para poder ingresar datos."
+
+#: data/templates/data/input.html:29
+msgid "Save and Add Another"
+msgstr "Guardar y Añadir Otro"
+
+#: data/templates/data/public_list.html:11
+msgid "Dataset Size"
+msgstr "Tamaño del Conjunto de Datos"
+
+#: data/templates/data/public_list.html:12
+msgid "Last Updated"
+msgstr "Última Actualización"
+
+#: data/templates/data/public_list.html:14
+msgid ".CSV"
+msgstr ".CSV"
+
+#: data/templatetags/data_tags.py:26
+msgid "Yes"
+msgstr "Yes"
+
+#: data/templatetags/data_tags.py:26
+msgid "No"
+msgstr "No"

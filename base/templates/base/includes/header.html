@@ -1,0 +1,134 @@
+{% load static i18n %}
+
+<div class="nav-wrapper">
+  <nav class="" role="navigation">
+    <div class="nav-wrapper container">
+
+      {% if request.user.pk %}
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i></a>
+
+        <ul class="left">
+          <li>
+            <a href="{% url 'base:home' %}">
+              <i class="material-icons text-darken-4 orange-text small">my_location</i>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'units:current:dashboard' %}">
+              <i class="material-icons text-darken-4 orange-text small">dashboard</i>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'data:input' %}">
+              <i class="material-icons text-darken-4 orange-text small">keyboard</i>
+            </a>
+          </li>
+        </ul>
+      {% endif %}
+
+      <ul class="left">
+          {% if not request.user.pk %}
+          <li>
+            <a href="{% url 'base:about' %}">{% trans "About" %}</a>
+          </li>
+
+          <li>
+            <a href="{% url 'units:list' %}">{% trans "Units" %}</a>
+          </li>
+
+          <li>
+            <a href="{% url 'data:public-list' %}">{% trans "Data" %}</a>
+          </li>
+          {% endif %}
+      </ul>
+
+      <a id="logo-container" href="/" class="brand-logo right show-on-small"><span class="brand-logo-short"></span> covid-ht</a>
+
+    </div>
+
+  </nav>
+</div>
+
+  {% if request.user.pk %}
+  <ul id="nav-mobile" class="sidenav">
+
+    <li class="center">
+      <div class="user-view" >
+        <div class="background">
+          <!-- <img src="images/office.jpg"> -->
+        </div>
+        <a href="{% url 'units:current:users-detail' request.user.pk %}">
+          {% if request.user.image %}
+          <img class="circle" src="{{ request.user.image }}">
+          {% else %}
+          <i class="material-icons large">person</i>
+          {% endif %}
+        </a>
+        {% if request.user.unit %}
+          <a href="{% url 'units:current:users-detail' request.user.pk %}"><span class="white-text name">{{ request.user.name }}</span></a>
+          <a href="{% url 'units:current:dashboard' %}"><span class="white-text">{{ request.user.unit }}</span></a>
+         {% else %}
+          <span class="white-text name">{{ request.user.name }}</span>
+        {% endif %}
+        </div>
+    </li>
+
+    <li>
+      <a href="{% url 'base:home' %}">
+        <i class="material-icons text-darken-4 orange-text small">my_location</i>
+        {% trans "Classify" %}
+      </a>
+    <li>
+
+    <li>
+      <a href="{% url 'units:current:dashboard' %}">
+        <i class="material-icons text-darken-4 orange-text small">dashboard</i>
+        {% trans "Your Unit" %}
+      </a>
+    </li>
+
+  {% comment %}
+    <li>
+      <a href="{% url 'units:current:users-list' %}">
+        <i class="material-icons text-darken-4 orange-text small">people</i>
+        {% trans "Unit's Members" %}
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'units:current:data' %}">
+        <i class="material-icons text-darken-4 orange-text small">data</i>
+        {% trans "Unit's Data" %}
+      </a>
+    </li>
+  {% endcomment %}
+
+    <li>
+      <a href="{% url 'data:input' %}">
+        <i class="material-icons text-darken-4 orange-text small">keyboard</i>
+        {% trans "Data Input" %}
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'units:list' %}">{% trans "Units" %}</a>
+    <li>
+
+    <li>
+      <a href="{% url 'data:public-list' %}">{% trans "Data" %}</a>
+    <li>
+
+    <li>
+      <a href="{% url 'base:about' %}">{% trans "About" %}</a>
+    <li>
+
+    <li>
+      <a href="{% url 'base:logout' %}">
+        <i class="material-icons text-darken-4 orange-text small">logout</i>
+        {% trans "Logout" %}
+      </a>
+    </li>
+
+    <li><a class="sidenav-close" href="#!"><i class="material-icons right">close</i></a></li>
+  </ul>
+  {% endif %}

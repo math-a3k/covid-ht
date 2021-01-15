@@ -1,0 +1,48 @@
+{% load static %}
+
+{% include "base/includes/head.html" %}
+
+<body class="{% block body_class %}{% endblock %}">
+<div id="block" class="block">
+
+{% block header %}
+    {# Header contains the main_navigation block #}
+    {% include "base/includes/header.html" %}
+{% endblock header %}
+
+{% comment %}
+{% block messages %}
+    {% include "includes/messages.html" %}
+{% endblock messages %}
+{% endcomment %}
+
+<div class="container">
+    <div class="section">
+    {% block content %}
+    {% endblock content %}
+    </div>
+</div>
+
+<!-- Footer -->
+<footer id="footer" class="page-footer blue-grey darken-3">
+    {% include "base/includes/footer.html" %}
+</footer>
+
+</div> <!-- Closing div of .block -->
+
+<!--  Scripts-->
+<!-- <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
+<script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+<!-- Materialize Compiled and minified JavaScript -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+<script src="{% static 'js/materialize.min.js' %}"></script>
+
+<script src="{% static 'js/init.js' %}"></script>
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}
+
+</body>
+
+</html>

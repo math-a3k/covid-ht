@@ -1,0 +1,39 @@
+{% extends "base/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+	<h2>{% trans "Unit's Members" %}</h2>
+	{% if users %}
+		<ul class="collection">
+			{% for user in users %}
+			<li class="collection-item avatar">
+				<a href="{{ user.url }}">
+      		<i class="material-icons circle deep-orange darken-4">person</i>
+        </a>
+      		<span class="title">
+            <a href="{{ user.url }}">{{ user.name|upper }}</a>
+          </span>
+      		{% if user.cellphone or user.email %}
+      		<p>{{ user.username }} {% if user.email %}| {{ user.email }}{% endif %} {% if user.cellphone %}- {{ user.cellphone }}{% endif %}</p>
+      		{% endif %}
+      		<span class="right secondary-content">{{ user.get_user_type_display }}</span>
+    		</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>{% trans "No users available yet" %}</p>
+	{% endif %}
+
+  {% if request.user.user_type == request.user.MANAGER %}
+  <div class="row">
+      <div class="col s12 center">
+          <a href="{% url 'units:current:users-new' %}"
+             class="btn btn-large red">
+              <i class="material-icons left">person_add</i>
+              {% trans "New User" %}
+          </a>
+      </div>
+  </div>
+  {% endif %}
+{% endblock content %}

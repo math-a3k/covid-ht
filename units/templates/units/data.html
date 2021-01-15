@@ -1,0 +1,53 @@
+{% extends "base/base.html" %}
+{% load i18n data_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col s12 m8">
+           <h1>Unit's Data</h1>
+           <h3>{{ request.user.unit }}</h3>
+        </div>
+        <div class="col s12 m4">
+            <p>
+              <b>{% translate "Dataset Size" %}</b>: {{ rows }} &times; {{ cols }}<br>
+              <b>{% translate "Last Updated" %}</b>: {{ last_updated }}<br>
+            </p>
+            <p><a href="{% url 'units:current:data-csv' %}" class="btn btn-large green darken-3"><i class="material-icons left">download</i>{% translate ".CSV" %}</a></p>
+        </div>
+    </div>
+
+	<table class="responsive-table">
+
+        <thead>
+          <tr>
+              <th>User</th>
+            {% for field in fields %}
+            	<th>
+            		{% translate field.verbose_name %}
+            	</th>
+            {% endfor %}
+              <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for row in data %}
+          <tr>
+              <td>{{ row.user.name }}</td>
+          	{% for field in fields %}
+          		<td>{% get_row_field row field %}</td>
+          	{% endfor %}
+              <td>{% if row.user == request.user %}
+                <a href="{% url "data:edit" row.uuid %}">
+                  <i class="material-icons">edit</i>
+                </a>
+              {% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+    </table>
+
+    {% include "base/includes/paginator.html" with page_obj=data view="units:current:data" %}
+
+{% endblock content %}

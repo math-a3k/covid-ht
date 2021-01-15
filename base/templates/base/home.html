@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% load static i18n materializecss %}
+
+{% block content %}
+	<h1>{% translate "COVID19 Hemogram Test Project" %}</h1>
+
+	<div class="row">
+
+		<div class="col m6 s12">
+			<h2>{% translate "Current Classifier" %}</h2>
+			{% if classifier %}
+				<p><b>{% translate "Name" %}</b>: {{ classifier.name }}</p>
+				{% if classifier.is_inferred %}
+					<p><b>{% translate "Training Data Size" %}</b>: {{ classifier.metadata.current_inference.input_dimensionality.0 }}</p>
+					<p><b>{% translate "Accuracy" %}</b>: {{ classifier.metadata.current_inference.cv.mean|floatformat:3 }} &plusmn; {{ classifier.metadata.current_inference.cv.2std|floatformat:3 }}</p>
+					<p><b>{% translate "Last Updated" %}</b>: {{ classifier.engine_object_timestamp }}</p>
+				{% else %}
+					{% blocktranslate trimmed asvar no_training with admin_link='<a href="/admin">/admin</a>' %}
+				    	No training has been done yet. Training is done in {{ admin_link }}
+					{% endblocktranslate %}
+					<p>{{ no_training|safe }}</p>
+				{% endif %}
+				{% if example_data %}
+					<h4><strong>{% translate "DUMMY DATA - NO REAL USE" %}</strong></h4>
+					<p>
+						{% blocktranslate trimmed with data_link='<a href="/data">/data</a>' admin_link='<a href="/admin">/admin</a>' %}
+						    You can see how COVID19 and NO COVID19 hemograms look like in {{ data_link }}, log in with 'manager:manager' to see the data input workflow and 'staff:staff' in {{ admin_link }} to see the classifier management (database resets everyday)
+						{% endblocktranslate %}
+					</p>
+				{% endif %}
+			{% else %}
+			<p>
+				{% blocktranslate trimmed asvar no_cc with admin_link='<a href="/admin">/admin</a>' %}
+				    No Current Classifier has been set up, it is done in {{ admin_link }}
+				{% endblocktranslate %}
+				{{ no_cc|safe }}
+			</p>
+			{% endif %}
+		</div>
+
+		<div class="col m6 s12">
+			<h2>{% translate "Classify an Hemogram" %}</h2>
+
+			{% if result %}
+				<h5>{% blocktranslate with result=result|upper prob=result_prob|floatformat:3 %}The following Hemogram has been classified as {{ result }} with a probability of {{ prob }}{% endblocktranslate %}:</h5>
+			{% endif %}
+
+			<form action="" method="post">
+				{% csrf_token %}
+
+				{% if dataform.errors %}
+					<p class="errorlist">{% translate "Errors detected in the submitted data, check below:" %}</p>
+				{% endif %}
+
+				{{ dataform|materializecss }}
+
+				{% if classifier %}
+					{% if classifier.is_inferred %}
+						{% include "base/includes/submit_button.html" with label="Classify" icon="my_location" %}
+					{% else %}
+						<p>{{ no_training|safe }}</p>
+					{% endif %}
+				{% else %}
+					<p>{{ no_cc|safe }}</p>
+				{% endif %}
+			</form>
+
+		</div>
+
+	</div>
+
+{% endblock content %}

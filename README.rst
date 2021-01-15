@@ -1,0 +1,75 @@
+========
+covid-ht
+========
+
+covid-ht aims to provide a tool to efficiently build and manage an hemogram classifier and make it effectively available for widespread use in order to improve detection and increase the use efficiency of specific testing of COVID19 cases. See `About <https://covid-ht.herokuapp.com/about>`_.
+
+Installation
+============
+
+* Clone the repository:
+```
+    > git clone https://github.com/math-a3k/covid-ht
+```
+
+* Change into the directory, create a virual environment, activate it and install the requirements:
+```
+    > cd covid-ht
+    > pythom -m venv .env
+    > source .env/bin/activate
+    > pip install -r requirements.txt
+```
+
+* Make the migrations for django-ai and then run them:
+```
+    > python manage.py makemigrations ai_base supervised_learning
+    > python manage.py migrate ai_base
+    > python manage.py migrate supervised_learning
+```
+
+* Set EXAMPLE_DATA to ``False`` in the project settings if you don't want the example data (and the home message), or review the EXAMPLE_SIZE_COVID19 and EXAMPLE_SIZE_NO_COVID19 setting and then run all the migrations:
+```
+    > python manage.py migrate
+```
+
+* Create a superuser:
+```
+    > python manage.py createsuperuser
+```
+
+* Run the server:
+```
+    python manage.py runsever
+```
+
+Development
+===========
+
+covid-ht currently uses an unreleased branch of django-ai (``covid-ht``). If you wish to modify and/or contribute to this part of the tool, the easiest seems to be cloning the django-ai repository and install the package in "editable mode":
+```
+    > git clone https://github.com/math-a3k/django-ai
+    > cd django-ai
+    > git checkout -b covid-ht
+    > pip install -e /path/to/cloned/django-ai
+```
+
+This way, any changes you make to your local copy of django-ai will be reflected inmediately in your covid-ht's.
+
+See it in action
+================
+
+https://covid-ht.herokuapp.com
+
+Communication Channels
+======================
+
+* covid-ht@googlegroups.com
+* https://github.com/math-a3k/covid-ht
+
+License
+=======
+
+covid-ht is distributed under the GNU Lesser General Public License 3 (LGPLv3) or - at your choice - greater.
+
+
+Made with love for all humans of the world.
