@@ -8,50 +8,65 @@ Installation
 ============
 
 * Clone the repository:
-```
+
+.. code-block:: shell
+
     > git clone https://github.com/math-a3k/covid-ht
-```
+
 
 * Change into the directory, create a virual environment, activate it and install the requirements:
-```
+
+.. code-block:: shell
+
     > cd covid-ht
     > pythom -m venv .env
     > source .env/bin/activate
     > pip install -r requirements.txt
-```
 
-* Make the migrations for django-ai and then run them:
-```
-    > python manage.py makemigrations ai_base supervised_learning
+
+* Run the migrations the following order:
+
+.. code-block:: shell
+
     > python manage.py migrate ai_base
     > python manage.py migrate supervised_learning
-```
+    > python manage.py migrate base
+    > python manage.py migrate data 0001
 
-* Set EXAMPLE_DATA to ``False`` in the project settings if you don't want the example data (and the home message), or review the EXAMPLE_SIZE_COVID19 and EXAMPLE_SIZE_NO_COVID19 setting and then run all the migrations:
-```
+
+* Set EXAMPLE_DATA to ``False`` in the project settings if you don't want the example data (and the home message), or review the EXAMPLE_SIZE_COVID19 and EXAMPLE_SIZE_NO_COVID19 settings and then run all the pending migrations:
+
+.. code-block:: shell
+
     > python manage.py migrate
-```
+
 
 * Create a superuser:
-```
+
+.. code-block:: shell
+
     > python manage.py createsuperuser
-```
+
 
 * Run the server:
-```
-    python manage.py runsever
-```
+
+.. code-block:: shell
+
+    > python manage.py runsever
+
 
 Development
 ===========
 
 covid-ht currently uses an unreleased branch of django-ai (``covid-ht``). If you wish to modify and/or contribute to this part of the tool, the easiest seems to be cloning the django-ai repository and install the package in "editable mode":
-```
+
+.. code-block:: shell
+
     > git clone https://github.com/math-a3k/django-ai
     > cd django-ai
     > git checkout -b covid-ht
     > pip install -e /path/to/cloned/django-ai
-```
+
 
 This way, any changes you make to your local copy of django-ai will be reflected inmediately in your covid-ht's.
 
