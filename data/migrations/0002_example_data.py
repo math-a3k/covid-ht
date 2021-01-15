@@ -551,6 +551,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('data', '0001_initial'),
+        ('ai_base', '0001_initial'),
     ]
 
     operations = ops
