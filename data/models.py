@@ -9,6 +9,15 @@ from django.urls import reverse
 
 
 class Data(models.Model):
+    """
+    Main Data object - Hemogram result fields, auxiliary variables fields
+    and input related fields
+    """
+    HEMOGRAM_FIELDS = [
+        'rbc', 'wbc', 'hgb', 'hct', 'mcv', 'mch', 'mchc', 'rdw', 'plt', 'neut',
+        'lymp', 'mono', 'eo', 'baso', 'iga', 'igm',
+    ]
+
     SEX_CHOICES = (
         (None, _("Not Available")),
         (False, _("Female")),

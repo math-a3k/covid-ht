@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-15 21:26+0000\n"
+"POT-Creation-Date: 2021-01-18 05:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,75 +18,82 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: data/models.py:13
+#: data/forms.py:27
+#, python-format
+msgid ""
+"At least %(threshold)s hemogram result fields must be submitted in order to "
+"classify an hemogram."
+msgstr "Por lo menos %(threshold)s campos de resultados de hemograma deben ser enviados para clasificar un hemograma."
+
+#: data/models.py:22
 msgid "Not Available"
 msgstr "No Disponible"
 
-#: data/models.py:14
+#: data/models.py:23
 msgid "Female"
 msgstr "Femenino"
 
-#: data/models.py:15
+#: data/models.py:24
 msgid "Male"
 msgstr "Masculino"
 
-#: data/models.py:20
+#: data/models.py:29
 msgid "Unit"
 msgstr "Unidad"
 
-#: data/models.py:26
+#: data/models.py:35
 msgid "User"
 msgstr "Usuario"
 
-#: data/models.py:30
+#: data/models.py:39
 msgid "Unit Internal Identifier"
 msgstr "Identificador Interno de Unidad"
 
-#: data/models.py:33
+#: data/models.py:42
 msgid "Unit Internal Identifier for mapping to physical record"
 msgstr "Identificador Interno de Unidad para mapear al registro físico."
 
-#: data/models.py:40
+#: data/models.py:49
 msgid "Timestamp"
 msgstr "Marca de Tiempo"
 
-#: data/models.py:44
+#: data/models.py:53
 msgid "Is COVID19?"
 msgstr "Es COVID19?"
 
-#: data/models.py:47
+#: data/models.py:56
 msgid "Age"
 msgstr "Edad"
 
-#: data/models.py:51
+#: data/models.py:60
 msgid "Sex"
 msgstr "Sexo"
 
-#: data/models.py:56
+#: data/models.py:65
 msgid "Is Diabetic?"
 msgstr "Es Diabético?"
 
-#: data/models.py:60
+#: data/models.py:69
 msgid "Is Hypertense?"
 msgstr "Es Hipertenso?"
 
-#: data/models.py:64
+#: data/models.py:73
 msgid "Is Overweight Patient?"
 msgstr "Es Paciente con Sobrepeso?"
 
-#: data/models.py:68
+#: data/models.py:77
 msgid "Is at Altitude?"
 msgstr "Está en Altitud?"
 
-#: data/models.py:70
+#: data/models.py:79
 msgid "Is the Patient at High Altitude (> 1500m)"
 msgstr "Está el Paciente en Alta Altitud (> 1500m)"
 
-#: data/models.py:73
+#: data/models.py:82
 msgid "Is with other Relevant Conditions?"
 msgstr "Tiene otras Condiciones Relevantes?"
 
-#: data/models.py:75
+#: data/models.py:84
 msgid ""
 "Is the Patient with other Relevant Conditions? (Transplantation, Blood "
 "disorders, etc.)"
@@ -94,135 +101,135 @@ msgstr ""
 "Tiene el Paciente otras Condiciones Relevantes? (Transplante, Enfermedades "
 "en la sangre, etc.)"
 
-#: data/models.py:79
+#: data/models.py:88
 msgid "RBC (x10^12/L)"
 msgstr "RBC (x10^12/L)"
 
-#: data/models.py:82
+#: data/models.py:91
 msgid "Red Blood Cells (x10^12/L)"
 msgstr "Glóbulos Rojos (x10^12/L)"
 
-#: data/models.py:86
+#: data/models.py:95
 msgid "WBC (x10^9/L)"
 msgstr "WBC (x10^9/L)"
 
-#: data/models.py:89
+#: data/models.py:98
 msgid "White Blood Cells (x10^12/L)"
 msgstr "Glóbulos Blancos (x10^12/L)"
 
-#: data/models.py:93
+#: data/models.py:102
 msgid "HGB (g/L)"
 msgstr "HGB (g/L)"
 
-#: data/models.py:95
+#: data/models.py:104
 msgid "Hemoglobin (g/L)"
 msgstr "Hemoglobina (g/L)"
 
-#: data/models.py:99
+#: data/models.py:108
 msgid "HCT (L/L)"
 msgstr "HCT (L/L)"
 
-#: data/models.py:102
+#: data/models.py:111
 msgid "Hematocrit (g/L)"
 msgstr "Hematocrito (g/L)"
 
-#: data/models.py:106
+#: data/models.py:115
 msgid "MCV (fL)"
 msgstr "MCV (fL)"
 
-#: data/models.py:108
+#: data/models.py:117
 msgid "Mean Cell Volume (fL)"
 msgstr "Volúmen Celular Medio (fL)"
 
-#: data/models.py:112
+#: data/models.py:121
 msgid "MCH (pg)"
 msgstr "MCH (pg)"
 
-#: data/models.py:114
+#: data/models.py:123
 msgid "Mean Corpuscular Hemoglobin (pg)"
 msgstr "Hemoglobina Corpuscular Media (pg)"
 
-#: data/models.py:118
+#: data/models.py:127
 msgid "MCHC (g/L)"
 msgstr "MCHC (g/L)"
 
-#: data/models.py:120
+#: data/models.py:129
 msgid "Mean Corpuscular Hemoglobin Concentration (g/L)"
 msgstr "Concentración de Hemoglobina Corpuscular Media (g/L)"
 
-#: data/models.py:124
+#: data/models.py:133
 msgid "RDW (%)"
 msgstr "RDW (%)"
 
-#: data/models.py:127
+#: data/models.py:136
 msgid "Red Blood Cell Distribution Width (%)"
 msgstr "Amplitud de la Distribución Eritrocitaria (ADE) (%)"
 
-#: data/models.py:131
+#: data/models.py:140
 msgid "PLT (x10^9/L)"
 msgstr "PLT (x10^9/L)"
 
-#: data/models.py:133
+#: data/models.py:142
 msgid "Platelets (x10^9/L)"
 msgstr "Plaquetas (x10^9/L)"
 
-#: data/models.py:137
+#: data/models.py:146
 msgid "NEUT (x10^9/L)"
 msgstr "NEUT (x10^9/L)"
 
-#: data/models.py:140
+#: data/models.py:149
 msgid "Neutrophils (x10^9/L)"
 msgstr "Neutrófilos (x10^9/L)"
 
-#: data/models.py:144
+#: data/models.py:153
 msgid "LYMPH (x10^9/L)"
 msgstr "LYMPH (x10^9/L)"
 
-#: data/models.py:147
+#: data/models.py:156
 msgid "Lymphocytes (x10^9/L)"
 msgstr "Linfocitos (x10^9/L)"
 
-#: data/models.py:151
+#: data/models.py:160
 msgid "MONO (x10^9/L)"
 msgstr "MONO (x10^9/L)"
 
-#: data/models.py:154
+#: data/models.py:163
 msgid "Monocytes (x10^9/L)"
 msgstr "Monocitos (x10^9/L)"
 
-#: data/models.py:158
+#: data/models.py:167
 msgid "EO (x10^9/L)"
 msgstr "EO (x10^9/L)"
 
-#: data/models.py:161
+#: data/models.py:170
 msgid "Eosinophils (x10^9/L)"
 msgstr "Eonsinófilos (x10^9/L)"
 
-#: data/models.py:165
+#: data/models.py:174
 msgid "BASO (x10^9/L)"
 msgstr "BASO (x10^9/L)"
 
-#: data/models.py:168
+#: data/models.py:177
 msgid "Basophils (x10^9/L)"
 msgstr "Basófilos (x10^9/L)"
 
-#: data/models.py:172
+#: data/models.py:181
 msgid "IGA (x10^9/L)"
 msgstr "IGA (x10^9/L)"
 
-#: data/models.py:175
+#: data/models.py:184
 msgid "Inmunoglobulines - Active (x10^9/L)"
 msgstr "Inmunoglubulinas - Activas (x10^9/L)"
 
-#: data/models.py:179
+#: data/models.py:188
 msgid "IGM (x10^9/L)"
 msgstr "IGM (x10^9/L)"
 
-#: data/models.py:182
+#: data/models.py:191
 msgid "Inmunoglobulines - Memory (x10^9/L)"
 msgstr "Inmunoglobulinas - Memoria (x10^9/L)"
 
-#: data/models.py:187 data/models.py:188
+#: data/models.py:196 data/models.py:197
 msgid "Data"
 msgstr "Datos"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-15 21:26+0000\n"
+"POT-Creation-Date: 2021-01-18 05:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -225,6 +225,7 @@ msgid "Last Updated"
 msgstr "Última Actualización"
 
 #: base/templates/base/home.html:18
+#, python-format
 msgid "No training has been done yet. Training is done in %(admin_link)s"
 msgstr ""
 "No se ha entrenado el clasificador todavía. El entrenamiento se realiza en "
@@ -266,7 +267,7 @@ msgstr ""
 "El siguiente Hemograma ha sido clasificado como %(result)s con una "
 "probabilidad de %(prob)s"
 
-#: base/templates/base/home.html:52
+#: base/templates/base/home.html:59
 msgid "Errors detected in the submitted data, check below:"
 msgstr "Errores detectados en los datos envíados, chequee abajo:"
 
