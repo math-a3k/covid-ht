@@ -19,11 +19,6 @@ from .models import Data
 
 class TestData(StaticLiveServerTestCase):
     """
-    IMPORTANT NOTE: Still haven't found a way to trigger the run of the
-    migrations of ai_base and supervised_learning (django-ai apps) for the
-    test database.
-
-    Without them, it is impossible to do automatic testing.
     """
     user = None
     unit = None
@@ -32,10 +27,6 @@ class TestData(StaticLiveServerTestCase):
         # Set the seeds
         random.seed(123456)
         np.random.seed(123456)
-        #
-        # print("Calling 'migrate' on ai_base and supervised_learning")
-        # call_command('migrate', 'ai_base', verbosity=1)
-        # call_command('migrate', 'supervised_learning', verbosity=1)
         #
         self.classifier, _ = HGBTree.objects.get_or_create(
             name="HGBTree for tests",
