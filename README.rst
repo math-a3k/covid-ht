@@ -55,6 +55,16 @@ Installation
     > python manage.py runsever
 
 
+Testing
+=======
+
+Be sure of collecting static files before running tests:
+
+.. code-block:: shell
+
+    > python manage.py collecstatic
+
+
 Development
 ===========
 

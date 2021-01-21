@@ -3,22 +3,21 @@ import random
 import numpy as np
 import uuid
 
-from django.core.management import call_command
 from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 
 from django_ai.ai_base.models import DataColumn
 from django_ai.supervised_learning.models.hgb import HGBTree
 
-from base.models import User
+from base.models import (User, CurrentClassifier)
 from units.models import Unit
 
 from .utils import trunc_normal
 from .models import Data
 
 
-class TestData(TestCase):
+class TestData(StaticLiveServerTestCase):
     """
     IMPORTANT NOTE: Still haven't found a way to trigger the run of the
     migrations of ai_base and supervised_learning (django-ai apps) for the
@@ -26,6 +25,8 @@ class TestData(TestCase):
 
     Without them, it is impossible to do automatic testing.
     """
+    user = None
+    unit = None
 
     def setUp(self):
         # Set the seeds
@@ -33,14 +34,15 @@ class TestData(TestCase):
         np.random.seed(123456)
         #
         # print("Calling 'migrate' on ai_base and supervised_learning")
-        call_command('migrate', 'ai_base', verbosity=1)
-        call_command('migrate', 'supervised_learning', verbosity=1)
+        # call_command('migrate', 'ai_base', verbosity=1)
+        # call_command('migrate', 'supervised_learning', verbosity=1)
         #
         self.classifier, _ = HGBTree.objects.get_or_create(
             name="HGBTree for tests",
             labels_column="data.data.is_covid19",
             cv_folds=5,
-            cv_metric="accuracy"
+            cv_metric="accuracy",
+            random_state=123456
         )
         self.dc_1, _ = DataColumn.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(HGBTree),
@@ -71,8 +73,8 @@ class TestData(TestCase):
             first_name='Test',
             last_name='User',
             user_type=User.MANAGER,
-            unit=self.user
-        ),
+            unit=self.unit
+        )
         # Populate with data
         covid_size = 600
         no_covid_size = 400
@@ -106,11 +108,23 @@ class TestData(TestCase):
             )
         Data.objects.bulk_create(ds)
 
+    def test_no_current_classifier(self):
+        """
+        If no inference is performed on the classifier,
+        an appropriate message is displayed.
+        """
+        response = self.client.get(reverse("base:home"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No Current Classifier")
+
     def test_no_inference(self):
         """
         If no inference is performed on the classifier,
         an appropriate message is displayed.
         """
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
         response = self.client.get(reverse("base:home"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No training has been done yet.")
@@ -119,6 +133,9 @@ class TestData(TestCase):
         """
         If the inference is already performed, the submit button is available.
         """
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
         self.classifier.perform_inference()
         response = self.client.get(reverse("base:home"))
         self.assertEqual(response.status_code, 200)
