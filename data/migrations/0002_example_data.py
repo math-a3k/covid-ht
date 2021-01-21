@@ -27,7 +27,8 @@ def create_example(apps, schema_editor):
     hgb_1 = HGBTree(
         name="HGB 1 (Example)",
         labels_column="data.data.is_covid19",
-        cv_folds=10, cv_metric="accuracy"
+        cv_folds=10, cv_metric="accuracy",
+        random_state=123456
     )
     hgb_1.save()
     dc0 = DataColumn(
