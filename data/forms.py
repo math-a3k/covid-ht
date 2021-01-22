@@ -81,11 +81,11 @@ class DataAugmentedForm(forms.ModelForm):
                     (cleaned_data['wbc'] * cleaned_data['p_mono'] / 100)\
                     .quantize(Decimal('10.00'))
             if cleaned_data['p_eo']:
-                cleaned_data['p_eo'] = \
+                cleaned_data['eo'] = \
                     (cleaned_data['wbc'] * cleaned_data['p_eo'] / 100)\
                     .quantize(Decimal('10.00'))
             if cleaned_data['p_baso']:
-                cleaned_data['p_baso'] = \
+                cleaned_data['baso'] = \
                     (cleaned_data['wbc'] * cleaned_data['p_baso'] / 100)\
                     .quantize(Decimal('10.00'))
 
