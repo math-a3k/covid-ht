@@ -102,6 +102,7 @@ class TestBase(StaticLiveServerTestCase):
         If no inference is performed on the classifier,
         an appropriate message is displayed.
         """
+        CurrentClassifier.objects.all().delete()
         response = self.client.get(reverse("base:home"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No Current Classifier")
@@ -206,3 +207,8 @@ class TestBase(StaticLiveServerTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'WBC must be present')
+
+    def test_about(self):
+        response = self.client.get(reverse("base:about"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'About')
