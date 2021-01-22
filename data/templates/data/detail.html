@@ -1,0 +1,246 @@
+{% extends "base/base.html" %}
+{% load i18n materializecss data_tags %}
+
+
+{% block content %}
+
+	<h1>{% translate "Data Detail" %}</h1>
+
+	<h5>{{ data.unit.id }} - {{ data.unit.name }}</h5>
+
+	<h5>{{ data.uuid }}</h5>
+
+	<h5>{{ data.timestamp }}</h5>
+
+	<br>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'is_covid19' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.is_covid19|yesno|upper }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'age' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.age }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'sex' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.get_sex_display }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'is_diabetic' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.is_diabetic|yesno:_("yes,no,not available")|title }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'is_hypertense' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.is_hypertense|yesno:_("yes,no,not available")|title }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'is_overweight' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.is_overweight|yesno:_("yes,no,not available")|title }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'is_at_altitude' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.is_at_altitude|yesno:_("yes,no,not available")|title }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'is_with_other_conds' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.is_with_other_conds|yesno:_("yes,no,not available")|title }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'rbc' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.rbc }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'wbc' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.wbc }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'hgb' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.hgb }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'hct' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.hct }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'mcv' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.mcv }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'mch' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.mch }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'mchc' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.mchc }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'rdw' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.rdw }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'plt' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.plt }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'neut' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.neut }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'lymp' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.lymp }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'mono' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.mono }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'eo' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.eo }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'baso' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.baso }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'iga' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.iga }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s4 right-align">
+			<strong>{% get_verbose_field_name data 'igm' %}</strong>
+		</div>
+		<div class="col s8">
+			{{ data.igm }}
+		</div>
+	</div>
+
+	{% if request.user == data.user %}
+	<div class="row">
+		<div class="col s4 right-align">
+			&nbsp;
+		</div>
+		<div class="col s8">
+			<a class="btn" href="{% url "data:edit" data.uuid %}">
+                  <i class="material-icons">edit</i>
+           	</a>
+		</div>
+	</div>
+	{% endif %}
+
+{% endblock content %}

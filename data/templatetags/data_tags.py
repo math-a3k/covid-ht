@@ -26,3 +26,11 @@ def get_row_field(row, field):
             return _("Yes") if value else _("No")
         else:
             return value
+
+
+@register.simple_tag
+def get_verbose_field_name(instance, field_name):
+    """
+    Returns verbose_name for a field.
+    """
+    return instance._meta.get_field(field_name).verbose_name
