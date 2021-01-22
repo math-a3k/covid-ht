@@ -1,9 +1,10 @@
 #
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import (get_object_or_404, redirect, render, )
-# from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+# from django.utils.translation import gettext_lazy as _
 
 from rest_framework import generics
 
@@ -21,19 +22,24 @@ def public_list(request):
     paginator = Paginator(data, 50)
     try:
         data = paginator.page(page)
-    except PageNotAnInteger:
+    except PageNotAnInteger:  # pragma: no cover
         data = paginator.page(1)
-    except EmptyPage:
+    except EmptyPage:  # pragma: no cover
         data = paginator.page(paginator.num_pages)
 
     fields_all = list(Data._meta.fields)
-    fields_excluded = ['id', 'user_id', 'unit_ii', 'timestamp']
+    fields_excluded = [
+        'id', 'user_id', 'unit_ii', 'timestamp', 'unit', 'uuid',
+    ]
     fields = [
         field for field in fields_all if field.attname not in fields_excluded
     ]
     rows = Data.objects.count()
     cols = len(fields)
-    last_updated = Data.objects.last().timestamp
+    if rows:
+        last_updated = Data.objects.last().timestamp
+    else:
+        last_updated = None
     return render(
         request,
         'data/public_list.html',

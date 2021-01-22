@@ -6,6 +6,7 @@
         <div class="col s12 m8">
            <h1>Data</h1>
         </div>
+        {% if data %}
         <div class="col s12 m4">
             <p>
               <b>{% translate "Dataset Size" %}</b>: {{ rows }} &times; {{ cols }}<br>
@@ -13,12 +14,16 @@
             </p>
             <p><a href="{% url 'data:csv' %}" class="btn btn-large green darken-3"><i class="material-icons left">download</i>{% translate ".CSV" %}</a></p>
         </div>
+        {% endif %}
     </div>
 
+  {% if data %}
 	<table class="responsive-table">
 
         <thead>
           <tr>
+              <th>{% translate "Unit" %}</th>
+              <th>uuid</th>
             {% for field in fields %}
             	<th>
             		{% translate field.verbose_name %}
@@ -30,6 +35,8 @@
         <tbody>
           {% for row in data %}
           <tr>
+              <td>{{ row.unit.id }}</td>
+              <td><a href="{% url 'data:detail' uuid=row.uuid %}">{{ row.uuid }}</a></td>
           	{% for field in fields %}
           		<td>{% get_row_field row field %}</td>
           	{% endfor %}
@@ -40,4 +47,7 @@
     </table>
 
     {% include "base/includes/paginator.html" with page_obj=data view="data:public-list" %}
+  {% else %}
+  <p>{% translate "No data available." %}</p>
+  {% endif %}
 {% endblock content %}
