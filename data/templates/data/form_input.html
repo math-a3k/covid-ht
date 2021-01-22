@@ -1,0 +1,15 @@
+{% load i18n materializecss %}
+
+	{% if dataform.non_field_errors %}
+    <blockquote>
+        {% for non_field_error in dataform.non_field_errors %}
+             {{ non_field_error }}
+        {% endfor %}
+    </blockquote>
+	{% endif %}
+
+	{{ dataform.unit_ii|materializecss }}
+
+	{{ dataform.is_covid19|materializecss }}
+
+	{% include "data/form_common.html" with dataform=dataform %}

@@ -1,7 +1,6 @@
 #
 import random
 import numpy as np
-import uuid
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -10,11 +9,11 @@ from django.urls import reverse
 from django_ai.ai_base.models import DataColumn
 from django_ai.supervised_learning.models.hgb import HGBTree
 
-from base.models import (User, CurrentClassifier)
+from data.utils import trunc_normal
+from data.models import Data
 from units.models import Unit
 
-from .utils import trunc_normal
-from .models import Data
+from .models import (User, CurrentClassifier)
 
 
 class TestBase(StaticLiveServerTestCase):
@@ -88,7 +87,6 @@ class TestBase(StaticLiveServerTestCase):
             is_diab = is_diabetic[i] if np.random.uniform() > 0.1 else None
             ds.append(
                 Data(
-                    uuid=uuid.uuid4(),
                     user=self.user,
                     unit=self.unit,
                     is_covid19=is_covid19[i],
@@ -153,3 +151,58 @@ class TestBase(StaticLiveServerTestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'POSITIVE')
+
+    def test_classification_with_percentage_fields(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        response = self.client.post(
+            reverse("base:home"),
+            {
+                'rbc': 3,
+                'wbc': 5,
+                'plt': 150,
+                'p_neut': 10,
+                'p_lymp': 10,
+                'p_mono': 10,
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'POSITIVE')
+
+    def test_not_enough_hemogram_fields(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        response = self.client.post(
+            reverse("base:home"),
+            {
+                'rbc': 3,
+                'wbc': 5,
+                'plt': 150,
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'hemogram result fields must be')
+
+    def test_no_wbc_with_percentage_fields(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        response = self.client.post(
+            reverse("base:home"),
+            {
+                'rbc': 3,
+                'plt': 150,
+                'mcv': 80,
+                'mchc': 330,
+                'neut': 0.1,
+                'lymp': 0.1,
+                'p_mono': 0.1,
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'WBC must be present')

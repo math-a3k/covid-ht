@@ -52,7 +52,7 @@
 					<p class="errorlist">{% translate "Errors detected in the submitted data, check below:" %}</p>
 				{% endif %}
 
-				{{ dataform|materializecss }}
+				{% include "data/form_classify.html" with dataform=dataform %}
 
 				{% if classifier %}
 					{% if classifier.is_inferred %}

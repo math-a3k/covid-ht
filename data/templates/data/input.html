@@ -20,10 +20,12 @@
 			<div class="col">
 				<form action="" method="post">
 					{% csrf_token %}
+
 					{% if dataform.errors %}
-						<p class="errorlist">{% translate "Errors prevented saving the data, check below:" %}</p>
+					<p class="errorlist">{% translate "Errors detected in the submitted data, check below:" %}</p>
 					{% endif %}
-					{{ dataform|materializecss }}
+
+					{% include "data/form_input.html" with dataform=dataform %}
 
 					<div class="row">
 						<input type="submit" name="_addanother" value="{% translate 'Save and Add Another' %}" class="btn right blue darken-2">
