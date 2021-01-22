@@ -4,7 +4,9 @@
 
 {% block content %}
 
-	<h1>{% translate "Data Input" %}</h1>
+	<h1>{% translate "Edit Data" %}</h1>
+
+	<h5>uuid: {{ data.uuid }}</h5>
 
 	<div class="row">
 		<div class="col">
@@ -13,7 +15,8 @@
 				{% if dataform.errors %}
 					<p class="errorlist">{% translate "Errors prevented saving the data, check below:" %}</p>
 				{% endif %}
-				{{ dataform|materializecss }}
+
+				{% include "data/form_input.html" with dataform=dataform %}
 
 				<div class="row">
 					<input type="submit" name="_save" value="{% translate 'Save' %}" class="btn right blue lighten-2">

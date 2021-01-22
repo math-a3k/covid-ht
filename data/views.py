@@ -75,6 +75,8 @@ def detail(request, uuid):
 @login_required
 def edit(request, uuid):
     data = get_object_or_404(Data, uuid=uuid)
+    if not request.user == data.user:
+        raise Http404()
     if request.method == 'POST':
         dataform = DataInputForm(request.POST, instance=data)
         if dataform.is_valid():
