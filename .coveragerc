@@ -1,0 +1,22 @@
+[run]
+branch = true
+
+[report]
+omit =
+    *site-packages*
+    .env/*
+    *tests*
+    *.tox*
+    *settings*
+    *apps.py
+    *scratchpad.py
+    *sgi.py
+    *__init__.py
+    */migrations/*
+    *manage.py
+
+show_missing = True
+exclude_lines =
+	pragma: no cover
+	def __str__
+    raise NotImplementedError
