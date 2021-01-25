@@ -12,15 +12,13 @@ def get_row_field(row, field):
     """
     if field.choices:
         value = getattr(row, "get_{0}_display".format(field.attname))()
-    elif hasattr(field, 'get_internal_type'):
+    else:
         if "Date" in getattr(field, 'get_internal_type')():
             value = getattr(row, field.attname).strftime("%Y-%m-%d %H:%M")
         else:
             value = getattr(row, field.attname)
-    else:
-        value = getattr(row, field.attname)
     if value is None:
-        return "Not Available"
+        return _("Not Available")
     else:
         if isinstance(value, bool):
             return _("Yes") if value else _("No")
