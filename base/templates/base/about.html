@@ -12,7 +12,7 @@
 
 	<p>{% translate "In many places (i.e. Perú) where specific COVID19 testing is not widely available - saturated hospitals, not affordable or unavailable - hemogram blood testing is in the opposite: affordable and in widely distributed facilities." %}</p>
 
-	<p>{% translate "If a viral infection classifier with an adequate accuracy through hemograms can be built and made publicly available, all Health Professionals with a smart-phone and Internet access could classify any hemogram with the same accuracy as top-level experts on the matter." %}</p>
+	<p>{% translate "If a viral infection classifier with an adequate accuracy through hemograms can be built and made publicly available, all Health Professionals with a smart-phone and Internet access could classify any hemogram with the same accuracy as top-level experts on the matter, reducing possible errors." %}</p>
 
 	<p>{% translate "Early detection is deemed to be the greatest success factor in COVID19 treatments." %}</p>
 
@@ -33,8 +33,15 @@
 	{% endblocktranslate %}
 	</p>
 
-	<p>{% translate "Everybody is welcome to join the community for building it and use it:" %} <a href="mailto:covid-ht+subscribe@googlegroups.com">covid-ht+subscribe@googlegroups.com</a> and <a href="https://github.com/math-a3k/covid-ht">https://github.com/math-a3k/covid-ht</a>.</p>
+	<p>{% translate "Is something not working correctly? Could something be done better? Any questions? Everybody is welcome to join the community for building and using it:" %} <a href="mailto:covid-ht+subscribe@googlegroups.com">covid-ht+subscribe@googlegroups.com</a> {% translate "and" %} <a href="https://github.com/math-a3k/covid-ht">https://github.com/math-a3k/covid-ht</a>.</p>
 
 	<p>{% translate "Made with love for all humans of the world." %}</p>
+
+	<p class="center">
+		<a class="btn waves-effect waves-light blue darken-3" href="{% url 'base:home' %}">
+			{% translate "Classify an Hemogram" %}
+		   	<i class="material-icons right">my_location</i>
+		</a>
+	</p>
 
 {% endblock content %}
