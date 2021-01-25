@@ -1,5 +1,10 @@
 [run]
 branch = true
+source =
+    base/
+    covid_ht/
+    data/
+    units/
 
 [report]
 omit =
