@@ -25,15 +25,16 @@ def list(request):
     page = request.GET.get('page', 1)
     units = Unit.objects\
         .annotate(data_amount=Count('data'))\
-        .annotate(last_updated=Max('data__timestamp'))
+        .annotate(last_updated=Max('data__timestamp'))\
+        .order_by("id")
 
     # Pagination
     paginator = Paginator(units, 50)
     try:
         units = paginator.page(page)
-    except PageNotAnInteger:
+    except PageNotAnInteger:  # pragma: no cover
         units = paginator.page(1)
-    except EmptyPage:
+    except EmptyPage:  # pragma: no cover
         units = paginator.page(paginator.num_pages)
 
     return render(
@@ -50,7 +51,11 @@ def detail(request, pk):
     members_di_size = unit.users.filter(user_type=User.DATA).count()
     members_m_size = unit.users.filter(user_type=User.MANAGER).count()
     data_size = unit.data.count()
-    data_last_updated = Data.objects.last().timestamp
+    data_last = Data.objects.last()
+    if data_last:
+        data_last_updated = data_last.timestamp
+    else:
+        data_last_updated = None
     return render(
         request,
         'units/detail.html',
@@ -73,7 +78,11 @@ def unit_dashboard(request):
         members_di_size = unit.users.filter(user_type=User.DATA).count()
         members_m_size = unit.users.filter(user_type=User.MANAGER).count()
         data_size = unit.data.count()
-        data_last_updated = Data.objects.last().timestamp
+        data_last = Data.objects.last()
+        if data_last:
+            data_last_updated = data_last.timestamp
+        else:
+            data_last_updated = None
     else:
         members_di_size = None
         members_m_size = None
@@ -172,7 +181,7 @@ def unit_users_new(request):
             user = form.save(commit=False)
             user.unit = request.user.unit
             user.save()
-            return redirect("units:users-detail",  user.pk)
+            return redirect("units:current:users-detail",  user.pk)
     else:
         form = UnitUserCreationForm()
 
@@ -218,9 +227,9 @@ def unit_data(request):
     paginator = Paginator(data, 20)
     try:
         data = paginator.page(page)
-    except PageNotAnInteger:
+    except PageNotAnInteger:  # pragma: no cover
         data = paginator.page(1)
-    except EmptyPage:
+    except EmptyPage:  # pragma: no cover
         data = paginator.page(paginator.num_pages)
 
     fields_all = Data._meta.get_fields()
@@ -230,7 +239,10 @@ def unit_data(request):
     ]
     rows = Data.objects.count()
     cols = len(fields)
-    last_updated = Data.objects.last().timestamp
+    if rows:
+        last_updated = Data.objects.last().timestamp
+    else:
+        last_updated = None
     return render(
         request,
         'units/data.html',
