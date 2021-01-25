@@ -13,8 +13,7 @@ install:
 # command to run tests using coverage, e.g. python setup.py test
 script:
   - python manage.py collectstatic
-  - python manage.py test
+  - coverage run manage.py test
 
 after_success:
-  - coverage combine
   - bash <(curl -s https://codecov.io/bash)
