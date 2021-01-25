@@ -201,4 +201,4 @@ class Data(models.Model):
         return "{0}: {1}".format(self.uuid, self.is_covid19)
 
     def url(self):
-        return(reverse('data:detail', args=[self.pk]))
+        return(reverse('data:detail', args=[self.uuid]))
