@@ -1,6 +1,6 @@
 #
 from decimal import Decimal
-# from django.contrib.contenttypes.models import ContentType
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 
@@ -149,10 +149,13 @@ class TestData(StaticLiveServerTestCase):
             'id,unit,timestamp,uuid,is_covid19,age,sex,'
             'is_diabetic,is_hypertense,is_overweight,is_at_altitude,'
             'is_with_other_conds,rbc,wbc,hgb,hct,mcv,mch,mchc,rdw,plt,neut,'
-            'lymp,mono,eo,baso,iga,igm\r\n8001,9,{0},{1},'
+            'lymp,mono,eo,baso,iga,igm\r\n{2},{3},{0},{1},'
             'False,,,,,,,,3.500,5.500,,,,,,,'
             '220,1.20,,,,,,\r\n'
-        ).format(data.timestamp.strftime("%Y-%m-%d %H:%M"), data.uuid)
+        ).format(
+            data.timestamp.strftime("%Y-%m-%d %H:%M"), data.uuid, data.id,
+            data.unit.id
+        )
         response = self.client.get(
             reverse("data:csv"),
         )
@@ -169,7 +172,7 @@ class TestData(StaticLiveServerTestCase):
             is_covid19=False, rbc=3.6, wbc=5.6, plt=222, neut=1.2
         )
         response = self.client.get(
-            reverse("data:detail", args=[data.uuid, ]),
+            data.url(),
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, data.uuid)
