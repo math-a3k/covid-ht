@@ -16,6 +16,7 @@
         </div>
     </div>
 
+  {% if data %}
 	<table class="responsive-table">
 
         <thead>
@@ -49,5 +50,8 @@
     </table>
 
     {% include "base/includes/paginator.html" with page_obj=data view="units:current:data" %}
+    {% else %}
+    <p>{% translate "No data available." %}</p>
+    {% endif %}
 
 {% endblock content %}
