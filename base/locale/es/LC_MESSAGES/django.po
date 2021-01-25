@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-18 05:39+0000\n"
+"POT-Creation-Date: 2021-01-25 16:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,58 +18,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base/models.py:16
+#: models.py:16
 msgid "Manager of Unit"
 msgstr "Manager de Unidad"
 
-#: base/models.py:17 base/templates/base/includes/header.html:110
+#: models.py:17 templates/base/includes/header.html:110
 msgid "Data Input"
 msgstr "Ingreso de Datos"
 
-#: base/models.py:21
+#: models.py:21
 msgid "User Type"
 msgstr "Tipo de Usuario"
 
-#: base/models.py:27
+#: models.py:27
 msgid "Unit"
 msgstr "Unidad"
 
-#: base/models.py:32
+#: models.py:32
 msgid "Cellphone"
 msgstr "Celular"
 
-#: base/models.py:38
+#: models.py:38
 msgid "User"
 msgstr "Usuario"
 
-#: base/models.py:39
+#: models.py:39
 msgid "Users"
 msgstr "Usuarios"
 
-#: base/models.py:72 base/templates/base/home.html:10
+#: models.py:72 templates/base/home.html:10
 msgid "Current Classifier"
 msgstr "Clasificador Actual"
 
-#: base/templates/base/about.html:5
+#: templates/base/about.html:5
 msgid "About the COVID19 Hemogram Test Project"
 msgstr "Acerca del Projecto COVID19 Hemogram Test"
 
-#: base/templates/base/about.html:7
+#: templates/base/about.html:7
 msgid "According to Dr. Eugenia Barrientos"
 msgstr "De acuerdo a la Dr. Eugenia Barrientos"
 
-#: base/templates/base/about.html:7
+#: templates/base/about.html:7
 msgid ""
 "an ongoing viral infection can be detected from the results of an hemogram "
 "test, and, given the current COVID19 pandemic, all viral infections with "
 "cold and flu symptoms should be treated as COVID19 cases."
 msgstr ""
 "una infección viral en curso puede ser detectada de los resultados de una "
-"prueba de hemograma, y, dado la actual pandemia de COVID 19, todas las "
+"prueba de hemograma, y, dado la actual pandemia de COVID19, todas las "
 "infecciones virales con síntomas de resfrío y gripe deberían ser tratados "
 "como casos de COVID19."
 
-#: base/templates/base/about.html:9
+#: templates/base/about.html:9
 msgid ""
 "The inference from the hemogram test results is done based on the knowledge "
 "and experience of the Health Professional."
@@ -77,16 +77,16 @@ msgstr ""
 "La inferencia a partir de los resultados de la prueba de hemograma es hecha "
 "basada en el conocimiento y la experiencia del Profesional de la Salud."
 
-#: base/templates/base/about.html:11
+#: templates/base/about.html:11
 msgid ""
 "If that process could be automatized and widely available, the detection "
 "toolkit of Health Professionals will be improved."
 msgstr ""
 "Si ese proceso puediese ser automatizo y ampliamente disponibe, el conjunto "
-"de herramientas para la detección de los Profesionales de la saluda sera "
+"de herramientas para la detección de los Profesionales de la Salud se verá "
 "mejorado."
 
-#: base/templates/base/about.html:13
+#: templates/base/about.html:13
 msgid ""
 "In many places (i.e. Perú) where specific COVID19 testing is not widely "
 "available - saturated hospitals, not affordable or unavailable - hemogram "
@@ -94,24 +94,24 @@ msgid ""
 "facilities."
 msgstr ""
 "En muchos lugares (i.e. Perú) donde la pruebas específicas de COVID19 no "
-"están ampliamente disponible - hospitales saturados, muy costosas o no "
-"disponible - las pruebas sanguíneas de hemograma están en lo opuesto: "
+"están ampliamente disponibles - hospitales saturados, muy costosas o no "
+"disponibles - las pruebas sanguíneas de hemograma están en el opuesto: "
 "económicas y en instalaciones ampliamente distribuídas."
 
-#: base/templates/base/about.html:15
+#: templates/base/about.html:15
 msgid ""
 "If a viral infection classifier with an adequate accuracy through hemograms "
 "can be built and made publicly available, all Health Professionals with a "
 "smart-phone and Internet access could classify any hemogram with the same "
-"accuracy as top-level experts on the matter."
+"accuracy as top-level experts on the matter, reducing possible errors."
 msgstr ""
 "Si se puede construir un clasificador de infección viral con una adecuada "
 "precisión a través de hemogramas y éste se hace disponible publicamente, "
 "todos los Profesionales de la Salud con un smart-phone y accesso a Internet "
 "podría clasificar cualquier hemograma con la misma precisión que experto de "
-"primer nivel en la materia."
+"primer nivel en la materia, reduciendo posibles errores."
 
-#: base/templates/base/about.html:17
+#: templates/base/about.html:17
 msgid ""
 "Early detection is deemed to be the greatest success factor in COVID19 "
 "treatments."
@@ -119,7 +119,7 @@ msgstr ""
 "La detección temprana es considerada el mayor factor de éxito en los "
 "tratamientos de COVID19."
 
-#: base/templates/base/about.html:19
+#: templates/base/about.html:19
 msgid ""
 "This project aims to provide a tool to efficiently build and manage that "
 "classifier and make it effectively available for widespread use in order to "
@@ -127,15 +127,15 @@ msgid ""
 "COVID19."
 msgstr ""
 "Este proyecto apunta a proveer una herramienta para construir eficientemente "
-"y manejar ese clasificador, haciendolo disponible para uso masivo de forma "
+"y manejar ese clasificador, haciéndolo disponible para uso masivo de forma "
 "de mejorar la detección e incrementar la eficiencia de uso del testeo "
 "específico de COVID19."
 
-#: base/templates/base/about.html:21
+#: templates/base/about.html:21
 msgid "This tool is totally transparent"
 msgstr "Esta herramiente es totalmente transparente"
 
-#: base/templates/base/about.html:21
+#: templates/base/about.html:21
 msgid ""
 "you may audit it entirely to fully understand how it works, what it provides "
 "and its limitations. It is distributed under the GNU LGPLv3 license."
@@ -143,7 +143,7 @@ msgstr ""
 "se la puede auditar enteramente para entender totalemente como funciona, lo "
 "que provee y sus limitaciones. Es distribuída bajo la licencia GNU LGPLv3."
 
-#: base/templates/base/about.html:23
+#: templates/base/about.html:23
 msgid ""
 "Improvements in early detection should increase successful treatments, "
 "potentially saving lives."
@@ -151,21 +151,21 @@ msgstr ""
 "Mejoras en la detección temprana debería incrementar los tratamientos "
 "exitosos, salvando vidas potencialmente."
 
-#: base/templates/base/about.html:25
+#: templates/base/about.html:25
 msgid ""
 "Better resource efficiency can also be achieved with the tool, i.e. only use "
 "expensive specific COVID19 testing for recovery after the hemogram does not "
 "indicate infection."
 msgstr ""
-"Mejores niveles de eficiencia de recursos también pueden ser logrados con la "
-"herramienta, i.e. sólo usar el costoso testeo específico de COVID19 para la "
-"recuperación después que el hemograma no indica infección."
+"Mejores niveles de eficiencia en el uso de recursos también pueden ser "
+"logrados con la herramienta, i.e. sólo usar el costoso testeo específico de "
+"COVID19 para la recuperación después que el hemograma no indica infección."
 
-#: base/templates/base/about.html:27
+#: templates/base/about.html:27
 msgid "The tool is not a replacement of Health Professionals."
 msgstr "La herramienta no es un remplazo de los Profesionales de la Salud."
 
-#: base/templates/base/about.html:29
+#: templates/base/about.html:29
 msgid ""
 "Any diagnostic and treatment should be decided by a Health Professional with "
 "the patient. If you are an individual with a recent hemogram result, the "
@@ -176,7 +176,7 @@ msgstr ""
 "de hemograma, la herramienta le puede indicar el tomar cuidados preventivos "
 "y buscar a un Profesional de la Salud."
 
-#: base/templates/base/about.html:31
+#: templates/base/about.html:31
 msgid ""
 "Also, don't blame the knife providers: This program is distributed in the "
 "hope that it will be useful, but WITHOUT ANY WARRANTY; without even the "
@@ -191,51 +191,62 @@ msgstr ""
 "sin la garantía implícita de COMERCIALIZACIÓN o ADECUACIÓN PARA UN PROPÓSITO "
 "PARTICULAR. EN NINGÚN CASO LOS AUTORES O TENEDORES DEL COPYRIGHT ESTARÁN "
 "SUJETOS POR CUALQUIER DEMANDA, DAÑOS U OTRA RESPONSABILIDAD, SEA EN UNA "
-"ACCIÓN DE CONTRATO, AGRAVIO O DE OTRO MODO, QUE SURGIERA DE, POR U EN "
-"CONEXIÓN CON EL SOFTWARE U EL USO U OTRAS RELACIONES EN EL SOFTWARE."
+"ACCIÓN DE CONTRATO, AGRAVIO O DE OTRO MODO, QUE SURGIERA DE, POR O EN "
+"CONEXIÓN CON EL SOFTWARE O EL USO U OTRAS RELACIONES EN EL SOFTWARE."
 
-#: base/templates/base/about.html:36
-msgid "Everybody is welcome to join the community for building it and use it:"
+#: templates/base/about.html:36
+msgid ""
+"Is something not working correctly? Could something be done better? Any "
+"questions? Everybody is welcome to join the community for building and using "
+"it:"
 msgstr ""
-"Todo el mundo es bienvenido para unirse a la comunidad para construirlo y "
-"usarlo:"
+"¿Hay algo que no funciona correctamente? ¿Podría hacerse algo mejor? ¿Alguna pregunta? Todo el "
+"mundo es bienvenido para unirse a la comunidad para construirla y usarla:"
 
-#: base/templates/base/about.html:38
+#: templates/base/about.html:36
+msgid "and"
+msgstr ""
+
+#: templates/base/about.html:38
 msgid "Made with love for all humans of the world."
 msgstr "Hecho con amor para todos los humanos del mundo."
 
-#: base/templates/base/home.html:5
+#: templates/base/about.html:42 templates/base/home.html:42
+msgid "Classify an Hemogram"
+msgstr "Clasificar un Hemograma"
+
+#: templates/base/home.html:5
 msgid "COVID19 Hemogram Test Project"
 msgstr "Projecto COVID19 Hemogram Test"
 
-#: base/templates/base/home.html:12
+#: templates/base/home.html:12
 msgid "Name"
 msgstr "Nombre"
 
-#: base/templates/base/home.html:14
+#: templates/base/home.html:14
 msgid "Training Data Size"
 msgstr "Tamaño de Datos de Entrenamiento"
 
-#: base/templates/base/home.html:15
+#: templates/base/home.html:15
 msgid "Accuracy"
 msgstr "Precisión"
 
-#: base/templates/base/home.html:16
+#: templates/base/home.html:16
 msgid "Last Updated"
 msgstr "Última Actualización"
 
-#: base/templates/base/home.html:18
+#: templates/base/home.html:18
 #, python-format
 msgid "No training has been done yet. Training is done in %(admin_link)s"
 msgstr ""
 "No se ha entrenado el clasificador todavía. El entrenamiento se realiza en "
 "%(admin_link)s"
 
-#: base/templates/base/home.html:24
+#: templates/base/home.html:24
 msgid "DUMMY DATA - NO REAL USE"
 msgstr "DATOS DE PRUEBA - SIN USO REAL"
 
-#: base/templates/base/home.html:26
+#: templates/base/home.html:26
 #, python-format
 msgid ""
 "You can see how COVID19 and NO COVID19 hemograms look like in %(data_link)s, "
@@ -249,16 +260,12 @@ msgstr ""
 "ver la administración del clasificador (la base de datos se resetea todos "
 "los días)"
 
-#: base/templates/base/home.html:33
+#: templates/base/home.html:33
 #, python-format
 msgid "No Current Classifier has been set up, it is done in %(admin_link)s"
 msgstr "No se ha establecido el Clasificador Actual, se hace en %(admin_link)s"
 
-#: base/templates/base/home.html:42
-msgid "Classify an Hemogram"
-msgstr "Clasificar un Hemograma"
-
-#: base/templates/base/home.html:45
+#: templates/base/home.html:45
 #, python-format
 msgid ""
 "The following Hemogram has been classified as %(result)s with a probability "
@@ -267,61 +274,61 @@ msgstr ""
 "El siguiente Hemograma ha sido clasificado como %(result)s con una "
 "probabilidad de %(prob)s"
 
-#: base/templates/base/home.html:59
+#: templates/base/home.html:52
 msgid "Errors detected in the submitted data, check below:"
 msgstr "Errores detectados en los datos envíados, chequee abajo:"
 
-#: base/templates/base/includes/footer.html:16
+#: templates/base/includes/footer.html:16
 msgid "Login"
 msgstr "Ingreso"
 
-#: base/templates/base/includes/header.html:32
-#: base/templates/base/includes/header.html:123
+#: templates/base/includes/header.html:32
+#: templates/base/includes/header.html:123
 msgid "About"
 msgstr "Acerca de"
 
-#: base/templates/base/includes/header.html:36
-#: base/templates/base/includes/header.html:115
+#: templates/base/includes/header.html:36
+#: templates/base/includes/header.html:115
 msgid "Units"
 msgstr "Unidades"
 
-#: base/templates/base/includes/header.html:40
-#: base/templates/base/includes/header.html:119
+#: templates/base/includes/header.html:40
+#: templates/base/includes/header.html:119
 msgid "Data"
 msgstr "Datos"
 
-#: base/templates/base/includes/header.html:79
+#: templates/base/includes/header.html:79
 msgid "Classify"
 msgstr "Clasificar"
 
-#: base/templates/base/includes/header.html:86
+#: templates/base/includes/header.html:86
 msgid "Your Unit"
 msgstr "Su Unidad"
 
-#: base/templates/base/includes/header.html:129
+#: templates/base/includes/header.html:129
 msgid "Logout"
 msgstr "Salir"
 
-#: base/templates/base/includes/paginator.html:12
+#: templates/base/includes/paginator.html:12
 msgid "Previous"
 msgstr "Anterior"
 
-#: base/templates/base/includes/paginator.html:30
+#: templates/base/includes/paginator.html:30
 msgid "Next"
 msgstr "Siguiente"
 
-#: base/templates/base/includes/submit_button.html:6
+#: templates/base/includes/submit_button.html:6
 msgid "Submit"
 msgstr "Enviar"
 
-#: base/templates/registration/login.html:8
+#: templates/registration/login.html:8
 msgid "Log into covid-ht"
 msgstr "Ingrese a covid-ht"
 
-#: base/views.py:27
+#: views.py:26
 msgid "Positive"
 msgstr "Positivo"
 
-#: base/views.py:27
+#: views.py:26
 msgid "Negative"
 msgstr "Negativo"

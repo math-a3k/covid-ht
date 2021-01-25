@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-15 21:26+0000\n"
+"POT-Creation-Date: 2021-01-25 05:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,118 +18,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: units/models.py:10 units/templates/units/list.html:15
+#: models.py:10 templates/units/list.html:15
 msgid "Name"
 msgstr "Nombre"
 
-#: units/models.py:14
+#: models.py:14
 msgid "Description"
 msgstr "Descripción"
 
-#: units/models.py:18
+#: models.py:18
 msgid "Time zone"
 msgstr "Zona Horaria"
 
-#: units/models.py:23
+#: models.py:23
 msgid "Is Active?"
 msgstr "Está Activa?"
 
-#: units/models.py:35
+#: models.py:35
 msgid "Unit"
 msgstr "Unidad"
 
-#: units/models.py:36 units/templates/units/list.html:5
+#: models.py:36 templates/units/list.html:5
 msgid "Units"
 msgstr "Unidades"
 
-#: units/templates/units/dashboard.html:9
+#: templates/units/dashboard.html:9
 msgid "No Unit has been selected"
 msgstr "No se ha seleccionado una Unidad"
 
-#: units/templates/units/dashboard.html:11
+#: templates/units/dashboard.html:11
 msgid "Dashboard"
 msgstr "Tablero"
 
-#: units/templates/units/dashboard.html:15 units/templates/units/detail.html:16
+#: templates/units/dashboard.html:15 templates/units/detail.html:16
 msgid "Timezone"
 msgstr "Zona Horaria"
 
-#: units/templates/units/dashboard.html:19
-#: units/templates/units/dashboard.html:28 units/templates/units/detail.html:20
+#: templates/units/dashboard.html:19 templates/units/dashboard.html:28
+#: templates/units/detail.html:20
 msgid "Members"
 msgstr "Miembros"
 
-#: units/templates/units/dashboard.html:21 units/templates/units/detail.html:22
+#: templates/units/dashboard.html:21 templates/units/detail.html:22
 msgid "Managers"
 msgstr "Managers"
 
-#: units/templates/units/dashboard.html:23 units/templates/units/detail.html:24
+#: templates/units/dashboard.html:23 templates/units/detail.html:24
 msgid "Data Input"
 msgstr "Ingreso de Datos"
 
-#: units/templates/units/dashboard.html:34 units/templates/units/detail.html:29
+#: templates/units/dashboard.html:34 templates/units/detail.html:29
 msgid "Data"
 msgstr "Datos"
 
-#: units/templates/units/dashboard.html:36 units/templates/units/data.html:12
-#: units/templates/units/detail.html:31
+#: templates/units/dashboard.html:36 templates/units/data.html:12
+#: templates/units/detail.html:31
 msgid "Dataset Size"
 msgstr "Tamaño del Conjunto de Datos"
 
-#: units/templates/units/dashboard.html:38 units/templates/units/data.html:13
-#: units/templates/units/detail.html:33 units/templates/units/list.html:21
+#: templates/units/dashboard.html:38 templates/units/data.html:13
+#: templates/units/detail.html:33 templates/units/list.html:21
 msgid "Last Updated"
 msgstr "Última Actualización"
 
-#: units/templates/units/dashboard.html:43
+#: templates/units/dashboard.html:43
 msgid "Unit's Data"
 msgstr "Datos de la Unidad"
 
-#: units/templates/units/data.html:15
+#: templates/units/data.html:15
 msgid ".CSV"
 msgstr ".CSV"
 
-#: units/templates/units/edit.html:6
+#: templates/units/data.html:54
+msgid "No data available."
+msgstr "No hay datos disponibles."
+
+#: templates/units/edit.html:6
 msgid "Editing Unit"
 msgstr "Editando Unidad"
 
-#: units/templates/units/edit.html:16 units/templates/units/users_new.html:15
-#: units/templates/units/users_set_password.html:13
+#: templates/units/edit.html:16 templates/units/users_new.html:15
+#: templates/units/users_set_password.html:13
 msgid "Submit"
 msgstr "Enviar"
 
-#: units/templates/units/list.html:18
+#: templates/units/list.html:18
 msgid "# Data"
 msgstr "# Datos"
 
-#: units/templates/units/users_detail.html:39
+#: templates/units/users_detail.html:39
 msgid "USER WITHOUT PASSWORD"
 msgstr "USUARIO SIN CONTRASEÑA"
 
-#: units/templates/units/users_detail.html:42
+#: templates/units/users_detail.html:42
 msgid "Set Password"
 msgstr "Establecer Contraseña"
 
-#: units/templates/units/users_edit.html:6
+#: templates/units/users_edit.html:6
 msgid "Editing User"
 msgstr "Editando Usuario"
 
-#: units/templates/units/users_list.html:6
+#: templates/units/users_list.html:6
 msgid "Unit's Members"
 msgstr "Miembros de la Unidad"
 
-#: units/templates/units/users_list.html:25
+#: templates/units/users_list.html:25
 msgid "No users available yet"
 msgstr "No hay usuarios disponibles todavía"
 
-#: units/templates/units/users_list.html:34
+#: templates/units/users_list.html:34
 msgid "New User"
 msgstr "Usuario Nuevo"
 
-#: units/templates/units/users_new.html:6
+#: templates/units/users_new.html:6
 msgid "New Unit User"
 msgstr "Nuevo Usuario de la Unidad"
 
-#: units/templates/units/users_set_password.html:6
+#: templates/units/users_set_password.html:6
 msgid "Set password for"
 msgstr "Establecer contraseña para"
