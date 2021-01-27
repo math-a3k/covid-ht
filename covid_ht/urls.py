@@ -21,7 +21,6 @@ from django.views.i18n import JavaScriptCatalog
 
 from base.urls import urlpatterns as base_urls
 from data.urls import urlpatterns as data_urls
-from units.urls import urlpatterns_unit as unit_urls
 from units.urls import urlpatterns_units as units_urls
 
 
@@ -45,6 +44,5 @@ urlpatterns = [
     #
     path('data/', include((data_urls, "data"))),
     path('units/', include((units_urls, "units"))),
-    # path('unit/', include((unit_urls, "unit"))),
     path('', include((base_urls, "base"))),
 ]
