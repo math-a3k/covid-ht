@@ -5,14 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from data.forms import DataClassificationForm
 
-from .models import CurrentClassifier
-
-
-def get_current_classifier():
-    cc = CurrentClassifier.objects.last()
-    if cc:
-        return cc.classifier
-    return None
+from .utils import get_current_classifier
 
 
 def home(request):
