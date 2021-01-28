@@ -36,6 +36,13 @@ class DataListCreate(generics.ListCreateAPIView):
         serializer = DataListSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    def paginate_queryset(self, queryset):
+        if self.paginator and \
+                self.request.query_params.get(
+                    self.paginator.page_query_param, None) == 'no':
+            return None
+        return super().paginate_queryset(queryset)
+
 
 class DataReadUpdate(generics.RetrieveUpdateAPIView):
     queryset = Data.objects.all()

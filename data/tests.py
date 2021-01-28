@@ -270,6 +270,17 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataListSerializer(data)
         self.assertEqual(dict(response.data['results'][0]), serializer.data)
 
+    def test_data_list_unpaginated(self):
+        data, _ = Data.objects.get_or_create(
+            user=self.user, unit=self.unit,
+            is_covid19=True, rbc=2, wbc=3, plt=240, neut=1
+        )
+        response = self.client.get(
+            reverse("rest-api:data-lc"), {'page': 'no'}
+        )
+        serializer = DataListSerializer(data)
+        self.assertEqual(response.data[0], serializer.data)
+
     def test_data_creation(self):
         post_data = {
             'rbc': Decimal("3"),
