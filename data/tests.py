@@ -4,10 +4,13 @@ from decimal import Decimal
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 
+from rest_framework.test import APITestCase
+
 from base.models import User
 from units.models import Unit
 
 from .models import Data
+from .serializers import (DataInputSerializer, DataListSerializer, )
 
 
 class TestData(StaticLiveServerTestCase):
@@ -229,3 +232,111 @@ class TestData(StaticLiveServerTestCase):
             reverse("data:edit", args=[data.uuid, ])
         )
         self.assertEqual(response.status_code, 200)
+
+
+class TestDataRESTAPI(APITestCase):
+
+    def setUp(self):
+        self.unit, _ = Unit.objects.get_or_create(
+            name="Unit for API tests 1"
+        )
+        self.user, _ = User.objects.get_or_create(
+            username='apitestuser1',
+            first_name='Api Test',
+            last_name='User 1',
+            user_type=User.DATA,
+            unit=self.unit
+        )
+        self.user.set_password("test")
+        self.user.save()
+        self.user2, _ = User.objects.get_or_create(
+            username='apitestuser2',
+            first_name='Api Test',
+            last_name='User 2',
+            user_type=User.MANAGER,
+        )
+        self.user2.set_password("test")
+        self.user2.save()
+        self.client.login(username=self.user.username, password="test")
+
+    def test_data_list(self):
+        data, _ = Data.objects.get_or_create(
+            user=self.user, unit=self.unit,
+            is_covid19=True, rbc=2, wbc=3, plt=240, neut=1
+        )
+        response = self.client.get(
+            reverse("rest-api:data-lc"),
+        )
+        serializer = DataListSerializer(data)
+        self.assertEqual(dict(response.data['results'][0]), serializer.data)
+
+    def test_data_creation(self):
+        post_data = {
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'neut': Decimal("0.1"),
+            'lymp': Decimal("0.1"),
+            'mono': Decimal("0.1"),
+        }
+        response = self.client.post(
+            reverse("rest-api:data-lc"),
+            post_data,
+        )
+        self.assertEqual(response.status_code, 201)
+        data = Data.objects.last()
+        for key in post_data:
+            self.assertEqual(getattr(data, key), post_data[key])
+        # Test also the serialization in the response
+        serializer = DataInputSerializer(data)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_data_creation_percentages(self):
+        post_data = {
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'p_neut': Decimal("10"),
+            'p_lymp': Decimal("15"),
+            'p_mono': Decimal("20"),
+            'p_eo': Decimal("20"),
+            'p_baso': Decimal("20"),
+        }
+        expected_data = {
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'neut': Decimal("0.5"),
+            'lymp': Decimal("0.75"),
+            'mono': Decimal("1"),
+            'eo': Decimal("1"),
+            'baso': Decimal("1"),
+        }
+        response = self.client.post(
+            reverse("rest-api:data-lc"),
+            post_data,
+        )
+        self.assertEqual(response.status_code, 201)
+        data = Data.objects.last()
+        for key in expected_data:
+            self.assertEqual(getattr(data, key), expected_data[key])
+        # Test also the serialization in the response
+        serializer = DataInputSerializer(data)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_data_creation_percentages_invalid(self):
+        post_data = {
+            'rbc': Decimal("3"),
+            'plt': Decimal("150"),
+            'p_neut': Decimal("10"),
+            'p_lymp': Decimal("15"),
+            'p_mono': Decimal("20"),
+            'p_eo': Decimal("20"),
+            'p_baso': Decimal("20"),
+        }
+        response = self.client.post(
+            reverse("rest-api:data-lc"),
+            post_data,
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('WBC', response.data['non_field_errors'][0])

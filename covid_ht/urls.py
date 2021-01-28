@@ -23,6 +23,8 @@ from base.urls import urlpatterns as base_urls
 from data.urls import urlpatterns as data_urls
 from units.urls import urlpatterns_units as units_urls
 
+from .urls_api_v1 import urlpatterns as urlpatterns_api_v1
+
 
 def get_version():
     return timezone.now().timestamp()
@@ -41,6 +43,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('django-ai/',
          include('django_ai.ai_base.urls')),
+    #
+    path('api/v1/', include((urlpatterns_api_v1, "rest-api"))),
     #
     path('data/', include((data_urls, "data"))),
     path('units/', include((units_urls, "units"))),
