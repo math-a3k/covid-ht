@@ -302,6 +302,23 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataInputSerializer(data)
         self.assertEqual(response.data, serializer.data)
 
+    def test_data_creation_only_tags(self):
+        post_data = {
+            'is_covid19': True,
+            'unit_ii': '123.123.123-4'
+        }
+        response = self.client.post(
+            reverse("rest-api:data-lc"),
+            post_data,
+        )
+        self.assertEqual(response.status_code, 201)
+        data = Data.objects.last()
+        for key in post_data:
+            self.assertEqual(getattr(data, key), post_data[key])
+        # Test also the serialization in the response
+        serializer = DataInputSerializer(data)
+        self.assertEqual(response.data, serializer.data)
+
     def test_data_creation_percentages(self):
         post_data = {
             'rbc': Decimal("3"),
