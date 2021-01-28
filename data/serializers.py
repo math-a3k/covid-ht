@@ -91,7 +91,6 @@ class BaseInputDataSerializer(serializers.ModelSerializer):
                       "fields."),
                     code="wbc_not_present",
                 )
-                break
         # Convert to absolute values in the correspondent field
         if cleaned_data.get('wbc', None):
             if cleaned_data.get('p_neut', None):
