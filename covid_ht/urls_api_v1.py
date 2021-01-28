@@ -21,5 +21,4 @@ urlpatterns = [
         description="REST API for covid-ht",
         version="1.0.0"
     ), name='openapi-schema'),
-
 ]
