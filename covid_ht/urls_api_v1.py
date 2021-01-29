@@ -1,5 +1,5 @@
 #
-from django.urls import (include, path)
+from django.urls import path
 
 from rest_framework.schemas import get_schema_view
 
@@ -8,8 +8,6 @@ from data.v1 import views as data_views
 
 
 urlpatterns = [
-    path('auth/', include('rest_framework.urls')),
-    #
     path('classify',
          base_views.Classify().as_view(),
          name='classify'),

@@ -44,6 +44,8 @@ urlpatterns = [
     path('django-ai/',
          include('django_ai.ai_base.urls')),
     #
+    path('api/auth/',
+         include('rest_framework.urls', namespace='rest_framework')),
     path('api/v1/', include((urlpatterns_api_v1, "rest-api"))),
     #
     path('data/', include((data_urls, "data"))),
