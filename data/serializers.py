@@ -140,9 +140,9 @@ class DataClassificationSerializer(BaseInputDataSerializer):
         if hemogram_fields_count < threshold:
             raise serializers.ValidationError(
                 _("At least %(threshold)s hemogram result fields must be "
-                  "submitted in order to classify an hemogram."),
+                  "submitted in order to classify an hemogram." %
+                    {'threshold': threshold}),
                 code="not_enough_fields",
-                params={'threshold': threshold}
             )
         return cleaned_data
 
