@@ -1,8 +1,8 @@
 #
 from rest_framework import generics
-# from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 
 from ..models import Data
 from ..serializers import (DataInputSerializer, DataListSerializer, )
@@ -14,10 +14,16 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 10000
 
 
+class IsOwnerEditOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.user
+
+
 class DataListCreate(generics.ListCreateAPIView):
     queryset = Data.objects.all()
     serializer_class = DataInputSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
     def perform_create(self, serializer):
         serializer.save(
@@ -48,3 +54,4 @@ class DataReadUpdate(generics.RetrieveUpdateAPIView):
     queryset = Data.objects.all()
     serializer_class = DataInputSerializer
     lookup_field = 'uuid'
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerEditOnly]

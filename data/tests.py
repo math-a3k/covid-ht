@@ -1,5 +1,6 @@
 #
 from decimal import Decimal
+import json
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
@@ -302,6 +303,22 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataInputSerializer(data)
         self.assertEqual(response.data, serializer.data)
 
+    def test_data_creation_not_authenticated(self):
+        self.client.logout()
+        post_data = {
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'neut': Decimal("0.1"),
+            'lymp': Decimal("0.1"),
+            'mono': Decimal("0.1"),
+        }
+        response = self.client.post(
+            reverse("rest-api:data-lc"),
+            post_data,
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_data_creation_only_tags(self):
         post_data = {
             'is_covid19': True,
@@ -368,3 +385,63 @@ class TestDataRESTAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn('WBC', response.data['non_field_errors'][0])
+
+    def test_data_detail(self):
+        data, _ = Data.objects.get_or_create(
+            user=self.user, unit=self.unit,
+            is_covid19=False, rbc=3.7, wbc=5.8, plt=223, neut=1.3
+        )
+        response = self.client.get(
+            reverse("rest-api:data-ru", args=[data.uuid, ]),
+        )
+        self.assertEqual(response.status_code, 200)
+        data_dict = json.loads(response.content)
+        serializer = DataInputSerializer(data)
+        self.assertEqual(data_dict, serializer.data)
+
+    def test_data_edit(self):
+        data, _ = Data.objects.get_or_create(
+            user=self.user, unit=self.unit,
+            is_covid19=False, rbc=3.7, wbc=5.8, plt=223, neut=1.3
+        )
+        response = self.client.patch(
+            reverse("rest-api:data-ru", args=[data.uuid, ]),
+            {
+                'rbc': 3.9
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        data.refresh_from_db()
+        self.assertEqual(data.rbc, Decimal("3.9"))
+
+    def test_data_edit_not_authenticated(self):
+        self.client.logout()
+        data, _ = Data.objects.get_or_create(
+            user=self.user, unit=self.unit,
+            is_covid19=False, rbc=3.6, wbc=5.8, plt=223, neut=1.3
+        )
+        response = self.client.patch(
+            reverse("rest-api:data-ru", args=[data.uuid, ]),
+            {
+                'rbc': 3.9
+            }
+        )
+        self.assertEqual(response.status_code, 403)
+        data.refresh_from_db()
+        self.assertEqual(data.rbc, Decimal("3.6"))
+
+    def test_data_edit_not_owner(self):
+        data, _ = Data.objects.get_or_create(
+            user=self.user, unit=self.unit,
+            is_covid19=False, rbc=3.6, wbc=5.8, plt=223, neut=1.3
+        )
+        self.client.login(username="apitestuser2", password="test")
+        response = self.client.patch(
+            reverse("rest-api:data-ru", args=[data.uuid, ]),
+            {
+                'rbc': 3.9
+            }
+        )
+        self.assertEqual(response.status_code, 403)
+        data.refresh_from_db()
+        self.assertEqual(data.rbc, Decimal("3.6"))
