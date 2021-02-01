@@ -23,7 +23,7 @@ class Classify(generics.GenericAPIView):
         classifier = get_current_classifier()
         if classifier:
             serializer = DataClassificationSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=False):
+            if serializer.is_valid():
                 (result, result_prob) = classification_tuple(
                     classifier, serializer.data
                 )

@@ -73,11 +73,11 @@ class TestData(StaticLiveServerTestCase):
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
-            'p_neut': Decimal("10"),
-            'p_lymp': Decimal("15"),
-            'p_mono': Decimal("20"),
-            'p_eo': Decimal("20"),
-            'p_baso': Decimal("20"),
+            'neut_percentage': Decimal("10"),
+            'lymp_percentage': Decimal("15"),
+            'mono_percentage': Decimal("20"),
+            'eo_percentage': Decimal("20"),
+            'baso_percentage': Decimal("20"),
             '_addanother': True
         }
         expected_data = {
@@ -341,11 +341,11 @@ class TestDataRESTAPI(APITestCase):
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
-            'p_neut': Decimal("10"),
-            'p_lymp': Decimal("15"),
-            'p_mono': Decimal("20"),
-            'p_eo': Decimal("20"),
-            'p_baso': Decimal("20"),
+            'neut_percentage': Decimal("10"),
+            'lymp_percentage': Decimal("15"),
+            'mono_percentage': Decimal("20"),
+            'eo_percentage': Decimal("20"),
+            'baso_percentage': Decimal("20"),
         }
         expected_data = {
             'rbc': Decimal("3"),
@@ -373,18 +373,18 @@ class TestDataRESTAPI(APITestCase):
         post_data = {
             'rbc': Decimal("3"),
             'plt': Decimal("150"),
-            'p_neut': Decimal("10"),
-            'p_lymp': Decimal("15"),
-            'p_mono': Decimal("20"),
-            'p_eo': Decimal("20"),
-            'p_baso': Decimal("20"),
+            'neut_percentage': Decimal("10"),
+            'lymp_percentage': Decimal("15"),
+            'mono_percentage': Decimal("20"),
+            'eo_percentage': Decimal("20"),
+            'baso_percentage': Decimal("20"),
         }
         response = self.client.post(
             reverse("rest-api:data-lc"),
             post_data,
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn('WBC', response.data['non_field_errors'][0])
+        self.assertIn('This field must be present', response.data['wbc'][0])
 
     def test_data_detail(self):
         data, _ = Data.objects.get_or_create(

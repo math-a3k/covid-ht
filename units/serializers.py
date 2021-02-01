@@ -10,7 +10,7 @@ class UnitDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Data
-        exclude = ['uuid', 'unit']
+        exclude = ['uuid', 'unit'] + model.CONVERSION_FIELDS
 
     def get_user(self, obj):
         return obj.user.name
