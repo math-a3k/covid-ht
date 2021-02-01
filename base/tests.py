@@ -226,8 +226,7 @@ class TestBaseRESTAPI(APITestCase):
         self.classifier, _ = HGBTree.objects.get_or_create(
             name="HGBTree for API tests",
             labels_column="data.data.is_covid19",
-            cv_folds=5,
-            cv_metric="accuracy",
+            cv_is_enabled=False,
             random_state=123456
         )
         self.dc_1, _ = DataColumn.objects.get_or_create(
