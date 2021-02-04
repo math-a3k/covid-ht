@@ -166,9 +166,9 @@ class TestBase(StaticLiveServerTestCase):
                 'rbc': 3,
                 'wbc': 5,
                 'plt': 150,
-                'neut_percentage': 10,
-                'lymp_percentage': 10,
-                'mono_percentage': 10,
+                'neut_Upercentage_Rwbc': 10,
+                'lymp_Upercentage_Rwbc': 10,
+                'mono_Upercentage_Rwbc': 10,
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -204,7 +204,7 @@ class TestBase(StaticLiveServerTestCase):
                 'mchc': 330,
                 'neut': 0.1,
                 'lymp': 0.1,
-                'mono_percentage': 10,
+                'mono_Upercentage_Rwbc': 10,
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -361,9 +361,9 @@ class TestBaseRESTAPI(APITestCase):
                 'rbc': 3,
                 'wbc': 5,
                 'plt': 150,
-                'neut_percentage': 10,
-                'lymp_percentage': 10,
-                'mono_percentage': 10,
+                'neut_Upercentage_Rwbc': 10,
+                'lymp_Upercentage_Rwbc': 10,
+                'mono_Upercentage_Rwbc': 10,
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -396,10 +396,10 @@ class TestBaseRESTAPI(APITestCase):
                 'rbc': 3,
                 'plt': 150,
                 'mcv': 80,
-                'mchc': 330,
+                'mchc': 4,
                 'neut': 0.1,
                 'lymp': 0.1,
-                'mono_percentage': 0.1,
+                'mono_Upercentage_Rwbc': 0.1,
             }
         )
         self.assertEqual(response.status_code, 400)

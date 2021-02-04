@@ -1,14 +1,14 @@
 #
 import uuid
 
-from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.exceptions import ValidationError
 from django.core.validators import (MaxValueValidator, MinValueValidator, )
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 
-from .utils import CONVERSION_FUNCTIONS
+from .conversions import unit_conversion
 
 
 class Data(models.Model):
@@ -16,47 +16,134 @@ class Data(models.Model):
     Main Data object - Hemogram result fields, auxiliary variables fields
     and input related fields
     """
-    HEMOGRAM_FIELDS = [
-        'rbc', 'wbc', 'hgb', 'hct', 'mcv', 'mch', 'mchc', 'rdw', 'plt', 'neut',
-        'lymp', 'mono', 'eo', 'baso', 'iga', 'igm',
-    ]
-    CONVERSION_FIELDS = [
-        'neut_percentage', 'lymp_percentage', 'mono_percentage',
-        'eo_percentage', 'baso_percentage',
-    ]
-    CONVERSION_FIELDS_RULES = {
-        'neut_percentage': {
-            'main_field': 'neut',
-            'conversion': 'percentage',
-            'relative_to': 'wbc',
+    HEMOGRAM_MAIN_FIELDS = {
+        'rbc': {
+            'unit': 'x1012L',
         },
-        'lymp_percentage': {
-            'main_field': 'lymp',
-            'conversion': 'percentage',
-            'relative_to': 'wbc',
+        'wbc': {
+            'unit': 'x109L',
         },
-        'mono_percentage': {
-            'main_field': 'mono',
-            'conversion': 'percentage',
-            'relative_to': 'wbc',
+        'hgb': {
+            'unit': 'gL',
         },
-        'eo_percentage': {
-            'main_field': 'eo',
-            'conversion': 'percentage',
-            'relative_to': 'wbc',
+        'hgbp': {
+            'unit': 'mgdL',
         },
-        'baso_percentage': {
-            'main_field': 'baso',
-            'conversion': 'percentage',
-            'relative_to': 'wbc',
+        'hgbg': {
+            'unit': 'percentage',
         },
+        'htg': {
+            'unit': 'gL',
+        },
+        'htc': {
+            'unit': 'gL',
+        },
+        'mcv': {
+            'unit': 'fL',
+        },
+        'mch': {
+            'unit': 'pgcell',
+        },
+        'mchc': {
+            'unit': 'gL',
+        },
+        'rdw': {
+            'unit': 'percentage',
+        },
+        'rtc': {
+            'unit': 'x109L',
+        },
+        'plt': {
+            'unit': 'x109L',
+        },
+        'mpv': {
+            'unit': 'fL',
+        },
+        'pt': {
+            'unit': 's',
+        },
+        'inr': {
+            'unit': None,
+        },
+        'aptt': {
+            'unit': 's',
+        },
+        'tct': {
+            'unit': 's',
+        },
+        'fbg': {
+            'unit': 'gL',
+        },
+        'atb': {
+            'unit': 'kUIL',
+        },
+        'bt': {
+            'unit': 'minutes',
+        },
+        'vsy': {
+            'unit': 'cP',
+        },
+        'esr': {
+            'unit': 'mmH',
+        },
+        'cpr': {
+            'unit': 'mgL',
+        },
+        'aat': {
+            'unit': 'mgL',
+        },
+        'pct': {
+            'unit': 'mgL',
+        },
+        'neut': {
+            'unit': 'x109L'
+        },
+        'nbf': {
+            'unit': 'x109L'
+        },
+        'lymp': {
+            'unit': 'x109L'
+        },
+        'mono': {
+            'unit': 'x109L'
+        },
+        'mnl': {
+            'unit': 'x109L'
+        },
+        'cd4': {
+            'unit': 'x109L'
+        },
+        'eo': {
+            'unit': 'x109L'
+        },
+        'baso': {
+            'unit': 'x109L'
+        },
+        'iga': {
+            'unit': 'x109L'
+        },
+        'igd': {
+            'unit': 'x109L'
+        },
+        'ige': {
+            'unit': 'x109L'
+        },
+        'igg': {
+            'unit': 'x109L'
+        },
+        'igm': {
+            'unit': 'x109L'
+        }
     }
+
+    # conversion_function = unit_conversion
 
     SEX_CHOICES = (
         (None, _("Not Available")),
         (False, _("Female")),
         (True, _("Male"))
     )
+
     unit = models.ForeignKey(
         "units.Unit",
         on_delete=models.PROTECT,
@@ -119,76 +206,229 @@ class Data(models.Model):
                     '(Transplantation, Blood disorders, etc.)'),
     )
     # HEMOGRAM RESULTS FIELDS
+    # Red Blood Cells
     rbc = models.DecimalField(
         _("RBC (x10^12/L)"),
         max_digits=5, decimal_places=3,
         blank=True, null=True,
-        help_text=_('Red Blood Cells (x10^12/L)'),
+        help_text=_('Red Blood Cells (x10^12/L or mlm/mm^3)'),
         validators=[MinValueValidator(2.0), MaxValueValidator(8.0)]
-    )
-    wbc = models.DecimalField(
-        _("WBC (x10^9/L)"),
-        max_digits=5, decimal_places=3,
-        blank=True, null=True,
-        help_text=_('White Blood Cells (x10^12/L)'),
-        validators=[MinValueValidator(2.0), MaxValueValidator(40.0)]
     )
     hgb = models.SmallIntegerField(
         _("HGB (g/L)"),
         blank=True, null=True,
         help_text=_('Hemoglobin (g/L)'),
-        validators=[MinValueValidator(80), MaxValueValidator(240)]
+        validators=[MinValueValidator(50), MaxValueValidator(250)]
+    )
+    hgb_UmmolL = models.DecimalField(
+        _("HGB (mmol/L)"),
+        max_digits=4, decimal_places=3,
+        blank=True, null=True,
+        help_text=_('Hemoglobin (mmol/L)'),
+        validators=[MinValueValidator(0.5), MaxValueValidator(4)]
+    )
+    hgbp = models.SmallIntegerField(
+        _("HGBP (mg/dL)"),
+        blank=True, null=True,
+        help_text=_('Hemoglobin in Plasma (mg/dL)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(8)]
+    )
+    hgbp_UumolL = models.DecimalField(
+        _("HGBP (umol/L)"),
+        max_digits=3, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Hemoglobin in Plasma (umol/L)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(2)]
+    )
+    hgbg = models.DecimalField(
+        _("Glycated Hemoglobin (% of HGB)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Glycated Hemoglobin (% of Hemoglobin)'),
+        validators=[MinValueValidator(1), MaxValueValidator(8)]
+    )
+    htg = models.DecimalField(
+        _("HTG (g/L)"),
+        max_digits=4, decimal_places=3,
+        blank=True, null=True,
+        help_text=_('Haptoglobin (g/L)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(5)]
     )
     hct = models.DecimalField(
         _("HCT (L/L)"),
-        blank=True, null=True,
         max_digits=3, decimal_places=2,
+        blank=True, null=True,
         help_text=_('Hematocrit (g/L)'),
-        validators=[MinValueValidator(0.1), MaxValueValidator(0.9)]
+        validators=[MinValueValidator(0.1), MaxValueValidator(1)]
     )
     mcv = models.SmallIntegerField(
         _("MCV (fL)"),
         blank=True, null=True,
         help_text=_('Mean Cell Volume (fL)'),
-        validators=[MinValueValidator(60), MaxValueValidator(150)]
+        validators=[MinValueValidator(50), MaxValueValidator(150)]
     )
     mch = models.SmallIntegerField(
-        _("MCH (pg)"),
+        _("MCH (pg/cell)"),
         blank=True, null=True,
-        help_text=_('Mean Corpuscular Hemoglobin (pg)'),
-        validators=[MinValueValidator(60), MaxValueValidator(150)]
+        help_text=_('Mean Cell Hemoglobin (pg/cell)'),
+        validators=[MinValueValidator(10), MaxValueValidator(50)]
+    )
+    mch_Ufmolcell = models.SmallIntegerField(
+        _("MCH (fmol/cell)"),
+        blank=True, null=True,
+        help_text=_('Mean Cell Hemoglobin (fmol/cell)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(2)]
     )
     mchc = models.SmallIntegerField(
         _("MCHC (g/L)"),
         blank=True, null=True,
         help_text=_('Mean Corpuscular Hemoglobin Concentration (g/L)'),
-        validators=[MinValueValidator(280), MaxValueValidator(380)]
+        validators=[MinValueValidator(2), MaxValueValidator(5)]
+    )
+    mchc_UgdL = models.SmallIntegerField(
+        _("MCHC (g/dL)"),
+        blank=True, null=True,
+        help_text=_('Mean Corpuscular Hemoglobin Concentration (g/dL)'),
+        validators=[MinValueValidator(20), MaxValueValidator(50)]
+    )
+    mchc_UmmolL = models.SmallIntegerField(
+        _("MCHC (mmol/L)"),
+        blank=True, null=True,
+        help_text=_('Mean Corpuscular Hemoglobin Concentration (mmol/L)'),
+        validators=[MinValueValidator(2), MaxValueValidator(8)]
     )
     rdw = models.DecimalField(
         _("RDW (%)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Red Blood Cell Distribution Width (%)'),
+        validators=[MinValueValidator(5.0), MaxValueValidator(30.0)]
+    )
+    rtc = models.DecimalField(
+        _("Reticulocytes (x10^9/L)"),
         blank=True, null=True,
         max_digits=4, decimal_places=2,
-        help_text=_('Red Blood Cell Distribution Width (%)'),
-        validators=[MinValueValidator(5.0), MaxValueValidator(40.0)]
+        help_text=_('Reticulocytes (x10^9/L)'),
+        validators=[MinValueValidator(5.0), MaxValueValidator(250.0)]
     )
+    rtc_Upercentage_Rrbc = models.DecimalField(
+        _("RTC (% of RBC)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Reticulocytes (% of RBC)'),
+        validators=[MinValueValidator(0), MaxValueValidator(50.0)]
+    )
+    # Coagulation
     plt = models.SmallIntegerField(
         _("PLT (x10^9/L)"),
         blank=True, null=True,
-        help_text=_('Platelets (x10^9/L)'),
+        help_text=_('Platelets (x10^9/L or x1000/uL)'),
+        validators=[MinValueValidator(50), MaxValueValidator(1000)]
+    )
+    mpv = models.DecimalField(
+        _("MPV (fL)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Mean Platelet Volume (fL)'),
+        validators=[MinValueValidator(1), MaxValueValidator(50)]
+    )
+    pt = models.DecimalField(
+        _("PT (s)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Prothrombin Time (s)'),
         validators=[MinValueValidator(50), MaxValueValidator(550)]
+    )
+    inr = models.DecimalField(
+        _("INR"),
+        max_digits=3, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('International Normalized Ratio'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(3)]
+    )
+    aptt = models.SmallIntegerField(
+        _("APTT (s)"),
+        blank=True, null=True,
+        help_text=_('Activated Partial Thromboplastin Time (s)'),
+        validators=[MinValueValidator(5), MaxValueValidator(120)]
+    )
+    tct = models.SmallIntegerField(
+        _("TCT (s)"),
+        blank=True, null=True,
+        help_text=_('Activated Partial Thromboplastin Time (s)'),
+        validators=[MinValueValidator(5), MaxValueValidator(50)]
+    )
+    fbg = models.DecimalField(
+        _("FBG (g/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Fibrogen (g/L)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(9)]
+    )
+    atb = models.DecimalField(
+        _("ATB (kIU/L)"),
+        max_digits=3, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Antithrombin (kIU/L)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(4)]
+    )
+    atb_UmgmL = models.DecimalField(
+        _("ATB (mg/mL)"),
+        max_digits=3, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Antithrombin (mg/mL)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(2)]
+    )
+    bt = models.DecimalField(
+        _("BT (minutes)"),
+        max_digits=3, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Bleeding Time (minutes)'),
+        validators=[MinValueValidator(0), MaxValueValidator(20)]
+    )
+    vsy = models.DecimalField(
+        _("VSY (cP)"),
+        max_digits=3, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Viscosity (cP)'),
+        validators=[MinValueValidator(0.1), MaxValueValidator(4)]
+    )
+    # White Blood Cells
+    wbc = models.DecimalField(
+        _("WBC (x10^9/L)"),
+        max_digits=5, decimal_places=3,
+        blank=True, null=True,
+        help_text=_(
+            'White Blood Cells (x10^12/L or x10^3/mm^3 or x10^3/uL^3)'
+        ),
+        validators=[MinValueValidator(1.0), MaxValueValidator(50.0)]
     )
     neut = models.DecimalField(
         _("NEUT (x10^9/L)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Neutrophils (x10^9/L)'),
-        validators=[MinValueValidator(0.01), MaxValueValidator(40.0)]
+        help_text=_('Neutrophil Granulocytes (x10^9/L)'),
+        validators=[MinValueValidator(0.01), MaxValueValidator(30.0)]
     )
-    neut_percentage = models.DecimalField(
+    neut_Upercentage_Rwbc = models.DecimalField(
         _("NEUT (% WBC)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Neutrophils (% of White Blood Cells)'),
+        help_text=_('Neutrophil Granulocytes (% of White Blood Cells)'),
+        validators=[MinValueValidator(0.01), MaxValueValidator(99.0)]
+    )
+    nbf = models.DecimalField(
+        _("NBF (x10^9/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Neutrophilic Band Forms (x10^9/L)'),
+        validators=[MinValueValidator(0.0), MaxValueValidator(2)]
+    )
+    nbf_Upercentage_Rwbc = models.DecimalField(
+        _("NBF (% WBC)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Neutrophilic Band Forms (% of White Blood Cells)'),
         validators=[MinValueValidator(0.01), MaxValueValidator(99.0)]
     )
     lymp = models.DecimalField(
@@ -198,7 +438,7 @@ class Data(models.Model):
         help_text=_('Lymphocytes (x10^9/L)'),
         validators=[MinValueValidator(0.01), MaxValueValidator(30.0)]
     )
-    lymp_percentage = models.DecimalField(
+    lymp_Upercentage_Rwbc = models.DecimalField(
         _("LYMPH (% WBC)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
@@ -210,14 +450,35 @@ class Data(models.Model):
         max_digits=4, decimal_places=2,
         blank=True, null=True,
         help_text=_('Monocytes (x10^9/L)'),
-        validators=[MinValueValidator(0.01), MaxValueValidator(15.0)]
+        validators=[MinValueValidator(0.01), MaxValueValidator(30.0)]
     )
-    mono_percentage = models.DecimalField(
+    mono_Upercentage_Rwbc = models.DecimalField(
         _("MONO (% WBC)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
         help_text=_('Monocytes (% of White Blood Cells)'),
         validators=[MinValueValidator(0.01), MaxValueValidator(99.0)]
+    )
+    mnl = models.DecimalField(
+        _("MNL (x10^9/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Mononuclear Leukocytes (x10^9/L)'),
+        validators=[MinValueValidator(0.01), MaxValueValidator(20.0)]
+    )
+    mnl_Upercentace_Rwbc = models.DecimalField(
+        _("MNL (% WBC)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Mononuclear Leukocytes (% of White Blood Cells)'),
+        validators=[MinValueValidator(0.01), MaxValueValidator(99.0)]
+    )
+    cd4 = models.DecimalField(
+        _("CD4 (x10^9/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('CD4+ T cells (x10^9/L)'),
+        validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
     )
     eo = models.DecimalField(
         _("EO (x10^9/L)"),
@@ -226,40 +487,100 @@ class Data(models.Model):
         help_text=_('Eosinophils (x10^9/L)'),
         validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
     )
-    eo_percentage = models.DecimalField(
+    eo_Upercentage_Rwbc = models.DecimalField(
         _("EO (% WBC)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Eosinophils (% of White Blood Cells)'),
+        help_text=_('Eosinophil Granulocytes (% of White Blood Cells)'),
         validators=[MinValueValidator(0.0), MaxValueValidator(99.0)]
     )
     baso = models.DecimalField(
         _("BASO (x10^9/L)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Basophils (x10^9/L)'),
+        help_text=_('Basophil Granulocytes (x10^9/L)'),
         validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
     )
-    baso_percentage = models.DecimalField(
+    baso_Upercentage_Rwbc = models.DecimalField(
         _("BASO (% WBC)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Basophils (% of White Blood Cells)'),
+        help_text=_('Basophil Granulocytes (% of White Blood Cells)'),
         validators=[MinValueValidator(0.0), MaxValueValidator(99.0)]
     )
     iga = models.DecimalField(
         _("IGA (x10^9/L)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Inmunoglobulines - Active (x10^9/L)'),
+        help_text=_('Inmunoglobulines A (x10^9/L)'),
+        validators=[MinValueValidator(0.0), MaxValueValidator(1000.0)]
+    )
+    # Inmunoglubulines
+    igd = models.DecimalField(
+        _("IGD (x10^9/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Inmunoglobulines D (x10^9/L)'),
         validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
+    )
+    ige = models.DecimalField(
+        _("IGE (x10^9/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Inmunoglobulines E (x10^9/L)'),
+        validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
+    )
+    igg = models.DecimalField(
+        _("IGG (x10^9/L)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Inmunoglobulines G (x10^9/L)'),
+        validators=[MinValueValidator(100.0), MaxValueValidator(2500.0)]
     )
     igm = models.DecimalField(
         _("IGM (x10^9/L)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,
-        help_text=_('Inmunoglobulines - Memory (x10^9/L)'),
-        validators=[MinValueValidator(0.0), MaxValueValidator(10.0)]
+        help_text=_('Inmunoglobulines - M (x10^9/L)'),
+        validators=[MinValueValidator(10.0), MaxValueValidator(400.0)]
+    )
+    # Acute Phase Proteins
+    esr = models.SmallIntegerField(
+        _("ESR (mm/H)"),
+        blank=True, null=True,
+        help_text=_('Erythrocyte Sedimentation Rate (mm/H)'),
+        validators=[MinValueValidator(0), MaxValueValidator(200)]
+    )
+    crp = models.SmallIntegerField(
+        _("CRP (mg/L)"),
+        blank=True, null=True,
+        help_text=_('C Reactive Protein (mg/L)'),
+        validators=[MinValueValidator(0), MaxValueValidator(15)]
+    )
+    crp_UnmolL = models.SmallIntegerField(
+        _("CRP (nmol/L)"),
+        blank=True, null=True,
+        help_text=_('C Reactive Protein (nmol/L)'),
+        validators=[MinValueValidator(0), MaxValueValidator(500)]
+    )
+    aat = models.SmallIntegerField(
+        _("AAT (mg/L)"),
+        blank=True, null=True,
+        help_text=_('Alpha 1-antitrypsin (mg/dL)'),
+        validators=[MinValueValidator(50), MaxValueValidator(500)]
+    )
+    aat_UumolL = models.SmallIntegerField(
+        _("AAT (umol/L)"),
+        blank=True, null=True,
+        help_text=_('Alpha 1-antitrypsin (umol/L)'),
+        validators=[MinValueValidator(5), MaxValueValidator(150)]
+    )
+    pct = models.DecimalField(
+        _("PCT (ng/dL)"),
+        max_digits=4, decimal_places=2,
+        blank=True, null=True,
+        help_text=_('Procalcitonin (ng/dL or ug/L)'),
+        validators=[MinValueValidator(0.01), MaxValueValidator(2.0)]
     )
 
     class Meta:
@@ -273,15 +594,33 @@ class Data(models.Model):
     def url(self):
         return(reverse('data:detail', args=[self.uuid]))
 
-    def get_conversion_fields(self, field):  # pragma: no cover
-        c_fields = []
-        for conv_field in self.CONVERSION_FIELDS_RULES:
-            if self.CONVERSION_FIELDS_RULES[conv_field]['main_field'] == field:
-                c_fields.append(conv_field)
-        return c_fields
+    @classmethod
+    def get_hemogram_main_fields(cls):
+        return [field for field in Data.HEMOGRAM_MAIN_FIELDS]
+
+    @classmethod
+    def get_conversion_fields(cls):
+        return [
+            field.attname for field in Data._meta.get_fields()
+            if "_U" in field.attname
+        ]
+
+    def parse_field_name(self, field_name):
+        main_field, conv_rule = field_name.split('_U')
+        if "R" in conv_rule:
+            unit, relative_to_field = conv_rule.split('_R')
+        else:
+            unit, relative_to_field = (conv_rule, None)
+        return (main_field, unit, relative_to_field)
+
+    def get_conversion_fields_for_field(self, field):  # pragma: no cover
+        return [
+            f.attname for f in self._meta.get_fields()
+            if f.attname.startswith(field + "_U")
+        ]
 
     def get_converted_field_value(self, field):  # pragma: no cover
-        conversion_fields = self.get_conversion_fields(field)
+        conversion_fields = self.get_conversion_fields_for_field(field)
         for c_field in conversion_fields:
             if getattr(self, c_field, None):
                 return self.get_conversion_value(c_field)
@@ -291,37 +630,46 @@ class Data(models.Model):
         conversion_field_value = getattr(self, conversion_field, None)
         if not conversion_field_value:
             return None
-        conv_rule = self.CONVERSION_FIELDS_RULES[conversion_field]
-        conv_function = CONVERSION_FUNCTIONS.get(conv_rule.get('conversion'))
-        relative_to = conv_rule.get('relative_to', None)
-        relative_to_value = getattr(self, relative_to, None)
-        # Not used yet - for the future
-        if not relative_to_value:   # pragma: no cover
-            relative_to_value = self.get_converted_field_value(relative_to)
+        main_field, from_unit, relative_to_field = \
+            self.parse_field_name(conversion_field)
+        to_unit = self.HEMOGRAM_MAIN_FIELDS[main_field]['unit']
+        if relative_to_field:
+            relative_to_value = getattr(self, relative_to_field, None)
+            # Not used yet - for the future
+            if not relative_to_value:  # pragma: no cover
+                relative_to_value = \
+                    self.get_converted_field_value(relative_to_field)
+        else:
+            relative_to_value = None
         #
-        return conv_function(conversion_field_value, relative_to_value)
+        return unit_conversion(
+            conversion_field_value, from_unit, to_unit, relative_to_value
+        )
 
     def apply_conversion_fields_rules(self):
         applied = []
-        for conv_field in self.CONVERSION_FIELDS_RULES:
-            converted_value = self.get_conversion_value(conv_field)
-            if converted_value:
-                main_field = \
-                    self.CONVERSION_FIELDS_RULES[conv_field]['main_field']
-                setattr(
-                    self, main_field, converted_value
-                )
-                applied.append(conv_field)
+        fields = [f.attname for f in self._meta.get_fields()]
+        for field in fields:
+            if 'U' in field:
+                converted_value = self.get_conversion_value(field)
+                if converted_value:
+                    main_field, from_unit, relative_to_field = \
+                        self.parse_field_name(field)
+                    setattr(
+                        self, main_field, converted_value
+                    )
+                    applied.append(field)
         return applied
 
     def clean(self):
-        for conversion_field in self.CONVERSION_FIELDS_RULES:
+        for conversion_field in self.get_conversion_fields():
             if getattr(self, conversion_field, None):
-                rule = self.CONVERSION_FIELDS_RULES[conversion_field]
-                relative_to = rule.get('relative_to', None)
-                if relative_to and not getattr(self, relative_to, None):
+                main_field, from_unit, relative_to_field = \
+                    self.parse_field_name(conversion_field)
+                if relative_to_field and \
+                        not getattr(self, relative_to_field, None):
                     raise ValidationError(
-                        {relative_to:
+                        {relative_to_field:
                             _('This field must be present in order to use '
                               '%(field)s' % {'field': conversion_field})}
                     )

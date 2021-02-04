@@ -17,7 +17,7 @@ class PublicDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Data
-        exclude = ['user', 'unit_ii', ] + model.CONVERSION_FIELDS
+        exclude = ['user', 'unit_ii', ] + model.get_conversion_fields()
 
     def get_unit(self, obj):
         return obj.unit.pk
@@ -66,8 +66,8 @@ class DataClassificationSerializer(ModelValidatedModelSerializer):
         cleaned_data = super().validate(data)
         hemogram_fields_count = 0
         threshold = getattr(settings, 'HEMOGRAM_FIELDS_MIN_NUM_SUBMIT', 6)
-        fields = self.Meta.model.HEMOGRAM_FIELDS + \
-            self.Meta.model.CONVERSION_FIELDS
+        fields = self.Meta.model.get_hemogram_main_fields() + \
+            self.Meta.model.get_conversion_fields()
         for hfield in fields:
             if cleaned_data.get(hfield, None):
                 hemogram_fields_count += 1

@@ -19,8 +19,8 @@ class DataClassificationForm(forms.ModelForm):
 
         hemogram_fields_count = 0
         threshold = getattr(settings, 'HEMOGRAM_FIELDS_MIN_NUM_SUBMIT', 6)
-        fields = self.Meta.model.HEMOGRAM_FIELDS + \
-            self.Meta.model.CONVERSION_FIELDS
+        fields = self.Meta.model.get_hemogram_main_fields() + \
+            self.Meta.model.get_conversion_fields()
         for hfield in fields:
             if cleaned_data.get(hfield, None):
                 hemogram_fields_count += 1

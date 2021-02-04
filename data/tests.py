@@ -73,11 +73,11 @@ class TestData(StaticLiveServerTestCase):
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
-            'neut_percentage': Decimal("10"),
-            'lymp_percentage': Decimal("15"),
-            'mono_percentage': Decimal("20"),
-            'eo_percentage': Decimal("20"),
-            'baso_percentage': Decimal("20"),
+            'neut_Upercentage_Rwbc': Decimal("10"),
+            'lymp_Upercentage_Rwbc': Decimal("15"),
+            'mono_Upercentage_Rwbc': Decimal("20"),
+            'eo_Upercentage_Rwbc': Decimal("20"),
+            'baso_Upercentage_Rwbc': Decimal("20"),
             '_addanother': True
         }
         expected_data = {
@@ -89,6 +89,44 @@ class TestData(StaticLiveServerTestCase):
             'mono': Decimal("1"),
             'eo': Decimal("1"),
             'baso': Decimal("1"),
+        }
+        response = self.client.post(
+            reverse("data:input"),
+            post_data,
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        data = Data.objects.last()
+        for key in expected_data:
+            self.assertEqual(getattr(data, key), expected_data[key])
+
+    def test_data_conversions(self):
+        self.user.unit = self.unit
+        self.user.save()
+        post_data = {
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'hgb_UmmolL': Decimal("2"),
+            'hgbp_UumolL': Decimal("1.4"),
+            'mch_Ufmolcell': Decimal("1"),
+            'mchc_UgdL': Decimal("30"),
+            'mchc_UmmolL': Decimal("4"),
+            'rtc_Upercentage_Rrbc': Decimal("20"),
+            'atb_UmgmL': Decimal("1.32"),
+            'aat_UumolL': Decimal("50"),
+        }
+        expected_data = {
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'hgb': Decimal("3"),
+            'hgbp': Decimal("8"),
+            'mch': Decimal("16"),
+            'mchc': Decimal("6"),
+            'rtc': Decimal("0.6"),
+            'atb': Decimal("7"),
+            'aat': Decimal("31"),
         }
         response = self.client.post(
             reverse("data:input"),
@@ -150,12 +188,14 @@ class TestData(StaticLiveServerTestCase):
             is_covid19=False, rbc=3.5, wbc=5.5, plt=220, neut=1.2
         )
         expected_response = (
-            'id,unit,timestamp,uuid,is_covid19,age,sex,'
-            'is_diabetic,is_hypertense,is_overweight,is_at_altitude,'
-            'is_with_other_conds,rbc,wbc,hgb,hct,mcv,mch,mchc,rdw,plt,neut,'
-            'lymp,mono,eo,baso,iga,igm\r\n{2},{3},{0},{1},'
-            'False,,,,,,,,3.500,5.500,,,,,,,'
-            '220,1.20,,,,,,\r\n'
+            'id,unit,timestamp,uuid,is_covid19,age,sex,is_diabetic,'
+            'is_hypertense,is_overweight,is_at_altitude,is_with_other_conds,'
+            'rbc,hgb,hgbp,hgbg,htg,hct,mcv,mch,mchc,rdw,rtc,plt,mpv,pt,inr,'
+            'aptt,tct,fbg,atb,bt,vsy,wbc,neut,nbf,lymp,mono,mnl,cd4,eo,baso,'
+            'iga,igd,ige,igg,igm,esr,crp,aat,pct\r\n'
+            '{2},{3},{0},{1},'
+            'False,,,,,,,,3.500,,,,,,,,,,,'
+            '220,,,,,,,,,,5.500,1.20,,,,,,,,,,,,,,,,\r\n'
         ).format(
             data.timestamp.strftime("%Y-%m-%d %H:%M"), data.uuid, data.id,
             data.unit.id
@@ -341,11 +381,11 @@ class TestDataRESTAPI(APITestCase):
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
-            'neut_percentage': Decimal("10"),
-            'lymp_percentage': Decimal("15"),
-            'mono_percentage': Decimal("20"),
-            'eo_percentage': Decimal("20"),
-            'baso_percentage': Decimal("20"),
+            'neut_Upercentage_Rwbc': Decimal("10"),
+            'lymp_Upercentage_Rwbc': Decimal("15"),
+            'mono_Upercentage_Rwbc': Decimal("20"),
+            'eo_Upercentage_Rwbc': Decimal("20"),
+            'baso_Upercentage_Rwbc': Decimal("20"),
         }
         expected_data = {
             'rbc': Decimal("3"),
@@ -373,11 +413,11 @@ class TestDataRESTAPI(APITestCase):
         post_data = {
             'rbc': Decimal("3"),
             'plt': Decimal("150"),
-            'neut_percentage': Decimal("10"),
-            'lymp_percentage': Decimal("15"),
-            'mono_percentage': Decimal("20"),
-            'eo_percentage': Decimal("20"),
-            'baso_percentage': Decimal("20"),
+            'neut_Upercentage_Rwbc': Decimal("10"),
+            'lymp_Upercentage_Rwbc': Decimal("15"),
+            'mono_Upercentage_Rwbc': Decimal("20"),
+            'eo_Upercentage_Rwbc': Decimal("20"),
+            'baso_Upercentage_Rwbc': Decimal("20"),
         }
         response = self.client.post(
             reverse("rest-api:data-lc"),
