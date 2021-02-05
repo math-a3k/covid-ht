@@ -1,11 +1,10 @@
 #
 from django.conf import settings
 from django.shortcuts import render
-from django.utils.translation import gettext_lazy as _
 
 from data.forms import DataClassificationForm
 
-from .utils import get_current_classifier
+from .utils import (classification_tuple, get_current_classifier)
 
 
 def home(request):
@@ -14,10 +13,9 @@ def home(request):
     if request.method == 'POST':
         dataform = DataClassificationForm(request.POST)
         if dataform.is_valid():
-            (res, res_prob) = \
-                classifier.predict([dataform.cleaned_data], include_probs=True)
-            result = _("Positive") if res[0] else _("Negative")
-            result_prob = res_prob[0][1] if res[0] else res_prob[0][0]
+            (result, result_prob) = classification_tuple(
+                    classifier, dataform.cleaned_data
+                )
         else:
             result = None
             result_prob = None
