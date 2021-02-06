@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 # from django.utils.translation import gettext_lazy as _
 
-from .models import (CurrentClassifier, User)
+from .models import (CurrentClassifier, ExternalClassifier, User)
 
 
 class CovidHTUserChangeForm(UserChangeForm):
@@ -37,4 +37,9 @@ admin.site.register(User, CovidHTUserAdmin)
 
 @admin.register(CurrentClassifier)
 class CurrentClassifierAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ExternalClassifier)
+class ExternalClassifierAdmin(admin.ModelAdmin):
     pass

@@ -1,12 +1,16 @@
 #
 import random
 import numpy as np
+from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 
-from rest_framework.test import APITestCase
+from rest_framework.response import Response
+from rest_framework.test import (APITestCase, RequestsClient, )
+from rest_framework import status
 
 from django_ai.ai_base.models import DataColumn
 from django_ai.supervised_learning.models.hgb import HGBTree
@@ -15,8 +19,8 @@ from data.utils import trunc_normal
 from data.models import Data
 from units.models import Unit
 
-from .models import (User, CurrentClassifier)
-
+from .models import (CurrentClassifier, ExternalClassifier, User, )
+from .v1.views import Classify
 
 class TestBase(StaticLiveServerTestCase):
     """
@@ -35,6 +39,11 @@ class TestBase(StaticLiveServerTestCase):
             cv_folds=5,
             cv_metric="accuracy",
             random_state=123456
+        )
+        self.classifier_external, _ = ExternalClassifier.objects.get_or_create(
+            name="Local REST API Classifier for tests",
+            classifier_url="http://localhost/api/v1/classify",
+            timeout=5,
         )
         self.dc_1, _ = DataColumn.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(HGBTree),
@@ -155,6 +164,57 @@ class TestBase(StaticLiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'POSITIVE')
 
+    def test_classification_external(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier, external=self.classifier_external
+        )
+        self.classifier.perform_inference()
+
+        drf_request_client = RequestsClient()
+
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            response = self.client.post(
+                reverse("base:home"),
+                {
+                    'rbc': 3,
+                    'wbc': 5,
+                    'plt': 150,
+                    'neut': 0.1,
+                    'lymp': 0.1,
+                    'mono': 0.1,
+                }
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'POSITIVE')
+
+    def test_classification_external_unavailable(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier, external=self.classifier_external
+        )
+        self.classifier.perform_inference()
+
+        drf_request_client = RequestsClient()
+
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            with patch('base.v1.views.get_current_classifier',
+                       return_value=None):
+                response = self.client.post(
+                    reverse("base:home"),
+                    {
+                        'rbc': 3,
+                        'wbc': 5,
+                        'plt': 150,
+                        'neut': 0.1,
+                        'lymp': 0.1,
+                        'mono': 0.1,
+                    }
+                )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Classification Service Unavailable')
+
     def test_classification_with_percentage_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
@@ -214,6 +274,18 @@ class TestBase(StaticLiveServerTestCase):
         response = self.client.get(reverse("base:about"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'About')
+
+    def test_currentclassifier_no_internal_no_external(self):
+        cc = CurrentClassifier()
+        with self.assertRaises(ValidationError):
+            cc.clean()
+
+    def test_currentclassifier_clean(self):
+        cc = CurrentClassifier()
+        with self.assertRaises(ValidationError):
+            cc.clean()
+        cc.external = self.classifier_external
+        cc.clean()
 
 
 class TestBaseRESTAPI(APITestCase):

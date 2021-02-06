@@ -41,7 +41,12 @@
 		<div class="col m6 s12">
 			<h2>{% translate "Classify an Hemogram" %}</h2>
 
-			{% if result %}
+			{% if classifier_error %}
+				<h5>{% translate "Sorry, Classification Service Unavailable." %}</h5>
+				<blockquote>
+					{{ classifier_error }}
+				</blockquote>
+			{% elif result %}
 				<h5>{% blocktranslate with result=result|upper prob=result_prob|floatformat:3 %}The following Hemogram has been classified as {{ result }} with a probability of {{ prob }}{% endblocktranslate %}:</h5>
 			{% endif %}
 

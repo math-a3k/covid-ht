@@ -20,7 +20,7 @@ class Classify(generics.GenericAPIView):
         """
         Return the result of classification if data submitted is valid.
         """
-        classifier = get_current_classifier()
+        classifier = get_current_classifier(internal=True)
         if classifier:
             serializer = DataClassificationSerializer(data=request.data)
             if serializer.is_valid():
