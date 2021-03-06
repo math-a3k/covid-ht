@@ -279,7 +279,7 @@ def create_example(apps, schema_editor):
             )
         )
     Data.objects.bulk_create(ds)
-    hgb_1.perform_inference()
+    # hgb_1.perform_inference()
 
 
 def delete_example(apps, schema_editor):
