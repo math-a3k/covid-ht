@@ -7,7 +7,10 @@ from .models import CurrentClassifier
 def get_current_classifier(internal=False):
     cc = CurrentClassifier.objects.last()
     if cc:
-        return cc.external if cc.external and not internal else cc.classifier
+        return (
+            cc.external if cc.external and not internal
+            else cc.classifier._get_technique()
+        )
     return None
 
 
@@ -18,8 +21,7 @@ def classification_tuple(classifier, data):
             return (result['result'], result['prob'])
         else:
             (res, res_prob) = \
-                classifier.predict([data], include_probs=True)
+                classifier.predict([data], include_scores=True)
             result = _("Positive") if res[0] else _("Negative")
-            result_prob = res_prob[0][1] if res[0] else res_prob[0][0]
-            return (result.upper(), result_prob)
+            return (result.upper(), res_prob)
     return (None, None)

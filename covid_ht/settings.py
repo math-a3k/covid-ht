@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'nested_admin',
     'materializecssform',
     'rest_framework',
-    # django-ai apps
+    'django_ai',
     'django_ai.ai_base',
     'django_ai.supervised_learning',
     #

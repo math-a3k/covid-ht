@@ -27,11 +27,10 @@ class Classify(generics.GenericAPIView):
                 (result, result_prob) = classification_tuple(
                     classifier, serializer.data
                 )
-                if result:
-                    return Response(
-                        {'result': result, 'prob': result_prob},
-                        status=status.HTTP_200_OK
-                    )
+                return Response(
+                    {'result': result, 'prob': result_prob},
+                    status=status.HTTP_200_OK
+                )
             else:
                 return Response(
                     serializer.errors,

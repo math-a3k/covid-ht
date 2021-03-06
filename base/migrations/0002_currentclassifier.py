@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='CurrentClassifier',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('classifier', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, related_name='current_classifier', to='supervised_learning.hgbtree')),
+                ('classifier', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, related_name='current_classifier', to='supervised_learning.hgbtreeclassifier')),
             ],
             options={
                 'verbose_name': 'Current Classifier',

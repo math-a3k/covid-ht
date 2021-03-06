@@ -17,125 +17,57 @@ class Data(models.Model):
     and input related fields
     """
     HEMOGRAM_MAIN_FIELDS = {
-        'rbc': {
-            'unit': 'x1012L',
-        },
-        'wbc': {
-            'unit': 'x109L',
-        },
-        'hgb': {
-            'unit': 'gL',
-        },
-        'hgbp': {
-            'unit': 'mgdL',
-        },
-        'hgbg': {
-            'unit': 'percentage',
-        },
-        'htg': {
-            'unit': 'gL',
-        },
-        'htc': {
-            'unit': 'gL',
-        },
-        'mcv': {
-            'unit': 'fL',
-        },
-        'mch': {
-            'unit': 'pgcell',
-        },
-        'mchc': {
-            'unit': 'gL',
-        },
-        'rdw': {
-            'unit': 'percentage',
-        },
-        'rtc': {
-            'unit': 'x109L',
-        },
-        'plt': {
-            'unit': 'x109L',
-        },
-        'mpv': {
-            'unit': 'fL',
-        },
-        'pt': {
-            'unit': 's',
-        },
-        'inr': {
-            'unit': None,
-        },
-        'aptt': {
-            'unit': 's',
-        },
-        'tct': {
-            'unit': 's',
-        },
-        'fbg': {
-            'unit': 'gL',
-        },
-        'atb': {
-            'unit': 'kUIL',
-        },
-        'bt': {
-            'unit': 'minutes',
-        },
-        'vsy': {
-            'unit': 'cP',
-        },
-        'esr': {
-            'unit': 'mmH',
-        },
-        'cpr': {
-            'unit': 'mgL',
-        },
-        'aat': {
-            'unit': 'mgL',
-        },
-        'pct': {
-            'unit': 'mgL',
-        },
-        'neut': {
-            'unit': 'x109L'
-        },
-        'nbf': {
-            'unit': 'x109L'
-        },
-        'lymp': {
-            'unit': 'x109L'
-        },
-        'mono': {
-            'unit': 'x109L'
-        },
-        'mnl': {
-            'unit': 'x109L'
-        },
-        'cd4': {
-            'unit': 'x109L'
-        },
-        'eo': {
-            'unit': 'x109L'
-        },
-        'baso': {
-            'unit': 'x109L'
-        },
-        'iga': {
-            'unit': 'x109L'
-        },
-        'igd': {
-            'unit': 'x109L'
-        },
-        'ige': {
-            'unit': 'x109L'
-        },
-        'igg': {
-            'unit': 'x109L'
-        },
-        'igm': {
-            'unit': 'x109L'
-        }
+        'rbc': {'unit': 'x1012L', },
+        'wbc': {'unit': 'x109L', },
+        'hgb': {'unit': 'gL', },
+        'hgbp': {'unit': 'mgdL', },
+        'hgbg': {'unit': 'percentage', },
+        'htg': {'unit': 'gL', },
+        'hct': {'unit': 'gL', },
+        'mcv': {'unit': 'fL', },
+        'mch': {'unit': 'pgcell', },
+        'mchc': {'unit': 'gL', },
+        'rdw': {'unit': 'percentage', },
+        'rtc': {'unit': 'x109L', },
+        'plt': {'unit': 'x109L', },
+        'mpv': {'unit': 'fL', },
+        'pt': {'unit': 's', },
+        'inr': {'unit': None, },
+        'aptt': {'unit': 's', },
+        'tct': {'unit': 's', },
+        'fbg': {'unit': 'gL', },
+        'atb': {'unit': 'kUIL', },
+        'bt': {'unit': 'minutes', },
+        'vsy': {'unit': 'cP', },
+        'esr': {'unit': 'mmH', },
+        'crp': {'unit': 'mgL', },
+        'aat': {'unit': 'mgL', },
+        'pct': {'unit': 'mgL', },
+        'neut': {'unit': 'x109L'},
+        'nbf': {'unit': 'x109L'},
+        'lymp': {'unit': 'x109L'},
+        'mono': {'unit': 'x109L'},
+        'mnl': {'unit': 'x109L'},
+        'cd4': {'unit': 'x109L'},
+        'eo': {'unit': 'x109L'},
+        'baso': {'unit': 'x109L'},
+        'iga': {'unit': 'x109L'},
+        'igd': {'unit': 'x109L'},
+        'ige': {'unit': 'x109L'},
+        'igg': {'unit': 'x109L'},
+        'igm': {'unit': 'x109L'}
     }
+    AUXILIARY_FIELDS = [
+        'age', 'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
+        'is_at_altitude', 'is_with_other_conds',
+    ]
 
+    LEARNING_FIELDS_CATEGORICAL = [
+        'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
+        'is_at_altitude', 'is_with_other_conds',
+    ]
+    LEARNING_LABELS = 'is_covid19'
+    LEARNING_FIELDS_MONOTONIC_CONSTRAINTS = "None"
     # conversion_function = unit_conversion
 
     SEX_CHOICES = (
@@ -678,3 +610,7 @@ class Data(models.Model):
         self.clean()
         self.apply_conversion_fields_rules()
         super().save(*args, **kwargs)
+
+    @classmethod
+    def _get_learning_fields(cls):
+        return cls.AUXILIARY_FIELDS + cls.get_hemogram_main_fields()

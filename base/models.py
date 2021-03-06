@@ -8,6 +8,9 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
+from django_ai.supervised_learning.models import HGBTreeClassifier, SVC
+
+
 class User(AbstractUser):
     """
     Custom User Model for covid-ht
@@ -66,7 +69,7 @@ class CurrentClassifier(models.Model):
     Singleton Model for selecting which classifier should be used
     """
     classifier = models.OneToOneField(
-        'supervised_learning.HGBTree',
+        'supervised_learning.SupervisedLearningTechnique',
         on_delete=models.PROTECT,
         related_name='current_classifier',
         blank=True, null=True
@@ -134,3 +137,11 @@ class ExternalClassifier(models.Model):
             return response.json()
         else:
             raise Exception(_("Classification Service Unavailable"))
+
+
+class DecisionTree(HGBTreeClassifier):
+    pass
+
+
+class SVM(SVC):
+    pass

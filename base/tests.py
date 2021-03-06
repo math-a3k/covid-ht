@@ -3,24 +3,19 @@ import random
 import numpy as np
 from unittest.mock import patch
 
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 
-from rest_framework.response import Response
 from rest_framework.test import (APITestCase, RequestsClient, )
-from rest_framework import status
-
-from django_ai.ai_base.models import DataColumn
-from django_ai.supervised_learning.models.hgb import HGBTree
 
 from data.utils import trunc_normal
 from data.models import Data
 from units.models import Unit
 
-from .models import (CurrentClassifier, ExternalClassifier, User, )
-from .v1.views import Classify
+from .models import CurrentClassifier, ExternalClassifier, User, DecisionTree
+from .utils import classification_tuple, get_current_classifier
+
 
 class TestBase(StaticLiveServerTestCase):
     """
@@ -33,38 +28,20 @@ class TestBase(StaticLiveServerTestCase):
         random.seed(123456)
         np.random.seed(123456)
         #
-        self.classifier, _ = HGBTree.objects.get_or_create(
+        self.classifier, _ = DecisionTree.objects.get_or_create(
             name="HGBTree for tests",
-            labels_column="data.data.is_covid19",
-            cv_folds=5,
-            cv_metric="accuracy",
+            data_model="data.Data",
+            learning_target="is_covid19",
+            cv_is_enabled=True,
+            cv_folds=2,
+            cv_metrics="accuracy",
+            max_iter=10,
             random_state=123456
         )
         self.classifier_external, _ = ExternalClassifier.objects.get_or_create(
             name="Local REST API Classifier for tests",
             classifier_url="http://localhost/api/v1/classify",
             timeout=5,
-        )
-        self.dc_1, _ = DataColumn.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(HGBTree),
-            object_id=self.classifier.id,
-            ref_model=ContentType.objects.get_for_model(Data),
-            ref_column="is_diabetic",
-            position=0,
-        )
-        self.dc_2, _ = DataColumn.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(HGBTree),
-            object_id=self.classifier.id,
-            ref_model=ContentType.objects.get_for_model(Data),
-            ref_column="rbc",
-            position=1,
-        )
-        self.dc_1, _ = DataColumn.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(HGBTree),
-            object_id=self.classifier.id,
-            ref_model=ContentType.objects.get_for_model(Data),
-            ref_column="wbc",
-            position=2,
         )
         self.unit, _ = Unit.objects.get_or_create(
             name="Unit for tests"
@@ -107,6 +84,7 @@ class TestBase(StaticLiveServerTestCase):
                 )
             )
         Data.objects.bulk_create(ds)
+        self.classifier.perform_inference()
 
     def test_no_current_classifier(self):
         """
@@ -126,9 +104,15 @@ class TestBase(StaticLiveServerTestCase):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
         )
+        self.classifier.reset_inference()
         response = self.client.get(reverse("base:home"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No training has been done yet.")
+        classifier = get_current_classifier()
+        self.assertEqual(
+            classification_tuple(classifier, []),
+            (None, None)
+        )
 
     def test_inference_available(self):
         """
@@ -295,32 +279,12 @@ class TestBaseRESTAPI(APITestCase):
         random.seed(123456)
         np.random.seed(123456)
         #
-        self.classifier, _ = HGBTree.objects.get_or_create(
+        self.classifier, _ = DecisionTree.objects.get_or_create(
             name="HGBTree for API tests",
-            labels_column="data.data.is_covid19",
+            data_model="data.Data",
+            learning_target="is_covid19",
             cv_is_enabled=False,
             random_state=123456
-        )
-        self.dc_1, _ = DataColumn.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(HGBTree),
-            object_id=self.classifier.id,
-            ref_model=ContentType.objects.get_for_model(Data),
-            ref_column="is_diabetic",
-            position=0,
-        )
-        self.dc_2, _ = DataColumn.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(HGBTree),
-            object_id=self.classifier.id,
-            ref_model=ContentType.objects.get_for_model(Data),
-            ref_column="rbc",
-            position=1,
-        )
-        self.dc_1, _ = DataColumn.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(HGBTree),
-            object_id=self.classifier.id,
-            ref_model=ContentType.objects.get_for_model(Data),
-            ref_column="wbc",
-            position=2,
         )
         self.unit, _ = Unit.objects.get_or_create(
             name="Unit for API tests 2"
@@ -366,6 +330,7 @@ class TestBaseRESTAPI(APITestCase):
                 )
             )
         Data.objects.bulk_create(ds)
+        self.classifier.perform_inference()
 
     def test_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()
@@ -386,9 +351,7 @@ class TestBaseRESTAPI(APITestCase):
         )
 
     def test_no_inference(self):
-        _, _ = CurrentClassifier.objects.get_or_create(
-            classifier=self.classifier
-        )
+        self.classifier.reset_inference()
         response = self.client.post(
             reverse("rest-api:classify"),
             {

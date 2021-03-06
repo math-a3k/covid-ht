@@ -1,10 +1,13 @@
-#
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 # from django.utils.translation import gettext_lazy as _
 
-from .models import (CurrentClassifier, ExternalClassifier, User)
+from django_ai.supervised_learning.admin import \
+    HGBTreeClassifierAdmin, SVCAdmin
+
+from .models import (CurrentClassifier, ExternalClassifier, User,
+                     DecisionTree, SVM)
 
 
 class CovidHTUserChangeForm(UserChangeForm):
@@ -42,4 +45,14 @@ class CurrentClassifierAdmin(admin.ModelAdmin):
 
 @admin.register(ExternalClassifier)
 class ExternalClassifierAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(DecisionTree)
+class DecisionTreeAdmin(HGBTreeClassifierAdmin):
+    pass
+
+
+@admin.register(SVM)
+class SVMAdmin(SVCAdmin):
     pass

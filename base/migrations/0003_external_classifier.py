@@ -26,11 +26,11 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Extenal Classifiers',
             },
         ),
-        migrations.AlterField(
-            model_name='currentclassifier',
-            name='classifier',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='current_classifier', to='supervised_learning.hgbtree'),
-        ),
+        # migrations.AlterField(
+        #     model_name='currentclassifier',
+        #     name='classifier',
+        #     field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='current_classifier', to='supervised_learning.hgbtree'),
+        # ),
         migrations.AddField(
             model_name='currentclassifier',
             name='external',
