@@ -38,6 +38,26 @@ class TestData(StaticLiveServerTestCase):
         )
         self.client.login(username=self.user.username, password="test")
 
+    def test_is_allowed_in_data_privacy_mode(self):
+        # Test Public Access
+        with self.settings(DATA_PRIVACY_MODE=False):
+            response = self.client.get(
+                reverse("data:public-list"),
+            )
+            self.assertEqual(response.status_code, 200)
+        # Test Restricted Access
+        self.client.logout()
+        response = self.client.get(
+            reverse("data:public-list"),
+        )
+        self.assertEqual(response.status_code, 302)
+        # Test Logged-In Access
+        self.client.force_login(user=self.user)
+        response = self.client.get(
+            reverse("data:public-list"),
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_data_input_no_unit(self):
         response = self.client.get(
             reverse("data:input"),

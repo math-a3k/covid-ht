@@ -1,11 +1,12 @@
 #
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import Http404
 from django.shortcuts import (get_object_or_404, redirect, render, )
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 # from django.utils.translation import gettext_lazy as _
-
 from rest_framework import generics
 
 from .forms import (DataInputForm, )
@@ -14,6 +15,17 @@ from .renderers import PublicCSVRenderer
 from .serializers import PublicDataSerializer
 
 
+def is_allowed_in_data_privacy_mode(function):
+    actual_decorator = user_passes_test(
+        lambda u:
+        False if settings.DATA_PRIVACY_MODE and u.is_anonymous else True
+    )
+    if function:
+        return actual_decorator(function)
+    return actual_decorator
+
+
+@is_allowed_in_data_privacy_mode
 def public_list(request):
     page = request.GET.get('page', 1)
     data = Data.objects.all().order_by("-timestamp")
@@ -53,6 +65,7 @@ def public_list(request):
     )
 
 
+@method_decorator(is_allowed_in_data_privacy_mode, name='dispatch')
 class CSV(generics.ListAPIView):
     renderer_classes = (PublicCSVRenderer, )
     serializer_class = PublicDataSerializer
@@ -66,7 +79,7 @@ class CSV(generics.ListAPIView):
         return super().finalize_response(request, response, *args, **kwargs)
 
 
-@login_required
+@is_allowed_in_data_privacy_mode
 def detail(request, uuid):
     data = get_object_or_404(Data, uuid=uuid)
     return render(

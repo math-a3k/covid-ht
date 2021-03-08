@@ -145,4 +145,6 @@ EXAMPLE_SIZE_NO_COVID19 = 400
 
 HEMOGRAM_FIELDS_MIN_NUM_SUBMIT = 6
 
+DATA_PRIVACY_MODE = True
+
 django_heroku.settings(locals(), test_runner=False)
