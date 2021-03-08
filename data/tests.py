@@ -1,11 +1,9 @@
-#
+from copy import deepcopy
 from decimal import Decimal
 import json
 
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import SimpleTestCase, Client
 from django.urls import reverse
-
-from rest_framework.test import APITestCase
 
 from base.models import User
 from units.models import Unit
@@ -14,29 +12,36 @@ from .models import Data
 from .serializers import (DataInputSerializer, DataListSerializer, )
 
 
-class TestData(StaticLiveServerTestCase):
+class TestData(SimpleTestCase):
+    databases = "__all__"
 
-    def setUp(self):
-        self.user, _ = User.objects.get_or_create(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.unit, _ = Unit.objects.get_or_create(
+            name="Unit for tests 2"
+        )
+        cls.user, _ = User.objects.get_or_create(
             username='testuser2',
             first_name='Test',
             last_name='User 2',
             user_type=User.DATA,
+            unit=cls.unit
         )
-        self.user.set_password("test")
-        self.user.save()
-        self.user2, _ = User.objects.get_or_create(
+        cls.user.set_password("test")
+        cls.user.save()
+        #
+        cls.client = Client()
+        cls.client.force_login(user=cls.user)
+        #
+        cls.user2, _ = User.objects.get_or_create(
             username='testuser3',
             first_name='Test',
             last_name='User 3',
             user_type=User.MANAGER,
         )
-        self.user2.set_password("test")
-        self.user2.save()
-        self.unit, _ = Unit.objects.get_or_create(
-            name="Unit for tests 2"
-        )
-        self.client.login(username=self.user.username, password="test")
+        cls.user2.set_password("test")
+        cls.user2.save()
 
     def test_is_allowed_in_data_privacy_mode(self):
         # Test Public Access
@@ -45,10 +50,18 @@ class TestData(StaticLiveServerTestCase):
                 reverse("data:public-list"),
             )
             self.assertEqual(response.status_code, 200)
+            response = self.client.get(
+                reverse("data:csv"),
+            )
+        self.assertEqual(response.status_code, 200)
         # Test Restricted Access
         self.client.logout()
         response = self.client.get(
             reverse("data:public-list"),
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("data:csv"),
         )
         self.assertEqual(response.status_code, 302)
         # Test Logged-In Access
@@ -57,18 +70,29 @@ class TestData(StaticLiveServerTestCase):
             reverse("data:public-list"),
         )
         self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            reverse("data:csv"),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.client.force_login(user=self.user)
 
     def test_data_input_no_unit(self):
-        response = self.client.get(
+        client = deepcopy(self.client)
+        self.user.unit = None
+        self.user.save()
+        client.force_login(user=self.user)
+        response = client.get(
             reverse("data:input"),
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'A unit must be selected for a User')
-
-    def test_data_input(self):
         self.user.unit = self.unit
         self.user.save()
+
+    def test_data_input(self):
+        self.client.force_login(user=self.user)
         post_data = {
+            'unit_ii': "test_data_input",
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -82,14 +106,14 @@ class TestData(StaticLiveServerTestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 200)
-        data = Data.objects.last()
+        data = Data.objects.get(unit_ii="test_data_input")
         for key in post_data:
             self.assertEqual(getattr(data, key), post_data[key])
 
     def test_data_input_percentages(self):
-        self.user.unit = self.unit
-        self.user.save()
+        self.client.force_login(user=self.user)
         post_data = {
+            'unit_ii': "test_data_input_percentages",
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -116,14 +140,14 @@ class TestData(StaticLiveServerTestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 200)
-        data = Data.objects.last()
+        data = Data.objects.get(unit_ii='test_data_input_percentages')
         for key in expected_data:
             self.assertEqual(getattr(data, key), expected_data[key])
 
     def test_data_conversions(self):
-        self.user.unit = self.unit
-        self.user.save()
+        self.client.force_login(user=self.user)
         post_data = {
+            'unit_ii': "test_data_conversions",
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -154,13 +178,12 @@ class TestData(StaticLiveServerTestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 200)
-        data = Data.objects.last()
+        data = Data.objects.get(unit_ii="test_data_conversions")
         for key in expected_data:
             self.assertEqual(getattr(data, key), expected_data[key])
 
     def test_data_input_invalid_form(self):
-        self.user.unit = self.unit
-        self.user.save()
+        self.client.force_login(user=self.user)
         post_data = {
             'rbc': Decimal("33"),
             'wbc': Decimal("5"),
@@ -178,6 +201,8 @@ class TestData(StaticLiveServerTestCase):
         self.assertContains(response, 'Errors')
 
     def test_public_list_no_data(self):
+        self.client.force_login(user=self.user)
+        Data.objects.all().delete()
         response = self.client.get(
             reverse("data:public-list"),
         )
@@ -185,6 +210,8 @@ class TestData(StaticLiveServerTestCase):
         self.assertContains(response, 'No data available.')
 
     def test_public_list(self):
+        self.client.force_login(user=self.user)
+        Data.objects.all().delete()
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=True, rbc=3, wbc=5, plt=200, neut=1
@@ -203,6 +230,8 @@ class TestData(StaticLiveServerTestCase):
         self.assertContains(response, "<td>Not Available</td>")
 
     def test_csv(self):
+        self.client.force_login(user=self.user)
+        Data.objects.all().delete()
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.5, wbc=5.5, plt=220, neut=1.2
@@ -231,6 +260,7 @@ class TestData(StaticLiveServerTestCase):
         self.assertEqual(response.content, bytes(expected_response, 'utf-8'))
 
     def test_detail(self):
+        self.client.force_login(user=self.user)
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.6, wbc=5.6, plt=222, neut=1.2
@@ -242,6 +272,7 @@ class TestData(StaticLiveServerTestCase):
         self.assertContains(response, data.uuid)
 
     def test_edit(self):
+        self.client.force_login(user=self.user)
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.8, wbc=5.8, plt=223, neut=1.3
@@ -257,6 +288,7 @@ class TestData(StaticLiveServerTestCase):
         self.assertEqual(data.rbc, Decimal("3.9"))
 
     def test_edit_invalid_form(self):
+        self.client.force_login(user=self.user)
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.76, wbc=5.8, plt=223, neut=1.3
@@ -285,6 +317,7 @@ class TestData(StaticLiveServerTestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_edit_get(self):
+        self.client.force_login(user=self.user)
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.1, wbc=5.1, plt=225, neut=1.3
@@ -294,33 +327,33 @@ class TestData(StaticLiveServerTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+# class TestDataRESTAPI(SimpleTestCase):
+#     databases = "__all__"
 
-class TestDataRESTAPI(APITestCase):
+#     def setUp(cls):
+#         cls.unit, _ = Unit.objects.get_or_create(
+#             name="Unit for API tests 1"
+#         )
+#         cls.user, _ = User.objects.get_or_create(
+#             username='apitestuser1',
+#             first_name='Api Test',
+#             last_name='User 1',
+#             user_type=User.DATA,
+#             unit=cls.unit
+#         )
+#         cls.user.set_password("test")
+#         cls.user.save()
+#         cls.user2, _ = User.objects.get_or_create(
+#             username='apitestuser2',
+#             first_name='Api Test',
+#             last_name='User 2',
+#             user_type=User.MANAGER,
+#         )
+#         cls.user2.set_password("test")
+#         cls.user2.save()
+#         cls.client.login(username=cls.user.username, password="test")
 
-    def setUp(self):
-        self.unit, _ = Unit.objects.get_or_create(
-            name="Unit for API tests 1"
-        )
-        self.user, _ = User.objects.get_or_create(
-            username='apitestuser1',
-            first_name='Api Test',
-            last_name='User 1',
-            user_type=User.DATA,
-            unit=self.unit
-        )
-        self.user.set_password("test")
-        self.user.save()
-        self.user2, _ = User.objects.get_or_create(
-            username='apitestuser2',
-            first_name='Api Test',
-            last_name='User 2',
-            user_type=User.MANAGER,
-        )
-        self.user2.set_password("test")
-        self.user2.save()
-        self.client.login(username=self.user.username, password="test")
-
-    def test_data_list(self):
+    def test_rest_api_data_list(self):
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=True, rbc=2, wbc=3, plt=240, neut=1
@@ -331,7 +364,7 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataListSerializer(data)
         self.assertEqual(dict(response.data['results'][0]), serializer.data)
 
-    def test_data_list_unpaginated(self):
+    def test_rest_api_data_list_unpaginated(self):
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=True, rbc=2, wbc=3, plt=240, neut=1
@@ -342,8 +375,10 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataListSerializer(data)
         self.assertEqual(response.data[0], serializer.data)
 
-    def test_data_creation(self):
+    def test_rest_api_data_creation(self):
+        self.client.force_login(user=self.user)
         post_data = {
+            'unit_ii': 'test_rest_api_data_creation',
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -363,7 +398,7 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataInputSerializer(data)
         self.assertEqual(response.data, serializer.data)
 
-    def test_data_creation_not_authenticated(self):
+    def test_rest_api_data_creation_not_authenticated(self):
         self.client.logout()
         post_data = {
             'rbc': Decimal("3"),
@@ -378,8 +413,10 @@ class TestDataRESTAPI(APITestCase):
             post_data,
         )
         self.assertEqual(response.status_code, 403)
+        self.client.force_login(user=self.user)
 
-    def test_data_creation_only_tags(self):
+    def test_rest_api_data_creation_only_tags(self):
+        self.client.force_login(user=self.user)
         post_data = {
             'is_covid19': True,
             'unit_ii': '123.123.123-4'
@@ -389,15 +426,17 @@ class TestDataRESTAPI(APITestCase):
             post_data,
         )
         self.assertEqual(response.status_code, 201)
-        data = Data.objects.last()
+        data = Data.objects.get(unit_ii='123.123.123-4')
         for key in post_data:
             self.assertEqual(getattr(data, key), post_data[key])
         # Test also the serialization in the response
         serializer = DataInputSerializer(data)
         self.assertEqual(response.data, serializer.data)
 
-    def test_data_creation_percentages(self):
+    def test_rest_api_data_creation_percentages(self):
+        self.client.force_login(user=self.user)
         post_data = {
+            'unit_ii': 'test_rest_api_data_creation_percentages',
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -422,14 +461,17 @@ class TestDataRESTAPI(APITestCase):
             post_data,
         )
         self.assertEqual(response.status_code, 201)
-        data = Data.objects.last()
+        data = Data.objects.get(
+            unit_ii='test_rest_api_data_creation_percentages'
+        )
         for key in expected_data:
             self.assertEqual(getattr(data, key), expected_data[key])
         # Test also the serialization in the response
         serializer = DataInputSerializer(data)
         self.assertEqual(response.data, serializer.data)
 
-    def test_data_creation_percentages_invalid(self):
+    def test_rest_api_data_creation_percentages_invalid(self):
+        self.client.force_login(user=self.user)
         post_data = {
             'rbc': Decimal("3"),
             'plt': Decimal("150"),
@@ -446,7 +488,8 @@ class TestDataRESTAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn('This field must be present', response.data['wbc'][0])
 
-    def test_data_detail(self):
+    def test_rest_api_data_detail(self):
+        self.client.force_login(user=self.user)
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.7, wbc=5.8, plt=223, neut=1.3
@@ -459,7 +502,8 @@ class TestDataRESTAPI(APITestCase):
         serializer = DataInputSerializer(data)
         self.assertEqual(data_dict, serializer.data)
 
-    def test_data_edit(self):
+    def test_rest_api_data_edit(self):
+        self.client.force_login(user=self.user)
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.7, wbc=5.8, plt=223, neut=1.3
@@ -468,13 +512,14 @@ class TestDataRESTAPI(APITestCase):
             reverse("rest-api:data-ru", args=[data.uuid, ]),
             {
                 'rbc': 3.9
-            }
+            },
+            content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
         data.refresh_from_db()
         self.assertEqual(data.rbc, Decimal("3.9"))
 
-    def test_data_edit_not_authenticated(self):
+    def test_rest_api_edit_not_authenticated(self):
         self.client.logout()
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
@@ -489,8 +534,9 @@ class TestDataRESTAPI(APITestCase):
         self.assertEqual(response.status_code, 403)
         data.refresh_from_db()
         self.assertEqual(data.rbc, Decimal("3.6"))
+        self.client.force_login(user=self.user)
 
-    def test_data_edit_not_owner(self):
+    def test_rest_api_data_edit_not_owner(self):
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=False, rbc=3.6, wbc=5.8, plt=223, neut=1.3

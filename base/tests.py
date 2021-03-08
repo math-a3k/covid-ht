@@ -1,13 +1,12 @@
-#
 import random
 import numpy as np
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
+from django.test import Client, SimpleTestCase
 
-from rest_framework.test import (APITestCase, RequestsClient, )
+from rest_framework.test import RequestsClient
 
 from data.utils import trunc_normal
 from data.models import Data
@@ -17,18 +16,18 @@ from .models import CurrentClassifier, ExternalClassifier, User, DecisionTree
 from .utils import classification_tuple, get_current_classifier
 
 
-class TestBase(StaticLiveServerTestCase):
-    """
-    """
-    user = None
-    unit = None
+class TestBase(SimpleTestCase):
+    databases = "__all__"
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.client = Client()
         # Set the seeds
         random.seed(123456)
         np.random.seed(123456)
         #
-        self.classifier, _ = DecisionTree.objects.get_or_create(
+        cls.classifier, _ = DecisionTree.objects.get_or_create(
             name="HGBTree for tests",
             data_model="data.Data",
             learning_target="is_covid19",
@@ -38,24 +37,27 @@ class TestBase(StaticLiveServerTestCase):
             max_iter=10,
             random_state=123456
         )
-        self.classifier_external, _ = ExternalClassifier.objects.get_or_create(
+        cls.classifier_external, _ = ExternalClassifier.objects.get_or_create(
             name="Local REST API Classifier for tests",
             classifier_url="http://localhost/api/v1/classify",
             timeout=5,
         )
-        self.unit, _ = Unit.objects.get_or_create(
+        cls.current_classifier, _ = CurrentClassifier.objects.get_or_create(
+            classifier=cls.classifier,
+        )
+        cls.unit, _ = Unit.objects.get_or_create(
             name="Unit for tests"
         )
-        self.user, _ = User.objects.get_or_create(
+        cls.user, _ = User.objects.get_or_create(
             username='testuser',
             first_name='Test',
             last_name='User',
             user_type=User.MANAGER,
-            unit=self.unit
+            unit=cls.unit
         )
         # Populate with data
-        covid_size = 600
-        no_covid_size = 400
+        covid_size = 60
+        no_covid_size = 40
         table_size = covid_size + no_covid_size
         # Is COVID19 is ~ 35% F (0) / 65% T (1)
         is_covid19 = \
@@ -75,8 +77,8 @@ class TestBase(StaticLiveServerTestCase):
             is_diab = is_diabetic[i] if np.random.uniform() > 0.1 else None
             ds.append(
                 Data(
-                    user=self.user,
-                    unit=self.unit,
+                    user=cls.user,
+                    unit=cls.unit,
                     is_covid19=is_covid19[i],
                     is_diabetic=is_diab,
                     rbc=rbc[i],
@@ -84,7 +86,7 @@ class TestBase(StaticLiveServerTestCase):
                 )
             )
         Data.objects.bulk_create(ds)
-        self.classifier.perform_inference()
+        cls.classifier.perform_inference()
 
     def test_no_current_classifier(self):
         """
@@ -130,9 +132,6 @@ class TestBase(StaticLiveServerTestCase):
                              'blue darken-3" type="submit" name="action">'))
 
     def test_classification(self):
-        _, _ = CurrentClassifier.objects.get_or_create(
-            classifier=self.classifier
-        )
         self.classifier.perform_inference()
         response = self.client.post(
             reverse("base:home"),
@@ -149,10 +148,9 @@ class TestBase(StaticLiveServerTestCase):
         self.assertContains(response, 'POSITIVE')
 
     def test_classification_external(self):
-        _, _ = CurrentClassifier.objects.get_or_create(
-            classifier=self.classifier, external=self.classifier_external
-        )
-        self.classifier.perform_inference()
+        self.current_classifier.external = self.classifier_external
+        self.current_classifier.classifier = self.classifier
+        self.current_classifier.save()
 
         drf_request_client = RequestsClient()
 
@@ -170,14 +168,16 @@ class TestBase(StaticLiveServerTestCase):
                 }
             )
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Local REST API Classifier for tests')
         self.assertContains(response, 'POSITIVE')
+        self.current_classifier.classifier = self.classifier
+        self.current_classifier.external = None
+        self.current_classifier.save()
 
     def test_classification_external_unavailable(self):
-        _, _ = CurrentClassifier.objects.get_or_create(
-            classifier=self.classifier, external=self.classifier_external
-        )
-        self.classifier.perform_inference()
-
+        self.current_classifier.external = self.classifier_external
+        self.current_classifier.internal = None
+        self.current_classifier.save()
         drf_request_client = RequestsClient()
 
         with patch.object(ExternalClassifier,
@@ -200,10 +200,9 @@ class TestBase(StaticLiveServerTestCase):
         self.assertContains(response, 'Classification Service Unavailable')
 
     def test_classification_with_percentage_fields(self):
-        _, _ = CurrentClassifier.objects.get_or_create(
-            classifier=self.classifier
-        )
-        self.classifier.perform_inference()
+        self.current_classifier.classifier = self.classifier
+        self.current_classifier.external = None
+        self.current_classifier.save()
         response = self.client.post(
             reverse("base:home"),
             {
@@ -271,68 +270,7 @@ class TestBase(StaticLiveServerTestCase):
         cc.external = self.classifier_external
         cc.clean()
 
-
-class TestBaseRESTAPI(APITestCase):
-
-    def setUp(self):
-        # Set the seeds
-        random.seed(123456)
-        np.random.seed(123456)
-        #
-        self.classifier, _ = DecisionTree.objects.get_or_create(
-            name="HGBTree for API tests",
-            data_model="data.Data",
-            learning_target="is_covid19",
-            cv_is_enabled=False,
-            random_state=123456
-        )
-        self.unit, _ = Unit.objects.get_or_create(
-            name="Unit for API tests 2"
-        )
-        self.user, _ = User.objects.get_or_create(
-            username='apitestuser3',
-            first_name='Api Test',
-            last_name='User 3',
-            user_type=User.DATA,
-            unit=self.unit
-        )
-        self.user.set_password("test")
-        self.user.save()
-        self.client.login(username=self.user.username, password="test")
-        # Populate with data
-        covid_size = 600
-        no_covid_size = 400
-        table_size = covid_size + no_covid_size
-        # Is COVID19 is ~ 35% F (0) / 65% T (1)
-        is_covid19 = \
-            [True for i in range(covid_size)] + \
-            [False for i in range(no_covid_size)]
-        # Is Diabetic is ~ 80% F (0) / 20% T (1)
-        is_diabetic = np.random.binomial(1, 0.20, table_size)
-        rbc = \
-            trunc_normal(2, 8, 4.5, 2, covid_size) + \
-            trunc_normal(2, 8, 4.3, 2, no_covid_size)
-        wbc = \
-            trunc_normal(2, 40, 7, 5, covid_size) + \
-            trunc_normal(2, 40, 10, 5, no_covid_size)
-        ds = []
-        for i in range(0, table_size):
-            # Add some missing data
-            is_diab = is_diabetic[i] if np.random.uniform() > 0.1 else None
-            ds.append(
-                Data(
-                    user=self.user,
-                    unit=self.unit,
-                    is_covid19=is_covid19[i],
-                    is_diabetic=is_diab,
-                    rbc=rbc[i],
-                    wbc=wbc[i],
-                )
-            )
-        Data.objects.bulk_create(ds)
-        self.classifier.perform_inference()
-
-    def test_no_current_classifier(self):
+    def test_rest_api_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()
         response = self.client.post(
             reverse("rest-api:classify"),
@@ -350,7 +288,7 @@ class TestBaseRESTAPI(APITestCase):
             response.content, b'{"detail":"Classification Unavailable"}'
         )
 
-    def test_no_inference(self):
+    def test_rest_api_no_inference(self):
         self.classifier.reset_inference()
         response = self.client.post(
             reverse("rest-api:classify"),
@@ -366,7 +304,7 @@ class TestBaseRESTAPI(APITestCase):
         self.assertEqual(response.status_code, 503)
         self.classifier.perform_inference()
 
-    def test_classification(self):
+    def test_rest_api_classification(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
         )
@@ -385,7 +323,7 @@ class TestBaseRESTAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'POSITIVE', response.content)
 
-    def test_classification_with_percentage_fields(self):
+    def test_rest_api_classification_with_percentage_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
         )
@@ -404,7 +342,7 @@ class TestBaseRESTAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'POSITIVE', response.content)
 
-    def test_not_enough_hemogram_fields(self):
+    def test_rest_api_not_enough_hemogram_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
         )
@@ -420,7 +358,7 @@ class TestBaseRESTAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'hemogram result fields must be', response.content)
 
-    def test_no_wbc_with_percentage_fields(self):
+    def test_rest_api_no_wbc_with_percentage_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
         )

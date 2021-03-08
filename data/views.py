@@ -22,7 +22,7 @@ def is_allowed_in_data_privacy_mode(function):
     )
     if function:
         return actual_decorator(function)
-    return actual_decorator
+    return actual_decorator  # pragma: no cover
 
 
 @is_allowed_in_data_privacy_mode
