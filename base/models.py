@@ -139,6 +139,78 @@ class ExternalClassifier(models.Model):
             raise Exception(_("Classification Service Unavailable"))
 
 
+class NetworkNode(models.Model):
+    DATA_SHARING_MODE_ON_UPDATE = 0
+    DATA_SHARING_MODE_ON_FINISHED = 1
+
+    name = models.CharField(
+        _("Name"),
+        max_length=100
+    )
+    unit = models.OneToOneField(
+        "units.Unit",
+        on_delete=models.PROTECT,
+        verbose_name=_("Unit"),
+        blank=True, null=True,
+        related_name='network_node'
+    )
+    user = models.OneToOneField(
+        "base.User",
+        on_delete=models.PROTECT,
+        verbose_name=_("User"),
+        blank=True, null=True,
+        related_name='network_node'
+    )
+    node_url = models.URLField(
+        _("Network Node's URL"),
+        default="http://localhost"
+    )
+    endpoint_data = models.CharField(
+        _("Endpoint for Data"),
+        max_length=100,
+        default='/api/v1/data'
+    )
+    endpoint_classify = models.CharField(
+        _("Endpoint for Classify"),
+        max_length=100,
+        default='/api/v1/classify'
+    )
+    endpoint_classify_set = models.CharField(
+        _("Endpoint for Classify Set"),
+        max_length=100,
+        default='/api/v1/classify_set'
+    )
+    data_sharing_is_enabled = models.BooleanField(
+        _("Data Sharing - Is Enabled?"),
+        default=True
+    )
+    data_sharing_mode = models.PositiveSmallIntegerField(
+        _("Data Sharing - Mode"),
+        choices=((DATA_SHARING_MODE_ON_UPDATE, _("On Update")),
+                 (DATA_SHARING_MODE_ON_FINISHED, _("On Finished"))),
+        default=DATA_SHARING_MODE_ON_UPDATE
+    )
+    classification_request = models.BooleanField(
+        _("Request Classification Service"),
+        default=True
+    )
+    last_updated = models.DateTimeField(
+        _("Last Updated Timestamp"),
+        blank=True, null=True
+    )
+    metadata = models.JSONField(
+        _("Metadata"),
+        default=dict
+    )
+
+    class Meta:
+        verbose_name = "Network Node"
+        verbose_name_plural = "Network Nodes"
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+
 class DecisionTree(HGBTreeClassifier):
     pass
 
