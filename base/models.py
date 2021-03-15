@@ -1,12 +1,11 @@
-#
 import requests
+from numpy import mean
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-
 
 from django_ai.supervised_learning.models import HGBTreeClassifier, SVC
 
@@ -68,6 +67,18 @@ class CurrentClassifier(models.Model):
     """
     Singleton Model for selecting which classifier should be used
     """
+    NETWORK_VOTING_DISABLED = 0
+    NETWORK_VOTING_MAJORITY = 1
+    NETWORK_VOTING_MIN_POSITIVE = 2
+    NETWORK_VOTING_MIN_NEGATIVE = 3
+
+    NETWORK_VOTING_CHOICES = (
+        (NETWORK_VOTING_DISABLED, _("No Network Voting")),
+        (NETWORK_VOTING_MAJORITY, _("Majority")),
+        (NETWORK_VOTING_MIN_POSITIVE, _("Minimum of Postives")),
+        (NETWORK_VOTING_MIN_NEGATIVE, _("Minimum of Negatives")),
+    )
+
     classifier = models.OneToOneField(
         'supervised_learning.SupervisedLearningTechnique',
         on_delete=models.PROTECT,
@@ -80,18 +91,95 @@ class CurrentClassifier(models.Model):
         related_name='current_classifier',
         blank=True, null=True
     )
-
-    def clean(self):
-        if not self.classifier and not self.external:
-            raise ValidationError(
-                _("Both classifier and external can't be null")
-            )
+    network_voting = models.PositiveSmallIntegerField(
+        _("Network Voting Policy"),
+        choices=NETWORK_VOTING_CHOICES, default=NETWORK_VOTING_DISABLED
+    )
+    network_voting_threshold = models.PositiveSmallIntegerField(
+        _("Network Voting Threshold"),
+        blank=True, null=True,
+        help_text=_(
+            "Only applicable for Minimum Positives / Negatives voting "
+            "policies."
+        )
+    )
 
     class Meta:
         verbose_name = _("Current Classifier")
 
     def __str__(self):
         return str(self.classifier)
+
+    def get_local_classifier(self, internal=False):
+        if self.external and not internal:
+            return self.external
+        else:
+            return self.classifier._get_technique()
+
+    def predict(self, observation):
+        local_classifier = self.get_local_classifier()
+        if local_classifier.is_inferred:
+            if hasattr(local_classifier, 'service_url'):
+                result = local_classifier.predict(observation)
+                return (result['result'], result['prob'])
+            else:
+                (res, res_prob) = \
+                    local_classifier.predict(
+                        [observation], include_scores=True)
+                result = "POSITIVE" if res[0] else "NEGATIVE"
+                score = res_prob[0]
+                return (result, score)
+        return (None, None)
+
+    def network_predict(self, observation):
+        if self.network_voting == self.NETWORK_VOTING_DISABLED:
+            return None
+        votes = self._get_network_votes(observation)
+        votes_positive = [
+            node for node in votes if votes[node]["result"] == "POSITIVE"
+        ]
+        votes_negative = [
+            node for node in votes if votes[node]["result"] == "NEGATIVE"
+        ]
+        scores_positive = [
+            votes[node]["prob"] for node in votes if node in votes_positive
+        ]
+        scores_negative = [
+            votes[node]["prob"] for node in votes if node in votes_negative
+        ]
+        if self.network_voting == self.NETWORK_VOTING_MAJORITY:
+            if len(votes_positive) > len(votes_negative):
+                return ("POSITIVE", mean(scores_positive))
+            if len(votes_positive) < len(votes_negative):
+                return ("NEGATIVE", mean(scores_negative))
+            if "local" in votes_positive:
+                return ("POSITIVE", mean(scores_positive))
+            return ("NEGATIVE", mean(scores_negative))
+        elif self.network_voting == self.NETWORK_VOTING_MIN_NEGATIVE:
+            if len(votes_negative) >= self.network_voting_threshold:
+                return ("NEGATIVE", mean(scores_negative))
+            return ("POSITIVE", mean(scores_positive))
+        else:  # self.network_voting == self.NETWORK_VOTING_MIN_POSITIVE:
+            if len(votes_positive) >= self.network_voting_threshold:
+                return ("POSITIVE", mean(scores_positive))
+            return ("NEGATIVE", mean(scores_negative))
+
+    def _get_network_votes(self, observation):
+        votes = {}
+        local_vote = self.predict(observation)
+        votes["local"] = {"result": local_vote[0], "prob": local_vote[1]}
+        for node in NetworkNode.objects.filter(classification_request=True):
+            try:
+                votes[node.name] = node.predict(observation)
+            except Exception:
+                pass
+        return votes
+
+    def clean(self):
+        if not self.classifier and not self.external:
+            raise ValidationError(
+                _("Both classifier and external can't be null")
+            )
 
 
 class ExternalClassifier(models.Model):
@@ -101,9 +189,19 @@ class ExternalClassifier(models.Model):
         _("Name"),
         max_length=100
     )
-    classifier_url = models.URLField(
-        _("Classifier URL"),
-        default="http://localhost/api/v1/classify"
+    service_url = models.URLField(
+        _("Service URL"),
+        default="http://localhost"
+    )
+    endpoint_classify = models.CharField(
+        _("Endpoint for Classify"),
+        max_length=100,
+        default='/api/v1/classify'
+    )
+    endpoint_classify_set = models.CharField(
+        _("Endpoint for Classify Set"),
+        max_length=100,
+        default='/api/v1/classify_set'
     )
     timeout = models.DecimalField(
         _("Request Timeout (s)"),
@@ -114,6 +212,10 @@ class ExternalClassifier(models.Model):
     metadata = models.JSONField(
         "Metadata",
         default=dict, blank=True, null=True
+    )
+    last_updated = models.DateTimeField(
+        _("Last Updated Timestamp"),
+        blank=True, null=True
     )
 
     class Meta:
@@ -127,9 +229,9 @@ class ExternalClassifier(models.Model):
     def is_inferred(self):
         return True
 
-    def predict(self, data):
+    def predict(self, data, include_scores=True):
         response = self._requests_client.post(
-            self.classifier_url,
+            self.service_url + self.endpoint_classify,
             data=data,
             timeout=self.timeout
         )
@@ -139,14 +241,10 @@ class ExternalClassifier(models.Model):
             raise Exception(_("Classification Service Unavailable"))
 
 
-class NetworkNode(models.Model):
+class NetworkNode(ExternalClassifier):
     DATA_SHARING_MODE_ON_UPDATE = 0
     DATA_SHARING_MODE_ON_FINISHED = 1
 
-    name = models.CharField(
-        _("Name"),
-        max_length=100
-    )
     unit = models.OneToOneField(
         "units.Unit",
         on_delete=models.PROTECT,
@@ -161,24 +259,10 @@ class NetworkNode(models.Model):
         blank=True, null=True,
         related_name='network_node'
     )
-    node_url = models.URLField(
-        _("Network Node's URL"),
-        default="http://localhost"
-    )
     endpoint_data = models.CharField(
         _("Endpoint for Data"),
         max_length=100,
         default='/api/v1/data'
-    )
-    endpoint_classify = models.CharField(
-        _("Endpoint for Classify"),
-        max_length=100,
-        default='/api/v1/classify'
-    )
-    endpoint_classify_set = models.CharField(
-        _("Endpoint for Classify Set"),
-        max_length=100,
-        default='/api/v1/classify_set'
     )
     data_sharing_is_enabled = models.BooleanField(
         _("Data Sharing - Is Enabled?"),
@@ -193,14 +277,6 @@ class NetworkNode(models.Model):
     classification_request = models.BooleanField(
         _("Request Classification Service"),
         default=True
-    )
-    last_updated = models.DateTimeField(
-        _("Last Updated Timestamp"),
-        blank=True, null=True
-    )
-    metadata = models.JSONField(
-        _("Metadata"),
-        default=dict
     )
 
     class Meta:

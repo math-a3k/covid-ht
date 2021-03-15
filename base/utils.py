@@ -16,7 +16,7 @@ def get_current_classifier(internal=False):
 
 def classification_tuple(classifier, data):
     if classifier.is_inferred:
-        if hasattr(classifier, 'classifier_url'):
+        if hasattr(classifier, 'service_url'):
             result = classifier.predict(data)
             return (result['result'], result['prob'])
         else:

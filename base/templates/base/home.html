@@ -1,5 +1,5 @@
 {% extends "base/base.html" %}
-{% load static i18n materializecss %}
+{% load static i18n materializecss django_ai_tags %}
 
 {% block content %}
 	<h1>{% translate "COVID19 Hemogram Test Project" %}</h1>
@@ -9,16 +9,35 @@
 		<div class="col m6 s12">
 			<h2>{% translate "Current Classifier" %}</h2>
 			{% if classifier %}
+				<h5>{% translate "Local Classifier" %}</h5>
 				<p><b>{% translate "Name" %}</b>: {{ classifier.name }}</p>
 				{% if classifier.is_inferred %}
-					<p><b>{% translate "Training Data Size" %}</b>: {{ classifier.metadata.current_inference.input_dimensionality.0 }}</p>
-					<p><b>{% translate "Accuracy" %}</b>: {{ classifier.metadata.current_inference.cv.mean|floatformat:3 }} &plusmn; {{ classifier.metadata.current_inference.cv.2std|floatformat:3 }}</p>
+					{% if classifier.metadata %}
+						<p><b>{% translate "Training Data Size" %}</b>: {{ classifier.metadata.inference.current.learning_data.n_rows }}</p>
+						{% for score, score_val in classifier.metadata.inference.current.scores.cv|items %}
+							{% with classifier.metadata.meta.descriptions|get_item:score as score_name %}
+							{% if score_name %}
+								<p><b>{% translate score_name %}</b>: {{ score_val.summary }}</p>
+							{% else %}
+								<p><b>{{ score|upper }}</b>: {{ score_val.summary }}</p>
+							{% endif %}
+							{% endwith %}
+						{% endfor %}
+					{% endif %}
 					<p><b>{% translate "Last Updated" %}</b>: {{ classifier.engine_object_timestamp }}</p>
 				{% else %}
 					{% blocktranslate trimmed asvar no_training with admin_link='<a href="/admin">/admin</a>' %}
 				    	No training has been done yet. Training is done in {{ admin_link }}
 					{% endblocktranslate %}
 					<p>{{ no_training|safe }}</p>
+				{% endif %}
+				{% if nodes %}
+					<h5>{% translate "Classification Network" %}</h5>
+					<dl>
+					{% for node in nodes %}
+						<dt><b>{{ node.name }}</b></dt>
+					{% endfor %}
+					</dl>
 				{% endif %}
 				{% if example_data %}
 					<h4><strong>{% translate "DUMMY DATA - NO REAL USE" %}</strong></h4>
@@ -29,12 +48,10 @@
 					</p>
 				{% endif %}
 			{% else %}
-			<p>
 				{% blocktranslate trimmed asvar no_cc with admin_link='<a href="/admin">/admin</a>' %}
 				    No Current Classifier has been set up, it is done in {{ admin_link }}
 				{% endblocktranslate %}
-				{{ no_cc|safe }}
-			</p>
+				<p>{{ no_cc|safe }}</p>
 			{% endif %}
 		</div>
 

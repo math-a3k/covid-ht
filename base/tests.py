@@ -1,5 +1,6 @@
-import random
+from copy import deepcopy
 import numpy as np
+import random
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
@@ -12,7 +13,8 @@ from data.utils import trunc_normal
 from data.models import Data
 from units.models import Unit
 
-from .models import CurrentClassifier, ExternalClassifier, User, DecisionTree
+from .models import (CurrentClassifier, DecisionTree, ExternalClassifier,
+                     NetworkNode, User,)
 from .utils import classification_tuple, get_current_classifier
 
 
@@ -39,7 +41,8 @@ class TestBase(SimpleTestCase):
         )
         cls.classifier_external, _ = ExternalClassifier.objects.get_or_create(
             name="Local REST API Classifier for tests",
-            classifier_url="http://localhost/api/v1/classify",
+            service_url="http://localhost",
+            endpoint_classify="/api/v1/classify",
             timeout=5,
         )
         cls.current_classifier, _ = CurrentClassifier.objects.get_or_create(
@@ -53,7 +56,19 @@ class TestBase(SimpleTestCase):
             first_name='Test',
             last_name='User',
             user_type=User.MANAGER,
-            unit=cls.unit
+            unit=cls.unit,
+            is_superuser=True,
+            is_staff=True
+        )
+        cls.user.set_password("12345")
+        cls.user.save()
+        cls.node_1, _ = NetworkNode.objects.get_or_create(
+            name='Node for Tests 1',
+            classification_request=True
+        )
+        cls.node_2, _ = NetworkNode.objects.get_or_create(
+            name='Node for Tests 2',
+            classification_request=True
         )
         # Populate with data
         covid_size = 60
@@ -217,6 +232,142 @@ class TestBase(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'POSITIVE')
 
+    def test_network_classification(self):
+        cc = deepcopy(self.current_classifier)
+        drf_request_client = RequestsClient()
+        observation = {
+            'rbc': 3,
+            'wbc': 5,
+            'plt': 150,
+            'neut': 0.5,
+            'lymp_Upercentage_Rwbc': 10,
+            'mono_Upercentage_Rwbc': 10,
+        }
+        # -> Test _get_network_votes()
+        votes = cc._get_network_votes(observation)
+        expected_result = {
+            "local": {"result": "POSITIVE", "prob": 0.5685905603904713}
+        }
+        self.assertEqual(votes, expected_result)
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            votes = cc._get_network_votes(observation)
+            expected_result = {
+                'local': {'result': 'POSITIVE', 'prob': 0.5685905603904713},
+                'Node for Tests 1': {
+                    'result': 'POSITIVE', 'prob': 0.5685905603904713},
+                'Node for Tests 2': {
+                    'result': 'POSITIVE', 'prob': 0.5685905603904713}
+            }
+            self.assertEqual(votes, expected_result)
+
+        # -> Test network_predict()
+        cc.network_voting = cc.NETWORK_VOTING_MAJORITY
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "POSITIVE")
+            self.assertEqual(s1, 0.5685905603904713)
+
+        votes_patch = {
+            'local': {'result': 'POSITIVE', 'prob': 0.5685905603904713},
+            'Node for Tests 1': {'result': 'NEGATIVE', 'prob': 0.9},
+            'Node for Tests 2': {'result': 'NEGATIVE', 'prob': 0.7}
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "NEGATIVE")
+            self.assertEqual(s1, 0.8)
+
+        votes_patch = {
+            'local': {'result': 'POSITIVE', 'prob': 0.56},
+            'Node for Tests 1': {'result': 'NEGATIVE', 'prob': 0.9},
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "POSITIVE")
+            self.assertEqual(s1, 0.56)
+
+        votes_patch = {
+            'local': {'result': 'NEGATIVE', 'prob': 0.56},
+            'Node for Tests 1': {'result': 'POSITIVE', 'prob': 0.9},
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "NEGATIVE")
+            self.assertEqual(s1, 0.56)
+
+        cc.network_voting = cc.NETWORK_VOTING_MIN_NEGATIVE
+        cc.network_voting_threshold = 1
+        votes_patch = {
+            'local': {'result': 'NEGATIVE', 'prob': 0.56},
+            'Node for Tests 1': {'result': 'POSITIVE', 'prob': 0.9},
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "NEGATIVE")
+            self.assertEqual(s1, 0.56)
+
+        votes_patch = {
+            'local': {'result': 'POSITIVE', 'prob': 0.7},
+            'Node for Tests 1': {'result': 'POSITIVE', 'prob': 0.9},
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "POSITIVE")
+            self.assertEqual(s1, 0.8)
+
+        cc.network_voting = cc.NETWORK_VOTING_MIN_POSITIVE
+        cc.network_voting_threshold = 1
+        votes_patch = {
+            'local': {'result': 'NEGATIVE', 'prob': 0.56},
+            'Node for Tests 1': {'result': 'POSITIVE', 'prob': 0.9},
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "POSITIVE")
+            self.assertEqual(s1, 0.9)
+
+        votes_patch = {
+            'local': {'result': 'NEGATIVE', 'prob': 0.7},
+            'Node for Tests 1': {'result': 'NEGATIVE', 'prob': 0.9},
+        }
+        with patch.object(CurrentClassifier,
+                          '_get_network_votes', return_value=votes_patch):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "NEGATIVE")
+            self.assertEqual(s1, 0.8)
+
+        cc.network_voting = cc.NETWORK_VOTING_DISABLED
+        self.assertEqual(cc.network_predict(observation), None)
+
+        # -> Test with local external classifier
+        cc.external = self.classifier_external
+        cc.network_voting = cc.NETWORK_VOTING_MAJORITY
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            with patch.object(ExternalClassifier,
+                              '_requests_client', drf_request_client):
+                p1, s1 = cc.network_predict(observation)
+                self.assertEqual(p1, "POSITIVE")
+                self.assertEqual(s1, 0.5685905603904713)
+
+        # -> Test with local internal classifier not inferred
+        cc.external = None
+        cc.classifier.is_inferred = False
+        cc.network_voting = cc.NETWORK_VOTING_MAJORITY
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            p1, s1 = cc.network_predict(observation)
+            self.assertEqual(p1, "POSITIVE")
+            self.assertEqual(s1, 0.5685905603904713)
+
     def test_not_enough_hemogram_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
@@ -269,6 +420,16 @@ class TestBase(SimpleTestCase):
             cc.clean()
         cc.external = self.classifier_external
         cc.clean()
+
+    def test_currentclassifier_admin(self):
+        self.client.login(username=self.user.username, password="12345")
+        response = self.client.get(
+            reverse(
+                "admin:base_currentclassifier_change",
+                args=(self.current_classifier.pk, ))
+        )
+        self.assertContains(response, "Node for Tests 1")
+        self.assertContains(response, "Node for Tests 2")
 
     def test_rest_api_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()

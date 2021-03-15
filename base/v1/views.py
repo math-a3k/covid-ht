@@ -28,7 +28,7 @@ class Classify(generics.GenericAPIView):
                     classifier, serializer.data
                 )
                 return Response(
-                    {'result': result, 'prob': result_prob},
+                    {'result': result, 'prob': result_prob[0]},
                     status=status.HTTP_200_OK
                 )
             else:

@@ -41,7 +41,13 @@ admin.site.register(User, CovidHTUserAdmin)
 
 @admin.register(CurrentClassifier)
 class CurrentClassifierAdmin(admin.ModelAdmin):
-    pass
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context["nodes"] = NetworkNode.objects.all()
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context
+        )
 
 
 @admin.register(ExternalClassifier)
@@ -70,7 +76,7 @@ class NetworkNodeAdmin(admin.ModelAdmin):
         }),
         (_("URL and Endpoints"), {
             'fields': (
-                ('node_url', ),
+                ('service_url', ),
                 ('endpoint_data',),
                 ('endpoint_classify', 'endpoint_classify_set'),
             ),
