@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.test import Client, SimpleTestCase
 
+from rest_framework.response import Response
 from rest_framework.test import RequestsClient
 
 from data.utils import trunc_normal
@@ -15,7 +16,6 @@ from units.models import Unit
 
 from .models import (CurrentClassifier, DecisionTree, ExternalClassifier,
                      NetworkNode, User,)
-from .utils import classification_tuple, get_current_classifier
 
 
 class TestBase(SimpleTestCase):
@@ -125,11 +125,6 @@ class TestBase(SimpleTestCase):
         response = self.client.get(reverse("base:home"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No training has been done yet.")
-        classifier = get_current_classifier()
-        self.assertEqual(
-            classification_tuple(classifier, []),
-            (None, None)
-        )
 
     def test_inference_available(self):
         """
@@ -169,11 +164,17 @@ class TestBase(SimpleTestCase):
 
         drf_request_client = RequestsClient()
 
+        post_patch = Response(
+            {"result": "POSITIVE", "prob": 0.888}, status=200
+        )
+        post_patch.json = lambda: {"result": "POSITIVE", "prob": 0.888}
+
         with patch.object(ExternalClassifier,
                           '_requests_client', drf_request_client):
-            response = self.client.post(
-                reverse("base:home"),
-                {
+            with patch.object(ExternalClassifier._requests_client,
+                              'post',
+                              return_value=post_patch):
+                data = {
                     'rbc': 3,
                     'wbc': 5,
                     'plt': 150,
@@ -181,7 +182,7 @@ class TestBase(SimpleTestCase):
                     'lymp': 0.1,
                     'mono': 0.1,
                 }
-            )
+                response = self.client.post(reverse("base:home"), data=data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Local REST API Classifier for tests')
         self.assertContains(response, 'POSITIVE')
@@ -195,24 +196,44 @@ class TestBase(SimpleTestCase):
         self.current_classifier.save()
         drf_request_client = RequestsClient()
 
+        data = {
+           'rbc': 3,
+           'wbc': 5,
+           'plt': 150,
+           'neut': 0.1,
+           'lymp': 0.1,
+           'mono': 0.1,
+        }
+
         with patch.object(ExternalClassifier,
                           '_requests_client', drf_request_client):
-            with patch('base.v1.views.get_current_classifier',
-                       return_value=None):
-                response = self.client.post(
-                    reverse("base:home"),
-                    {
-                        'rbc': 3,
-                        'wbc': 5,
-                        'plt': 150,
-                        'neut': 0.1,
-                        'lymp': 0.1,
-                        'mono': 0.1,
-                    }
-                )
+            with patch.object(CurrentClassifier.objects, 'last',
+                              return_value=None):
+                response = self.client.post(reverse("base:home"), data)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Classification Service Unavailable')
+
+        # -> Test with Network Unreachable
+        response = self.client.post(reverse("base:home"), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Classification Service Unavailable')
+
+        # -> Test other errors
+        post_patch = Response({"detail": "does-not-exists"}, status=404)
+        post_patch.content = b'{"detail": "does-not-exists"}'
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            with patch.object(ExternalClassifier._requests_client,
+                              'post',
+                              return_value=post_patch):
+                response = self.client.post(reverse("base:home"), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Classification Service Unavailable')
+
+        self.current_classifier.classifier = self.classifier
+        self.current_classifier.external = None
+        self.current_classifier.save()
 
     def test_classification_with_percentage_fields(self):
         self.current_classifier.classifier = self.classifier

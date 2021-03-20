@@ -116,19 +116,23 @@ class CurrentClassifier(models.Model):
         else:
             return self.classifier._get_technique()
 
-    def predict(self, observation):
-        local_classifier = self.get_local_classifier()
+    def predict(self, observations, include_scores=True, internal=False):
+        local_classifier = self.get_local_classifier(internal=internal)
+        if not isinstance(observations, list):
+            observations = [observations]
         if local_classifier.is_inferred:
             if hasattr(local_classifier, 'service_url'):
-                result = local_classifier.predict(observation)
+                result = local_classifier.predict(observations)
                 return (result['result'], result['prob'])
             else:
-                (res, res_prob) = \
+                (res, scores) = \
                     local_classifier.predict(
-                        [observation], include_scores=True)
-                result = "POSITIVE" if res[0] else "NEGATIVE"
-                score = res_prob[0]
-                return (result, score)
+                        observations, include_scores=include_scores)
+                results = ["POSITIVE" if r else "NEGATIVE" for r in res]
+                if len(results) == 1:
+                    return (results[0], scores[0])
+                else:
+                    return (results, scores)
         return (None, None)
 
     def network_predict(self, observation):
@@ -166,7 +170,7 @@ class CurrentClassifier(models.Model):
 
     def _get_network_votes(self, observation):
         votes = {}
-        local_vote = self.predict(observation)
+        local_vote = self.predict(observation, internal=True)
         votes["local"] = {"result": local_vote[0], "prob": local_vote[1]}
         for node in NetworkNode.objects.filter(classification_request=True):
             try:
@@ -230,14 +234,17 @@ class ExternalClassifier(models.Model):
         return True
 
     def predict(self, data, include_scores=True):
-        response = self._requests_client.post(
-            self.service_url + self.endpoint_classify,
-            data=data,
-            timeout=self.timeout
-        )
-        if response.status_code == 200:
-            return response.json()
-        else:
+        try:
+            response = self._requests_client.post(
+                self.service_url + self.endpoint_classify,
+                data=data,
+                timeout=self.timeout
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise Exception(response.content)
+        except Exception:
             raise Exception(_("Classification Service Unavailable"))
 
 
