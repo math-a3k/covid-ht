@@ -505,6 +505,33 @@ class TestBase(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'POSITIVE', response.content)
 
+    def test_rest_api_dataset_classification(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        expected_result = {
+            "result": ["POSITIVE", "POSITIVE"],
+            "prob": [0.5685905603904713, 0.5685905603904713]
+        }
+        response = self.client.post(
+            reverse("rest-api:classify-dataset"),
+            {"dataset": [
+                    {
+                        "rbc": 3, "wbc": 5, "plt": 150,
+                        "neut": 0.1, "lymp": 0.1, "mono": 0.1
+                    },
+                    {
+                        "rbc": 3, "wbc": 5, "plt": 150,
+                        "neut": 0.1, "lymp": 0.1, "mono": 0.1
+                    },
+               ]
+             },
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_result, response.json())
+
     def test_rest_api_classification_with_percentage_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier

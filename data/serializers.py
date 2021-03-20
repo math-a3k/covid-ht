@@ -81,6 +81,10 @@ class DataClassificationSerializer(ModelValidatedModelSerializer):
         return cleaned_data
 
 
+class DatasetClassificationSerializer(serializers.Serializer):
+    dataset = serializers.ListField(child=DataClassificationSerializer())
+
+
 class DataInputSerializer(ModelValidatedModelSerializer):
     url = serializers.SerializerMethodField()
 

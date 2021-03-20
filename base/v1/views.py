@@ -5,7 +5,9 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 
-from data.serializers import DataClassificationSerializer
+from data.serializers import (
+    DataClassificationSerializer, DatasetClassificationSerializer
+)
 
 from ..models import CurrentClassifier
 
@@ -51,28 +53,11 @@ class Classify(generics.GenericAPIView):
                 )
 
 
+class ClassifyDataset(Classify):
+    """
+    Endpoint for classifying datasets (multiple observations).
+    """
+    serializer_class = DatasetClassificationSerializer
 
-    def post(self, request, format=None):
-        """
-        Return the result of classification if data submitted is valid.
-        """
-        classifier = get_current_classifier(internal=True)
-        if classifier:
-            serializer = DataClassificationSerializer(data=request.data)
-            if serializer.is_valid():
-                (result, result_prob) = classification_tuple(
-                    classifier, serializer.data
-                )
-                return Response(
-                    {'result': result, 'prob': result_prob[0]},
-                    status=status.HTTP_200_OK
-                )
-            else:
-                return Response(
-                    serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        return Response(
-                    {'detail': _("Classification Unavailable")},
-                    status=status.HTTP_503_SERVICE_UNAVAILABLE
-                )
+    def get_data(self, serializer):
+        return serializer.data['dataset']
