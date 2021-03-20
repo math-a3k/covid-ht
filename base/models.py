@@ -223,8 +223,8 @@ class ExternalClassifier(models.Model):
     )
 
     class Meta:
-        verbose_name = _("Extenal Classifier")
-        verbose_name_plural = _("Extenal Classifiers")
+        verbose_name = _("External Classifier")
+        verbose_name_plural = _("External Classifiers")
 
     def __str__(self):
         return self.name
