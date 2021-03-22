@@ -202,10 +202,10 @@ class ExternalClassifier(models.Model):
         max_length=100,
         default='/api/v1/classify'
     )
-    endpoint_classify_set = models.CharField(
-        _("Endpoint for Classify Set"),
+    endpoint_classify_dataset = models.CharField(
+        _("Endpoint for Classify Dataset"),
         max_length=100,
-        default='/api/v1/classify_set'
+        default='/api/v1/classify-dataset'
     )
     timeout = models.DecimalField(
         _("Request Timeout (s)"),

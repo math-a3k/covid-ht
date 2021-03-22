@@ -11,7 +11,7 @@ urlpatterns = [
     path('classify',
          base_views.Classify().as_view(),
          name='classify'),
-    path('classify_dataset',
+    path('classify-dataset',
          base_views.ClassifyDataset().as_view(),
          name='classify-dataset'),
     path('data/<str:uuid>',
