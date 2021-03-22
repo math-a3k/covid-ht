@@ -320,13 +320,13 @@ class TestUnits(SimpleTestCase):
             is_covid19=False, rbc=2.5, wbc=3.5, plt=220, neut=1.2
         )
         expected_response = (
-            'id,user,timestamp,unit_ii,is_covid19,age,sex,is_diabetic,'
-            'is_hypertense,is_overweight,is_at_altitude,is_with_other_conds,'
-            'rbc,hgb,hgbp,hgbg,htg,hct,mcv,mch,mchc,rdw,rtc,plt,mpv,pt,inr,'
-            'aptt,tct,fbg,atb,bt,vsy,wbc,neut,nbf,lymp,mono,mnl,cd4,eo,baso,'
-            'iga,igd,ige,igg,igm,esr,crp,aat,pct\r\n'
+            'id,user,timestamp,chtuid,is_finished,unit_ii,is_covid19,age,sex,'
+            'is_diabetic,is_hypertense,is_overweight,is_at_altitude,'
+            'is_with_other_conds,rbc,hgb,hgbp,hgbg,htg,hct,mcv,mch,mchc,rdw,'
+            'rtc,plt,mpv,pt,inr,aptt,tct,fbg,atb,bt,vsy,wbc,neut,nbf,lymp,'
+            'mono,mnl,cd4,eo,baso,iga,igd,ige,igg,igm,esr,crp,aat,pct\r\n'
             '{2},{1},{0}'
-            ',,False,,,,,,,,2.500,,,,,,,,,,,'
+            ',cHT00,False,,False,,,,,,,,2.500,,,,,,,,,,,'
             '220,,,,,,,,,,3.500,1.20,,,,,,,,,,,,,,,,\r\n'
         ).format(
             data.timestamp.strftime("%Y-%m-%d %H:%M"), data.user.name, data.id

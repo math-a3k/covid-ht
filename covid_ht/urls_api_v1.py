@@ -18,7 +18,7 @@ urlpatterns = [
          data_views.DataReadUpdate().as_view(),
          name='data-ru'),
     path('data',
-         data_views.DataListCreate().as_view(),
+         data_views.DataListCreateUpdate().as_view(),
          name='data-lc'),
     #
     path('openapi', get_schema_view(

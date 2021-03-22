@@ -214,7 +214,8 @@ class TestData(SimpleTestCase):
         Data.objects.all().delete()
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
-            is_covid19=True, rbc=3, wbc=5, plt=200, neut=1
+            is_covid19=True, rbc=3, wbc=5, plt=200, neut=1,
+            is_finished=True
         )
         response = self.client.get(
             reverse("data:public-list"),
@@ -237,12 +238,12 @@ class TestData(SimpleTestCase):
             is_covid19=False, rbc=3.5, wbc=5.5, plt=220, neut=1.2
         )
         expected_response = (
-            'id,unit,timestamp,uuid,is_covid19,age,sex,is_diabetic,'
-            'is_hypertense,is_overweight,is_at_altitude,is_with_other_conds,'
-            'rbc,hgb,hgbp,hgbg,htg,hct,mcv,mch,mchc,rdw,rtc,plt,mpv,pt,inr,'
-            'aptt,tct,fbg,atb,bt,vsy,wbc,neut,nbf,lymp,mono,mnl,cd4,eo,baso,'
-            'iga,igd,ige,igg,igm,esr,crp,aat,pct\r\n'
-            '{2},{3},{0},{1},'
+            'id,unit,timestamp,chtuid,is_finished,uuid,is_covid19,age,sex,'
+            'is_diabetic,is_hypertense,is_overweight,is_at_altitude,'
+            'is_with_other_conds,rbc,hgb,hgbp,hgbg,htg,hct,mcv,mch,mchc,rdw,'
+            'rtc,plt,mpv,pt,inr,aptt,tct,fbg,atb,bt,vsy,wbc,neut,nbf,lymp,'
+            'mono,mnl,cd4,eo,baso,iga,igd,ige,igg,igm,esr,crp,aat,pct\r\n'
+            '{2},{3},{0},cHT00,False,{1},'
             'False,,,,,,,,3.500,,,,,,,,,,,'
             '220,,,,,,,,,,5.500,1.20,,,,,,,,,,,,,,,,\r\n'
         ).format(
@@ -487,6 +488,80 @@ class TestData(SimpleTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn('This field must be present', response.data['wbc'][0])
+
+    def test_rest_api_network_sharing(self):
+        # -> Test receiving data from the network's nodes
+        self.client.force_login(user=self.user)
+        put_data = {
+            'chtuid': 'abc01',
+            'uuid': '4e9b03f7-96bf-4386-804f-bdbe7aef1691',
+            'rbc': Decimal("3"),
+            'plt': Decimal("150"),
+            'wbc': Decimal("3"),
+            'lymp_Upercentage_Rwbc': Decimal("15"),
+            'mono_Upercentage_Rwbc': Decimal("20"),
+            'eo_Upercentage_Rwbc': Decimal("20"),
+            'baso_Upercentage_Rwbc': Decimal("20"),
+        }
+        response = self.client.put(
+            reverse("rest-api:data-lc"),
+            put_data,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 201)
+        # Repeat the request to test update
+        response = self.client.put(
+            reverse("rest-api:data-lc"),
+            put_data,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        # Test PATCH
+        response = self.client.patch(
+            reverse("rest-api:data-lc"),
+            put_data,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        patch_data = {
+            'chtuid': 'abc01',
+            'uuid': '4e9b03f7-96bf-2222-804f-bdbe7aef1691',
+            'rbc': Decimal("3"),
+            'plt': Decimal("150"),
+            'wbc': Decimal("3"),
+            'lymp_Upercentage_Rwbc': Decimal("15"),
+            'mono_Upercentage_Rwbc': Decimal("20"),
+            'eo_Upercentage_Rwbc': Decimal("20"),
+            'baso_Upercentage_Rwbc': Decimal("20"),
+        }
+        response = self.client.patch(
+            reverse("rest-api:data-lc"),
+            patch_data,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 404)
+        # -> Test echo from the network
+        Data.objects.create(
+            uuid='4e9b03f7-96bf-4386-0000-bdbe7aef1691',
+            user=self.user, unit=self.unit,
+        )
+        put_data = {
+            'chtuid': 'cHT00',
+            'uuid': '4e9b03f7-96bf-4386-0000-bdbe7aef1691',
+            'rbc': Decimal("3"),
+            'plt': Decimal("150"),
+            'wbc': Decimal("3"),
+            'lymp_Upercentage_Rwbc': Decimal("15"),
+            'mono_Upercentage_Rwbc': Decimal("20"),
+            'eo_Upercentage_Rwbc': Decimal("20"),
+            'baso_Upercentage_Rwbc': Decimal("20"),
+        }
+        response = self.client.put(
+            reverse("rest-api:data-lc"),
+            put_data,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 208)
 
     def test_rest_api_data_detail(self):
         self.client.force_login(user=self.user)

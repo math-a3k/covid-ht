@@ -91,12 +91,12 @@ class DataInputSerializer(ModelValidatedModelSerializer):
     class Meta:
         model = Data
         exclude = [
-            'unit', 'user', 'timestamp',
+            'unit', 'user',  # 'timestamp',
         ]
-        extra_kwargs = {
-            'uuid': {'read_only': True},
-            'unit_ii': {'write_only': True},
-        }
+        # extra_kwargs = {
+        #     'uuid': {'read_only': True},
+        #     'unit_ii': {'write_only': True},
+        # }
 
     def get_url(self, obj):
         return reverse('rest-api:data-ru', args=[obj.uuid, ])

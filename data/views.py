@@ -28,10 +28,10 @@ def is_allowed_in_data_privacy_mode(function):
 @is_allowed_in_data_privacy_mode
 def public_list(request):
     page = request.GET.get('page', 1)
-    data = Data.objects.all().order_by("-timestamp")
+    data_qs = Data.objects.filter(is_finished=True).order_by("-timestamp")
 
     # Pagination
-    paginator = Paginator(data, 50)
+    paginator = Paginator(data_qs, 50)
     try:
         data = paginator.page(page)
     except PageNotAnInteger:  # pragma: no cover
@@ -46,7 +46,7 @@ def public_list(request):
     fields = [
         field for field in fields_all if field.attname not in fields_excluded
     ]
-    rows = Data.objects.count()
+    rows = data_qs.count()
     cols = len(fields)
     if rows:
         last_updated = Data.objects.last().timestamp
@@ -110,6 +110,7 @@ def edit(request, uuid):
         request,
         'data/edit.html',
         {
+            'data': data,
             'dataform': dataform,
         }
     )

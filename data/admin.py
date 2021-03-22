@@ -6,4 +6,4 @@ from .models import (Data, )
 
 @admin.register(Data)
 class DataAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ('chtuid', 'uuid', )

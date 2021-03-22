@@ -1,4 +1,5 @@
 from copy import deepcopy
+from decimal import Decimal
 import numpy as np
 import random
 from unittest.mock import patch
@@ -7,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.test import Client, SimpleTestCase
 
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.test import RequestsClient
 
@@ -15,7 +17,7 @@ from data.models import Data
 from units.models import Unit
 
 from .models import (CurrentClassifier, DecisionTree, ExternalClassifier,
-                     NetworkNode, User,)
+                     NetworkErrorLog, NetworkNode, User,)
 
 
 class TestBase(SimpleTestCase):
@@ -51,6 +53,9 @@ class TestBase(SimpleTestCase):
         cls.unit, _ = Unit.objects.get_or_create(
             name="Unit for tests"
         )
+        cls.unit_node, _ = Unit.objects.get_or_create(
+            name="Node Unit for tests"
+        )
         cls.user, _ = User.objects.get_or_create(
             username='testuser',
             first_name='Test',
@@ -60,15 +65,28 @@ class TestBase(SimpleTestCase):
             is_superuser=True,
             is_staff=True
         )
-        cls.user.set_password("12345")
-        cls.user.save()
+        cls.user_node, _ = User.objects.get_or_create(
+            username='testuser_node',
+            first_name='Test',
+            last_name='Node User',
+            user_type=User.MANAGER,
+            unit=cls.unit_node,
+        )
+        cls.user_node.set_password("12345")
+        cls.user_node.save()
+        cls.user_node_token = Token.objects.create(user=cls.user_node)
         cls.node_1, _ = NetworkNode.objects.get_or_create(
             name='Node for Tests 1',
-            classification_request=True
+            unit=cls.unit_node, user=cls.user_node,
+            remote_user=cls.user_node.username,
+            remote_user_token=cls.user_node_token.key,
+            classification_request=True,
+            data_sharing_is_enabled=False,
         )
         cls.node_2, _ = NetworkNode.objects.get_or_create(
             name='Node for Tests 2',
-            classification_request=True
+            classification_request=True,
+            data_sharing_is_enabled=False
         )
         # Populate with data
         covid_size = 60
@@ -98,6 +116,7 @@ class TestBase(SimpleTestCase):
                     is_diabetic=is_diab,
                     rbc=rbc[i],
                     wbc=wbc[i],
+                    is_finished=True
                 )
             )
         Data.objects.bulk_create(ds)
@@ -389,6 +408,87 @@ class TestBase(SimpleTestCase):
             self.assertEqual(p1, "POSITIVE")
             self.assertEqual(s1, 0.5685905603904713)
 
+    def test_network_data_sharing(self):
+        self.node_1.data_sharing_is_enabled = True
+        self.node_1.save()
+        self.client.force_login(user=self.user)
+        drf_request_client = RequestsClient()
+
+        post_data = {
+            'unit_ii': "test_network_data_sharing",
+            'rbc': Decimal("3"),
+            'wbc': Decimal("5"),
+            'plt': Decimal("150"),
+            'neut': Decimal("0.1"),
+            'lymp': Decimal("0.1"),
+            'mono': Decimal("0.1"),
+        }
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            response = self.client.post(
+                reverse("data:input"),
+                post_data,
+                follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        # If no error logs were generated, the requests were sent
+        # and were successful, endpoints are tested in data.tests
+        self.assertEqual(list(NetworkErrorLog.objects.all()), [])
+
+        self.node_1.data_sharing_mode = \
+            self.node_1.DATA_SHARING_MODE_ON_FINISHED
+        self.node_1.save()
+
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            response = self.client.post(
+                reverse("data:input"),
+                post_data,
+                follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(NetworkErrorLog.objects.all()), [])
+
+        post_data["is_finished"] = True
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            response = self.client.post(
+                reverse("data:input"),
+                post_data,
+                follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(list(NetworkErrorLog.objects.all()), [])
+
+        # -> Test Error Logs catching errors
+        response = self.client.post(
+                reverse("data:input"),
+                post_data,
+                follow=True
+            )
+        # Data is created
+        self.assertEqual(response.status_code, 200)
+        # but not propagated
+        error_log = NetworkErrorLog.objects.last()
+        self.assertIn('[Errno 111] Connection refused', error_log.message)
+
+        self.node_1.remote_user_token = None
+        self.node_1.save()
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            response = self.client.post(
+                reverse("data:input"),
+                post_data,
+                follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        error_log = NetworkErrorLog.objects.last()
+        self.assertEqual(403, error_log.status_code)
+
+        self.node_1.data_sharing_is_enabled = False
+        self.node_1.remote_user_token = self.user_node_token.key
+        self.node_1.save()
+
     def test_not_enough_hemogram_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
@@ -443,7 +543,7 @@ class TestBase(SimpleTestCase):
         cc.clean()
 
     def test_currentclassifier_admin(self):
-        self.client.login(username=self.user.username, password="12345")
+        self.client.force_login(user=self.user)
         response = self.client.get(
             reverse(
                 "admin:base_currentclassifier_change",
@@ -451,6 +551,20 @@ class TestBase(SimpleTestCase):
         )
         self.assertContains(response, "Node for Tests 1")
         self.assertContains(response, "Node for Tests 2")
+
+    def test_networknode_share_data(self):
+        drf_request_client = RequestsClient()
+        with patch.object(NetworkNode,
+                          '_requests_client', drf_request_client):
+            success = self.node_1.share_data({
+                'rbc': 3,
+                'plt': 150,
+                'mcv': 80,
+                'wbc': 3,
+                'neut': 0.1,
+                'lymp': 0.1,
+            })
+        self.assertEqual(success, True)
 
     def test_rest_api_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()

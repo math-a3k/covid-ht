@@ -2,12 +2,16 @@ import requests
 from numpy import mean
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from django_ai.supervised_learning.models import HGBTreeClassifier, SVC
+from rest_framework import status
+
+from .serializers import DataShareSerializer
 
 
 class User(AbstractUser):
@@ -197,6 +201,20 @@ class ExternalClassifier(models.Model):
         _("Service URL"),
         default="http://localhost"
     )
+    remote_user = models.CharField(
+        _("Remote User"),
+        max_length=50, blank=True, null=True,
+        help_text=_(
+            "Username in the External Service for making requests"
+        )
+    )
+    remote_user_token = models.CharField(
+        _("Remote User Token"),
+        max_length=250, blank=True, null=True,
+        help_text=_(
+            "Token for authenticating in the External Service"
+        )
+    )
     endpoint_classify = models.CharField(
         _("Endpoint for Classify"),
         max_length=100,
@@ -234,6 +252,9 @@ class ExternalClassifier(models.Model):
         return True
 
     def predict(self, data, include_scores=True):
+        """
+        TODO: Use NetworkErrorLog and authentication if available
+        """
         try:
             response = self._requests_client.post(
                 self.service_url + self.endpoint_classify,
@@ -246,6 +267,14 @@ class ExternalClassifier(models.Model):
                 raise Exception(response.content)
         except Exception:
             raise Exception(_("Classification Service Unavailable"))
+
+    def _get_auth_header(self):
+        if self.remote_user_token:
+            return {
+                "Authorization": "Token {0}".format(self.remote_user_token)
+            }
+        else:
+            return {}
 
 
 class NetworkNode(ExternalClassifier):
@@ -293,10 +322,104 @@ class NetworkNode(ExternalClassifier):
     def __str__(self):
         return "{}".format(self.name)
 
+    def share_data(self, data):
+        url = self.service_url + self.endpoint_data
+        if isinstance(data, models.Model):
+            data = DataShareSerializer(instance=data).data
+        try:
+            response = self._requests_client.put(
+                url, data=data,
+                headers=self._get_auth_header(),
+                timeout=self.timeout
+            )
+            if status.is_success(response.status_code):
+                return True
+            else:
+                self.errors_log.create(
+                    action=NetworkErrorLog.ACTION_SHARE_DATA, url=url,
+                    status_code=response.status_code, message=response.content
+                )
+                return False
+        except Exception as e:
+            self.errors_log.create(
+                    action=NetworkErrorLog.ACTION_SHARE_DATA, url=url,
+                    message=e
+                )
+            return False
 
-class DecisionTree(HGBTreeClassifier):
+
+class NetworkErrorLog(models.Model):
+    ACTION_OTHER = 0
+    ACTION_CLASSIFY = 1
+    ACTION_SHARE_DATA = 2
+
+    ACTION_CHOICES = (
+        (ACTION_OTHER, _("Other")),
+        (ACTION_CLASSIFY, _("Classify")),
+        (ACTION_SHARE_DATA, _("Share Data"))
+    )
+
+    timestamp = models.DateTimeField(
+        _("Timestamp"),
+        auto_now=True
+    )
+    external_service = models.ForeignKey(
+        "base.ExternalClassifier",
+        on_delete=models.CASCADE,
+        related_name="errors_log"
+    )
+    action = models.PositiveSmallIntegerField(
+        _("Action"),
+        choices=ACTION_CHOICES,
+        default=ACTION_OTHER
+    )
+    url = models.CharField(
+        _("URL"),
+        max_length=200
+    )
+    status_code = models.PositiveSmallIntegerField(
+        _("Status Code"),
+        blank=True, null=True
+    )
+    message = models.CharField(
+        _("Error Message"),
+        max_length=512
+    )
+
+    class Meta:
+        verbose_name = _("Network Error Log")
+        verbose_name_plural = _("Network Error Logs")
+
+    def __str__(self):
+        return "{0}: {1} | {2}".format(
+            self.timestamp, self.external_service, self.get_action_display()
+        )
+
+
+def data_saved(sender, instance, **kwargs):
+    nodes = NetworkNode.objects\
+        .filter(data_sharing_is_enabled=True).exclude(unit=instance.unit)
+    for node in nodes:
+        if node.data_sharing_mode == node.DATA_SHARING_MODE_ON_UPDATE:
+            node.share_data(instance)
+        else:  # node.data_sharing_mode == node.DATA_SHARING_MODE_ON_FINISHED:
+            if instance.is_finished:
+                node.share_data(instance)
+
+
+post_save.connect(data_saved, sender='data.Data')
+
+
+class CovidHTMixin:
+
+    def _get_data_queryset(self):
+        qs = super()._get_data_queryset()
+        return qs.filter(is_finished=True)
+
+
+class DecisionTree(CovidHTMixin, HGBTreeClassifier):
     pass
 
 
-class SVM(SVC):
+class SVM(CovidHTMixin, SVC):
     pass

@@ -7,8 +7,8 @@ from django_ai.supervised_learning.admin import \
     HGBTreeClassifierAdmin, SVCAdmin
 
 from .models import (
-    CurrentClassifier, DecisionTree, ExternalClassifier, NetworkNode,
-    SVM, User, )
+    CurrentClassifier, DecisionTree, ExternalClassifier, NetworkErrorLog,
+    NetworkNode, SVM, User, )
 
 
 class CovidHTUserChangeForm(UserChangeForm):
@@ -22,10 +22,10 @@ class CovidHTUserAdmin(UserAdmin):
     form = CovidHTUserChangeForm
     list_display = (
         'unit',
-        'user_type', 'email', 'name',
+        'user_type', 'username', 'email', 'name',
         'is_active', 'date_joined', 'is_staff'
     )
-    list_display_links = ('email', 'name')
+    list_display_links = ('username', )
     list_filter = (
         'unit',
         'user_type', ) + UserAdmin.list_filter
@@ -72,13 +72,14 @@ class NetworkNodeAdmin(admin.ModelAdmin):
             'fields': (
                 ('name', ),
                 ('unit', 'user',),
+                ('remote_user', 'remote_user_token'),
             ),
         }),
         (_("URL and Endpoints"), {
             'fields': (
                 ('service_url', ),
                 ('endpoint_data',),
-                ('endpoint_classify', 'endpoint_classify_set'),
+                ('endpoint_classify', 'endpoint_classify_dataset'),
             ),
         }),
         (_("Data Sharing"), {
@@ -99,3 +100,8 @@ class NetworkNodeAdmin(admin.ModelAdmin):
             ),
         }),
     )
+
+
+@admin.register(NetworkErrorLog)
+class NetworkErrorLogAdmin(admin.ModelAdmin):
+    pass

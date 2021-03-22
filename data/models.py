@@ -1,6 +1,7 @@
 #
 import uuid
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import (MaxValueValidator, MinValueValidator, )
 from django.db import models
@@ -76,6 +77,11 @@ class Data(models.Model):
         (True, _("Male"))
     )
 
+    chtuid = models.CharField(
+        _("Covid-HT Unique IDentifier"),
+        max_length=5, blank=True,
+        default=settings.CHTUID
+    )
     unit = models.ForeignKey(
         "units.Unit",
         on_delete=models.PROTECT,
@@ -88,6 +94,14 @@ class Data(models.Model):
         verbose_name=_("User"),
         related_name='data'
     )
+    is_finished = models.BooleanField(
+        _("Is Finished?"),
+        default=False,
+        help_text=_(
+            'Is the record finished or complete? All data has been recorded '
+            'and the internal identifier has been removed.'
+        )
+    )
     unit_ii = models.CharField(
         _("Unit Internal Identifier"),
         max_length=50,
@@ -96,14 +110,15 @@ class Data(models.Model):
     )
     uuid = models.UUIDField(
         default=uuid.uuid4,
-        editable=False
+        editable=True
     )
     timestamp = models.DateTimeField(
         _("Timestamp"),
         default=now
     )
     is_covid19 = models.BooleanField(
-        _("Is COVID19?")
+        _("Is COVID19?"),
+        blank=True, null=True
     )
     age = models.PositiveSmallIntegerField(
         _("Age"),
