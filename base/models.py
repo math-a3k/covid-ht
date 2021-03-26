@@ -1,17 +1,20 @@
-import requests
 from numpy import mean
+import requests
+from sklearn import metrics as sklearn_metrics
 
 from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from django_ai.supervised_learning.models import HGBTreeClassifier, SVC
 from rest_framework import status
 
-from .serializers import DataShareSerializer
+from data.models import Data
+from data.serializers import DataClassificationSerializer, DataShareSerializer
 
 
 class User(AbstractUser):
@@ -237,8 +240,16 @@ class ExternalClassifier(models.Model):
     )
     last_updated = models.DateTimeField(
         _("Last Updated Timestamp"),
-        blank=True, null=True
+        auto_now=True,
     )
+    metrics = models.CharField(
+        _("Metrics"),
+        max_length=200, blank=True, null=True,
+        help_text=_(
+            "Metrics (sklearn) to be evaluated with the external classifier, "
+            "separated by comma and space, i.e. 'accuracy_score, "
+            "precision_score, recall_score, fowlkes_mallows_score'")
+        )
 
     class Meta:
         verbose_name = _("External Classifier")
@@ -275,6 +286,115 @@ class ExternalClassifier(models.Model):
             }
         else:
             return {}
+
+    def eval_metrics(self):
+        queryset = Data.objects.filter(is_finished=True)
+        data = DataClassificationSerializer(queryset, many=True).data
+        true_values = list(
+            queryset.values_list(Data.LEARNING_LABELS, flat=True)
+        )
+        url = self.service_url + self.endpoint_classify_dataset
+        try:
+            response = self._requests_client.post(
+                url, headers=self._get_auth_header(), timeout=self.timeout,
+                json={"dataset": data}
+            )
+            if status.is_success(response.status_code):
+                result = [
+                    True if r == 'POSITIVE' else False
+                    for r in response.json()['result']
+                ]
+            else:
+                self.errors_log.create(
+                    action=NetworkErrorLog.ACTION_CLASSIFY, url=url,
+                    status_code=response.status_code, message=response.content
+                )
+                return False
+        except Exception as e:
+            self.errors_log.create(
+                action=NetworkErrorLog.ACTION_CLASSIFY, url=url, message=e
+            )
+            return False
+        metrics_scores = {}
+        metrics = self._get_metrics()
+        for metric in metrics:
+            metrics_scores[metric] = metrics[metric](true_values, result)
+        return metrics_scores
+
+    def update_metadata(self, save=True):
+        url = self.service_url + self.endpoint_classify_dataset
+        try:
+            response = self._requests_client.get(
+                url, headers=self._get_auth_header(), timeout=self.timeout
+            )
+            if status.is_success(response.status_code):
+                metadata = response.json()
+            else:
+                self.errors_log.create(
+                    action=NetworkErrorLog.ACTION_OTHER, url=url,
+                    status_code=response.status_code, message=response.content
+                )
+                return False
+        except Exception as e:
+            self.errors_log.create(
+                    action=NetworkErrorLog.ACTION_OTHER, url=url, message=e
+                )
+            return False
+        errors = False
+        self.metadata = metadata
+        local_classifier = \
+            CurrentClassifier.objects.last().get_local_classifier()
+        local_supported_fields = local_classifier.metadata["inference"][
+            "current"]["conf"]["data_model"]["learning_fields_supported"]
+        external_supported_fields = self.metadata["inference"][
+            "current"]["conf"]["data_model"]["learning_fields_supported"]
+        supported_fields_diff = list(
+            set(local_supported_fields).symmetric_difference(
+                set(external_supported_fields))
+        )
+        self.metadata["local_classifier"] = {
+            "learning_fields_supported_diff": supported_fields_diff or "None"
+        }
+        self.metadata["meta"]["descriptions"][
+            "learning_fields_supported_diff"] = "Supported Fields Differences"
+        local_cols_na = local_classifier.metadata["inference"][
+            "current"]["learning_data"]["cols_na"]
+        external_cols_na = self.metadata["inference"][
+            "current"]["learning_data"]["cols_na"]
+        cols_na_diff = list(
+            set(local_cols_na).symmetric_difference(set(external_cols_na))
+        )
+        self.metadata["local_data"] = {"cols_na_diff": cols_na_diff or "None"}
+        self.metadata["meta"]["descriptions"]["cols_na_diff"] = \
+            "Non-Available Columns differences"
+        if self.metrics:
+            metrics_metadata = self.eval_metrics()
+            if metrics_metadata:
+                self.metadata["local_data"]["scores"] = metrics_metadata
+            else:
+                errors = True
+        self.metadata["last_updated"] = str(timezone.now())
+        if save:
+            self.save()
+        return self.metadata if not errors else False
+
+    def _get_metrics(self):
+        if self.metrics:
+            return {
+                metric: getattr(sklearn_metrics, metric)
+                for metric in self.metrics.split(', ')
+            }
+        else:
+            return {}
+
+    def clean(self):
+        super().clean()
+        if self.metrics:
+            for metric in self.metrics.split(", "):
+                if not getattr(sklearn_metrics, metric, None):
+                    raise ValidationError({'metrics': _(
+                        'Unrecognized metric: {}'.format(metric)
+                    )})
 
 
 class NetworkNode(ExternalClassifier):

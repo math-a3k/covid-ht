@@ -235,19 +235,18 @@ class TestData(SimpleTestCase):
         Data.objects.all().delete()
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
-            is_covid19=False, rbc=3.5, wbc=5.5, plt=220, neut=1.2
+            is_covid19=False, rbc=3.5, wbc=5.5, plt=220, neut=1.2,
+            is_finished=True
         )
         expected_response = (
-            'id,unit,timestamp,chtuid,is_finished,uuid,is_covid19,age,sex,'
-            'is_diabetic,is_hypertense,is_overweight,is_at_altitude,'
-            'is_with_other_conds,rbc,hgb,hgbp,hgbg,htg,hct,mcv,mch,mchc,rdw,'
-            'rtc,plt,mpv,pt,inr,aptt,tct,fbg,atb,bt,vsy,wbc,neut,nbf,lymp,'
-            'mono,mnl,cd4,eo,baso,iga,igd,ige,igg,igm,esr,crp,aat,pct\r\n'
-            '{2},{3},{0},cHT00,False,{1},'
-            'False,,,,,,,,3.500,,,,,,,,,,,'
-            '220,,,,,,,,,,5.500,1.20,,,,,,,,,,,,,,,,\r\n'
+            'chtuid,unit,timestamp,uuid,is_covid19,rbc,wbc,hgb,hgbp,hgbg,htg,'
+            'hct,mcv,mch,mchc,rdw,rtc,plt,mpv,pt,inr,aptt,tct,fbg,atb,bt,vsy,'
+            'esr,crp,aat,pct,neut,nbf,lymp,mono,mnl,cd4,eo,baso,iga,igd,ige,'
+            'igg,igm\r\n'
+            'cHT00,{2},{0},{1},'
+            'False,3.500,5.500,,,,,,,,,,,220,,,,,,,,,,,,,,1.20,,,,,,,,,,,,\r\n'
         ).format(
-            data.timestamp.strftime("%Y-%m-%d %H:%M"), data.uuid, data.id,
+            data.timestamp.strftime("%Y-%m-%d %H:%M"), data.uuid,
             data.unit.id
         )
         response = self.client.get(

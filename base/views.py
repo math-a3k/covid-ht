@@ -1,10 +1,14 @@
-#
 from django.conf import settings
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404, render
+from django.views.generic import RedirectView
+from django.utils.translation import ugettext_lazy as _
 
 from data.forms import DataClassificationForm
 
-from .models import CurrentClassifier, NetworkNode
+from .models import CurrentClassifier, ExternalClassifier, NetworkNode
 
 
 def home(request):
@@ -44,3 +48,25 @@ def about(request):
         'base/about.html',
         {}
     )
+
+
+class UpdateMetadataView(UserPassesTestMixin, RedirectView):
+    """
+    Updates metadata for External Classifiers
+    """
+    permanent = False
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def get_redirect_url(self, *args, **kwargs):
+        ec = get_object_or_404(ExternalClassifier, pk=kwargs['pk'])
+        updated = ec.update_metadata()
+        if updated:
+            messages.success(self.request,
+                             _("Success at updating metadata"))
+        else:
+            messages.error(self.request,
+                           _("Errors ocurred while updating metadata, check "
+                             "network error logs"))
+        return self.request.META.get('HTTP_REFERER', '/')

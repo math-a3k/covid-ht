@@ -52,7 +52,32 @@ class CurrentClassifierAdmin(admin.ModelAdmin):
 
 @admin.register(ExternalClassifier)
 class ExternalClassifierAdmin(admin.ModelAdmin):
-    pass
+    fieldsets = (
+        (_("General"), {
+            'fields': (
+                ('name', ),
+                ('remote_user', 'remote_user_token'),
+            ),
+        }),
+        (_("URL and Endpoints"), {
+            'fields': (
+                ('service_url', 'timeout'),
+                ('endpoint_classify', 'endpoint_classify_dataset'),
+            ),
+        }),
+        (_("Metrics"), {
+            'fields': (
+                ('metrics',),
+            ),
+        }),
+        (_("Other"), {
+            'classes': ('collapse',),
+            'fields': (
+                ('metadata',),
+            ),
+        }),
+    )
+    readonly_fields = ['metadata', ]
 
 
 @admin.register(DecisionTree)
@@ -77,11 +102,17 @@ class NetworkNodeAdmin(admin.ModelAdmin):
         }),
         (_("URL and Endpoints"), {
             'fields': (
-                ('service_url', ),
+                ('service_url', 'timeout'),
                 ('endpoint_data',),
                 ('endpoint_classify', 'endpoint_classify_dataset'),
             ),
         }),
+        (_("Metrics"), {
+            'fields': (
+                ('metrics',),
+            ),
+        }),
+
         (_("Data Sharing"), {
             'fields': (
                 ('data_sharing_is_enabled',),
@@ -96,10 +127,11 @@ class NetworkNodeAdmin(admin.ModelAdmin):
         (_("Other"), {
             'classes': ('collapse',),
             'fields': (
-                ('last_updated', 'metadata',),
+                ('metadata',),
             ),
         }),
     )
+    readonly_fields = ['metadata', ]
 
 
 @admin.register(NetworkErrorLog)

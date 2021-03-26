@@ -146,6 +146,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
 # -> covid-ht specifics
 
 # CHTUID: Covid-HT instance Unique IDentinfier is 5 case-sensitive alphanumeric

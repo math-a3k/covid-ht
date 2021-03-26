@@ -1,0 +1,54 @@
+{% extends "admin/change_form.html" %}
+{% load static i18n django_ai_tags %}
+
+{% block after_related_objects %}
+
+	{% if original.metadata %}
+
+	<h2>{% translate "Last Updated" %}: {{ original.metadata.last_updated|truncatechars:20 }}</h2>
+
+	<h2>{% translate "Local Classifier" %}</h2>
+	    <p>
+            {% format_metadata_dict original.metadata.local_classifier original.metadata.meta.descriptions %}
+        </p>
+	<h2>{% translate "Local Data" %}</h2>
+	    <p>
+            {% format_metadata_dict original.metadata.local_data original.metadata.meta.descriptions %}
+        </p>
+    <h2>{% trans "External Classifier" %}</h2>
+    {% if original.metadata.inference.previous %}
+    <table>
+      <tr>
+        <td>
+          <h3>{% trans "Current Inference" %}</h3>
+          <p>
+            {% format_inference_metadata original.metadata.inference.current original.metadata.meta.descriptions %}
+          </p>
+        </td>
+        <td>
+          <h3>{% trans "Previous Inference" %}</h3>
+          <p>
+            <p>
+            {% format_inference_metadata original.metadata.inference.previous original.metadata.meta.descriptions %}
+          </p>
+          </p>
+        </td>
+      </tr>
+    </table>
+    {% else %}
+    <h3>{% trans "Current Inference" %}</h3>
+    <p>
+      <p>
+        {% format_inference_metadata original.metadata.inference.current original.metadata.meta.descriptions %}
+      </p>
+    </p>
+    {% endif %}
+  {% endif %}
+
+  {% block actions %}
+	<h2>Actions</h2>
+	<ul>
+		<li><a href="{% url 'base:update_metadata' original.pk %}">Update Metadata</a></li>
+	</ul>
+  {% endblock actions %}
+{% endblock %}

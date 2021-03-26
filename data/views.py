@@ -69,7 +69,7 @@ def public_list(request):
 class CSV(generics.ListAPIView):
     renderer_classes = (PublicCSVRenderer, )
     serializer_class = PublicDataSerializer
-    queryset = Data.objects.all()
+    queryset = Data.objects.filter(is_finished=True)
 
     def finalize_response(self, request, response, *args, **kwargs):
         response['Content-Disposition'] = \

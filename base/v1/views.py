@@ -52,6 +52,17 @@ class Classify(generics.GenericAPIView):
                     status=status.HTTP_503_SERVICE_UNAVAILABLE
                 )
 
+    def get(self, request, format=None):
+        if self.get_classifier():
+            return Response(
+                    self.get_classifier().get_local_classifier().metadata,
+                    status=status.HTTP_200_OK
+                )
+        return Response(
+                    {'detail': _("Classification Unavailable")},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE
+                )
+
 
 class ClassifyDataset(Classify):
     """

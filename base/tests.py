@@ -82,6 +82,7 @@ class TestBase(SimpleTestCase):
             remote_user_token=cls.user_node_token.key,
             classification_request=True,
             data_sharing_is_enabled=False,
+            metrics="accuracy_score"
         )
         cls.node_2, _ = NetworkNode.objects.get_or_create(
             name='Node for Tests 2',
@@ -104,6 +105,16 @@ class TestBase(SimpleTestCase):
         wbc = \
             trunc_normal(2, 40, 7, 5, covid_size) + \
             trunc_normal(2, 40, 10, 5, no_covid_size)
+        hgb = \
+            list(np.floor(trunc_normal(80, 240, 140, 5, covid_size))) + \
+            list(np.floor(trunc_normal(80, 240, 140, 5, no_covid_size)))
+        hct = \
+            trunc_normal(0.2, 0.8, 0.4, 0.2, table_size)
+        mcv = \
+            list(np.floor(trunc_normal(60, 150, 80, 10, covid_size))) + \
+            list(np.floor(trunc_normal(60, 150, 80, 10, no_covid_size)))
+        mchc = \
+            list(trunc_normal(2, 5, 3, 1, table_size))
         ds = []
         for i in range(0, table_size):
             # Add some missing data
@@ -116,6 +127,10 @@ class TestBase(SimpleTestCase):
                     is_diabetic=is_diab,
                     rbc=rbc[i],
                     wbc=wbc[i],
+                    hgb=hgb[i],
+                    hct=hct[i],
+                    mcv=mcv[i],
+                    mchc=mchc[i],
                     is_finished=True
                 )
             )
@@ -286,18 +301,18 @@ class TestBase(SimpleTestCase):
         # -> Test _get_network_votes()
         votes = cc._get_network_votes(observation)
         expected_result = {
-            "local": {"result": "POSITIVE", "prob": 0.5685905603904713}
+            "local": {"result": "POSITIVE", "prob": 0.6300912038351191}
         }
         self.assertEqual(votes, expected_result)
         with patch.object(NetworkNode,
                           '_requests_client', drf_request_client):
             votes = cc._get_network_votes(observation)
             expected_result = {
-                'local': {'result': 'POSITIVE', 'prob': 0.5685905603904713},
+                'local': {'result': 'POSITIVE', 'prob': 0.6300912038351191},
                 'Node for Tests 1': {
-                    'result': 'POSITIVE', 'prob': 0.5685905603904713},
+                    'result': 'POSITIVE', 'prob': 0.6300912038351191},
                 'Node for Tests 2': {
-                    'result': 'POSITIVE', 'prob': 0.5685905603904713}
+                    'result': 'POSITIVE', 'prob': 0.6300912038351191}
             }
             self.assertEqual(votes, expected_result)
 
@@ -307,10 +322,10 @@ class TestBase(SimpleTestCase):
                           '_requests_client', drf_request_client):
             p1, s1 = cc.network_predict(observation)
             self.assertEqual(p1, "POSITIVE")
-            self.assertEqual(s1, 0.5685905603904713)
+            self.assertEqual(s1, 0.6300912038351191)
 
         votes_patch = {
-            'local': {'result': 'POSITIVE', 'prob': 0.5685905603904713},
+            'local': {'result': 'POSITIVE', 'prob': 0.6300912038351191},
             'Node for Tests 1': {'result': 'NEGATIVE', 'prob': 0.9},
             'Node for Tests 2': {'result': 'NEGATIVE', 'prob': 0.7}
         }
@@ -396,7 +411,7 @@ class TestBase(SimpleTestCase):
                               '_requests_client', drf_request_client):
                 p1, s1 = cc.network_predict(observation)
                 self.assertEqual(p1, "POSITIVE")
-                self.assertEqual(s1, 0.5685905603904713)
+                self.assertEqual(s1, 0.6300912038351191)
 
         # -> Test with local internal classifier not inferred
         cc.external = None
@@ -406,16 +421,18 @@ class TestBase(SimpleTestCase):
                           '_requests_client', drf_request_client):
             p1, s1 = cc.network_predict(observation)
             self.assertEqual(p1, "POSITIVE")
-            self.assertEqual(s1, 0.5685905603904713)
+            self.assertEqual(s1, 0.6300912038351191)
 
     def test_network_data_sharing(self):
         self.node_1.data_sharing_is_enabled = True
         self.node_1.save()
+        NetworkErrorLog.objects.all().delete()
         self.client.force_login(user=self.user)
         drf_request_client = RequestsClient()
 
         post_data = {
             'unit_ii': "test_network_data_sharing",
+            'is_covid19': True,
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -566,6 +583,109 @@ class TestBase(SimpleTestCase):
             })
         self.assertEqual(success, True)
 
+    def test_update_metadata_view(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        self.client.force_login(user=self.user)
+        drf_request_client = RequestsClient()
+        self.node_1.metadata = {}
+        self.node_1.save()
+        self.assertEqual(self.node_1.metadata, {})
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            response = self.client.get(
+                reverse("base:update_metadata",
+                        args=[self.node_1.externalclassifier_ptr_id, ]),
+            )
+        self.assertEqual(response.status_code, 302)
+        self.node_1.refresh_from_db()
+        self.assertNotEqual(self.node_1.metadata, {})
+        # Test no update
+        self.node_1.metadata = {}
+        self.node_1.save()
+        response = self.client.get(
+                reverse("base:update_metadata",
+                        args=[self.node_1.externalclassifier_ptr_id, ]),
+            )
+        self.assertEqual(response.status_code, 302)
+        self.node_1.refresh_from_db()
+        self.assertEqual(self.node_1.metadata, {})
+        error_log = NetworkErrorLog.objects.last()
+        self.assertIn('[Errno 111] Connection refused', error_log.message)
+
+    def test_networknode_eval_metrics(self):
+        self.client.force_login(user=self.user)
+        drf_request_client = RequestsClient()
+        self.node_1.metadata = {}
+        self.node_1.save()
+        # Test with no CurrentClassifier
+        CurrentClassifier.objects.last().delete()
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            scores = self.node_1.eval_metrics()
+        self.assertEqual(scores, False)
+        # Test with no network access
+        scores = self.node_1.eval_metrics()
+        self.assertEqual(scores, False)
+        # Test with no metrics
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        self.node_1.metrics = None
+        self.node_1.save()
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            scores = self.node_1.eval_metrics()
+        self.assertEqual(scores, {})
+        self.node_1.metrics = "accuracy_score"
+        self.node_1.save()
+
+    def test_externalclassifier_update_metadata(self):
+        self.client.force_login(user=self.user)
+        drf_request_client = RequestsClient()
+        self.assertEqual(self.node_1.metadata, {})
+        # Test with no CurrentClassifier
+        CurrentClassifier.objects.last().delete()
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            metadata = self.node_1.update_metadata(save=False)
+        self.assertEqual(metadata, False)
+        # Test with no network access
+        metadata = self.node_1.update_metadata()
+        self.assertEqual(metadata, False)
+        # Test with no metrics
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        self.node_1.metrics = None
+        self.node_1.save()
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            metadata = self.node_1.update_metadata(save=False)
+        self.assertEqual("scores" not in metadata["local_data"], True)
+        self.node_1.metrics = "accuracy_score"
+        self.node_1.save()
+        # Test with eval_metrics errors
+        with patch.object(ExternalClassifier,
+                          '_requests_client', drf_request_client):
+            with patch.object(NetworkNode,
+                              'eval_metrics', return_value=False):
+                metadata = self.node_1.update_metadata(save=False)
+        self.assertEqual(metadata, False)
+
+    def test_networknode_clean(self):
+        self.node_1.clean()
+        self.node_1.metrics = None
+        self.node_1.clean()
+        self.node_1.metrics = "unrecognized_metrics"
+        with self.assertRaises(ValidationError):
+            self.node_1.clean()
+        self.node_1.metrics = "accuracy_score"
+
     def test_rest_api_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()
         response = self.client.post(
@@ -619,6 +739,19 @@ class TestBase(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'POSITIVE', response.content)
 
+    def test_rest_api_metadata(self):
+        cc, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+        response = self.client.get(reverse("rest-api:classify"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'inference', response.content)
+        # Test unavailable
+        cc.delete()
+        response = self.client.get(reverse("rest-api:classify"))
+        self.assertEqual(response.status_code, 503)
+
     def test_rest_api_dataset_classification(self):
         _, _ = CurrentClassifier.objects.get_or_create(
             classifier=self.classifier
@@ -626,7 +759,7 @@ class TestBase(SimpleTestCase):
         self.classifier.perform_inference()
         expected_result = {
             "result": ["POSITIVE", "POSITIVE"],
-            "prob": [0.5685905603904713, 0.5685905603904713]
+            "prob": [0.8321382707460566, 0.8321382707460566]
         }
         response = self.client.post(
             reverse("rest-api:classify-dataset"),

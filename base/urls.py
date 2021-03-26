@@ -10,6 +10,10 @@ urlpatterns = [
          views.home,
          name="home"
          ),
+    path('update-metadata/<int:pk>',
+         views.UpdateMetadataView.as_view(),
+         name="update_metadata"
+         ),
     path('about',
          views.about,
          name="about"

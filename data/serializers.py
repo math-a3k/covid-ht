@@ -17,7 +17,9 @@ class PublicDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Data
-        exclude = ['user', 'unit_ii', ] + model.get_conversion_fields()
+        fields = [
+            'chtuid', 'unit', 'timestamp', 'uuid', model.LEARNING_LABELS
+            ] + model.get_hemogram_main_fields()
 
     def get_unit(self, obj):
         return obj.unit.pk
@@ -59,7 +61,7 @@ class DataClassificationSerializer(ModelValidatedModelSerializer):
     class Meta:
         model = Data
         exclude = [
-            'unit', 'user', 'unit_ii', 'uuid', 'timestamp', 'is_covid19'
+            'id', 'unit', 'user', 'unit_ii', 'uuid', 'timestamp', 'is_covid19'
         ]
 
     def validate(self, data):
@@ -100,3 +102,10 @@ class DataInputSerializer(ModelValidatedModelSerializer):
 
     def get_url(self, obj):
         return reverse('rest-api:data-ru', args=[obj.uuid, ])
+
+
+class DataShareSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Data
+        exclude = ['id', 'user', 'unit', 'unit_ii', ]
