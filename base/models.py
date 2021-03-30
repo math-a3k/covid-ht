@@ -1,6 +1,10 @@
 from numpy import mean
+from numpy import nan as np_nan
 import requests
 from sklearn import metrics as sklearn_metrics
+from sklearn.compose import make_column_selector, make_column_transformer
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import OrdinalEncoder
 
 from django.db import models
 from django.db.models.signals import post_save
@@ -538,7 +542,28 @@ class CovidHTMixin:
 
 
 class DecisionTree(CovidHTMixin, HGBTreeClassifier):
-    pass
+
+    def engine_object_init(self):
+        classifier = super().engine_object_init()
+        ordinal_encoder = make_column_transformer(
+            (OrdinalEncoder(handle_unknown='use_encoded_value',
+                            unknown_value=np_nan),
+             self._get_categorical_mask()),
+            remainder='passthrough'
+        )
+        pipe = make_pipeline(ordinal_encoder, classifier)
+        return pipe
+
+    def get_engine_object_conf(self):
+        conf = self.get_engine_object().get_params()
+        conf.pop('steps')
+        conf.pop('histgradientboostingclassifier')
+        conf.pop('columntransformer')
+        conf.pop('columntransformer__transformers')
+        conf.pop('columntransformer__ordinalencoder')
+        conf.pop('columntransformer__ordinalencoder__dtype')
+        conf.pop('columntransformer__ordinalencoder__unknown_value')
+        return conf
 
 
 class SVM(CovidHTMixin, SVC):

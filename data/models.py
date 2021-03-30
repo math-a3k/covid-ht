@@ -62,8 +62,9 @@ class Data(models.Model):
         'age', 'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
         'is_at_altitude', 'is_with_other_conds',
     ]
+    CHTUID_FIELD = ['chtuid'] if settings.CHTUID_USE_IN_CLASSIFICATION else []
 
-    LEARNING_FIELDS_CATEGORICAL = [
+    LEARNING_FIELDS_CATEGORICAL = CHTUID_FIELD + [
         'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
         'is_at_altitude', 'is_with_other_conds',
     ]
@@ -635,4 +636,5 @@ class Data(models.Model):
 
     @classmethod
     def _get_learning_fields(cls):
-        return cls.AUXILIARY_FIELDS + cls.get_hemogram_main_fields()
+        return cls.CHTUID_FIELD + cls.AUXILIARY_FIELDS \
+            + cls.get_hemogram_main_fields()
