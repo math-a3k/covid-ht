@@ -620,6 +620,13 @@ class Data(models.Model):
                             _('This field must be present in order to use '
                               '%(field)s' % {'field': conversion_field})}
                     )
+        if self.is_finished and \
+                getattr(self, self.LEARNING_LABELS, None) is None:
+            raise ValidationError(
+                {self.LEARNING_LABELS:
+                    _('A record can not be marked as finished when the label'
+                      ' is not present.')}
+            )
 
     def save(self, *args, **kwargs):
         self.clean()

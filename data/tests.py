@@ -2,6 +2,7 @@ from copy import deepcopy
 from decimal import Decimal
 import json
 
+from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, Client
 from django.urls import reverse
 
@@ -326,6 +327,17 @@ class TestData(SimpleTestCase):
             reverse("data:edit", args=[data.uuid, ])
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_data_clean(self):
+        data = Data(
+            user=self.user, unit=self.unit,
+            is_covid19=False, rbc=3.1, wbc=5.1, plt=225, neut=1.3
+        )
+        data.clean()
+        with self.assertRaises(ValidationError):
+            data.is_covid19 = None
+            data.is_finished = True
+            data.clean()
 
 # class TestDataRESTAPI(SimpleTestCase):
 #     databases = "__all__"
