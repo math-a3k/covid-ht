@@ -5,16 +5,18 @@
 
 	{% if original.metadata %}
 
-	<h2>{% translate "Last Updated" %}: {{ original.metadata.last_updated|truncatechars:20 }}</h2>
+	<h2>{% translate "CHTUID" %}: {{ original.metadata.chtuid }}</h2>
+
+  <h2>{% translate "Last Updated" %}: {{ original.metadata.last_updated|truncatechars:20 }}</h2>
 
 	<h2>{% translate "Local Classifier" %}</h2>
 	    <p>
-            {% format_metadata_dict original.metadata.local_classifier original.metadata.meta.descriptions %}
-        </p>
+        {% format_metadata_dict original.metadata.local_classifier original.metadata.meta.descriptions %}
+      </p>
 	<h2>{% translate "Local Data" %}</h2>
 	    <p>
-            {% format_metadata_dict original.metadata.local_data original.metadata.meta.descriptions %}
-        </p>
+        {% format_metadata_dict original.metadata.local_data original.metadata.meta.descriptions %}
+      </p>
     <h2>{% trans "External Classifier" %}</h2>
     {% if original.metadata.inference.previous %}
     <table>

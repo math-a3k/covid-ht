@@ -33,6 +33,24 @@ html, body, .toc-menu-col, .block {
   padding: 3px;
   text-align: center;
 }
+
+.votes {
+  margin-top: 0;
+  margin-left: 1em;
+}
+
+.votes dt {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.classifier-info p {
+  margin-left: 1em;
+}
+
+.classifier-info h6 {
+  margin-left: 0.2em;
+}
 /*
 @media only screen and (max-width: 501px) {
   .breadcrumb.dark {

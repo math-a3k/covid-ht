@@ -339,32 +339,6 @@ class TestData(SimpleTestCase):
             data.is_finished = True
             data.clean()
 
-# class TestDataRESTAPI(SimpleTestCase):
-#     databases = "__all__"
-
-#     def setUp(cls):
-#         cls.unit, _ = Unit.objects.get_or_create(
-#             name="Unit for API tests 1"
-#         )
-#         cls.user, _ = User.objects.get_or_create(
-#             username='apitestuser1',
-#             first_name='Api Test',
-#             last_name='User 1',
-#             user_type=User.DATA,
-#             unit=cls.unit
-#         )
-#         cls.user.set_password("test")
-#         cls.user.save()
-#         cls.user2, _ = User.objects.get_or_create(
-#             username='apitestuser2',
-#             first_name='Api Test',
-#             last_name='User 2',
-#             user_type=User.MANAGER,
-#         )
-#         cls.user2.set_password("test")
-#         cls.user2.save()
-#         cls.client.login(username=cls.user.username, password="test")
-
     def test_rest_api_data_list(self):
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
@@ -391,6 +365,7 @@ class TestData(SimpleTestCase):
         self.client.force_login(user=self.user)
         post_data = {
             'unit_ii': 'test_rest_api_data_creation',
+            'is_finished': False,
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -431,12 +406,13 @@ class TestData(SimpleTestCase):
         self.client.force_login(user=self.user)
         post_data = {
             'is_covid19': True,
-            'unit_ii': '123.123.123-4'
+            'unit_ii': '123.123.123-4',
+            'is_finished': False
         }
         response = self.client.post(
             reverse("rest-api:data-lc"),
             post_data,
-        )
+              )
         self.assertEqual(response.status_code, 201)
         data = Data.objects.get(unit_ii='123.123.123-4')
         for key in post_data:
@@ -449,6 +425,7 @@ class TestData(SimpleTestCase):
         self.client.force_login(user=self.user)
         post_data = {
             'unit_ii': 'test_rest_api_data_creation_percentages',
+            'is_finished': False,
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -459,6 +436,7 @@ class TestData(SimpleTestCase):
             'baso_Upercentage_Rwbc': Decimal("20"),
         }
         expected_data = {
+            'is_finished': False,
             'rbc': Decimal("3"),
             'wbc': Decimal("5"),
             'plt': Decimal("150"),
@@ -485,6 +463,7 @@ class TestData(SimpleTestCase):
     def test_rest_api_data_creation_percentages_invalid(self):
         self.client.force_login(user=self.user)
         post_data = {
+            'is_finished': False,
             'rbc': Decimal("3"),
             'plt': Decimal("150"),
             'neut_Upercentage_Rwbc': Decimal("10"),

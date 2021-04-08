@@ -6,24 +6,15 @@
 
 	<div class="row">
 
-		<div class="col m6 s12">
+		<div class="col m6 s12 classifier-info">
 			<h2>{% translate "Current Classifier" %}</h2>
 			{% if classifier %}
-				<h5>{% translate "Local Classifier" %}</h5>
+				<h5>{% translate "Local Classifier" %} ({{ chtuid }})</h5>
 				{% with classifier.get_local_classifier as local_classifier %}
 					<p><b>{% translate "Name" %}</b>: {{ local_classifier.name }}</p>
 					{% if local_classifier.is_inferred %}
 						{% if local_classifier.metadata %}
-							<p><b>{% translate "Training Data Size" %}</b>: {{ local_classifier.metadata.inference.current.learning_data.n_rows }}</p>
-							{% for score, score_val in local_classifier.metadata.inference.current.scores.cv|items %}
-								{% with local_classifier.metadata.meta.descriptions|get_item:score as score_name %}
-								{% if score_name %}
-									<p><b>{% translate score_name %}</b>: {{ score_val.summary }}</p>
-								{% else %}
-									<p><b>{{ score|upper }}</b>: {{ score_val.summary }}</p>
-								{% endif %}
-								{% endwith %}
-							{% endfor %}
+							{% include "base/include/node_metadata.html" with metadata=local_classifier.metadata %}
 						{% endif %}
 						<p><b>{% translate "Last Updated" %}</b>: {{ local_classifier.engine_object_timestamp }}</p>
 					{% else %}
@@ -35,11 +26,12 @@
 				{% endwith %}
 				{% if nodes %}
 					<h5>{% translate "Classification Network" %}</h5>
-					<dl>
 					{% for node in nodes %}
-						<dt><b>{{ node.name }}</b></dt>
+						<h6>{{ node }}</h6>
+						{% if node.metadata %}
+							{% include "base/include/node_metadata.html" with metadata=node.metadata %}
+						{% endif %}
 					{% endfor %}
-					</dl>
 				{% endif %}
 				{% if example_data %}
 					<h4><strong>{% translate "DUMMY DATA - NO REAL USE" %}</strong></h4>
@@ -59,14 +51,22 @@
 
 		<div class="col m6 s12">
 			<h2>{% translate "Classify an Hemogram" %}</h2>
-
 			{% if classifier_error %}
 				<h5>{% translate "Sorry, Classification Service Unavailable." %}</h5>
 				<blockquote>
 					{{ classifier_error }}
 				</blockquote>
 			{% elif result %}
-				<h5>{% blocktranslate with result=result|upper prob=result_prob|floatformat:3 %}The following Hemogram has been classified as {{ result }} with a probability of {{ prob }}{% endblocktranslate %}:</h5>
+				<h5>{% translate "The following Hemogram has been classified as" %} <b>{% translate result %}</b> {% translate "with a probability of" %} {{ result_prob|floatformat:3 }}{% if votes|length > 1 %}{% translate ", given the following votes:" %}
+				</h5>
+				<dl class="votes">
+				{% for vote in votes %}
+					<dt>{{ vote }}</dt>
+					<dd><b>{% blocktranslate with result=votes|get_item:vote|get_item:"result"|first %}{{ result }}{% endblocktranslate %}</b> {% translate "with a probability of" %} {{ votes|get_item:vote|get_item:"prob"|first|floatformat:3 }}</dd>
+				{% endfor %}
+				</dl>
+				{% else %}:</h5>
+				{% endif %}
 			{% endif %}
 
 			<form action="" method="post">

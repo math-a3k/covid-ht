@@ -2,7 +2,7 @@ from numpy import mean
 from numpy import nan as np_nan
 import requests
 from sklearn import metrics as sklearn_metrics
-from sklearn.compose import make_column_selector, make_column_transformer
+from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OrdinalEncoder
 
@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -83,11 +84,19 @@ class CurrentClassifier(models.Model):
     NETWORK_VOTING_MIN_POSITIVE = 2
     NETWORK_VOTING_MIN_NEGATIVE = 3
 
+    BTP_LOCAL = 0
+    BTP_SCORES = 1
+
     NETWORK_VOTING_CHOICES = (
         (NETWORK_VOTING_DISABLED, _("No Network Voting")),
         (NETWORK_VOTING_MAJORITY, _("Majority")),
-        (NETWORK_VOTING_MIN_POSITIVE, _("Minimum of Postives")),
+        (NETWORK_VOTING_MIN_POSITIVE, _("Minimum of Positives")),
         (NETWORK_VOTING_MIN_NEGATIVE, _("Minimum of Negatives")),
+    )
+
+    BTP_CHOICES = (
+        (BTP_LOCAL, _("Prefer Local Vote")),
+        (BTP_SCORES, _("Prefer Highest Score")),
     )
 
     classifier = models.OneToOneField(
@@ -105,6 +114,13 @@ class CurrentClassifier(models.Model):
     network_voting = models.PositiveSmallIntegerField(
         _("Network Voting Policy"),
         choices=NETWORK_VOTING_CHOICES, default=NETWORK_VOTING_DISABLED
+    )
+    breaking_ties_policy = models.PositiveSmallIntegerField(
+        _("Breaking Ties Policy"),
+        choices=BTP_CHOICES, default=BTP_LOCAL,
+        help_text=_(
+            "Only applicable for Majority voting policy."
+        )
     )
     network_voting_threshold = models.PositiveSmallIntegerField(
         _("Network Voting Threshold"),
@@ -140,54 +156,85 @@ class CurrentClassifier(models.Model):
                     local_classifier.predict(
                         observations, include_scores=include_scores)
                 results = ["POSITIVE" if r else "NEGATIVE" for r in res]
-                if len(results) == 1:
-                    return (results[0], scores[0])
-                else:
-                    return (results, scores)
+                return (results, scores)
         return (None, None)
 
-    def network_predict(self, observation):
-        if self.network_voting == self.NETWORK_VOTING_DISABLED:
-            return None
-        votes = self._get_network_votes(observation)
-        votes_positive = [
-            node for node in votes if votes[node]["result"] == "POSITIVE"
-        ]
-        votes_negative = [
-            node for node in votes if votes[node]["result"] == "NEGATIVE"
-        ]
-        scores_positive = [
-            votes[node]["prob"] for node in votes if node in votes_positive
-        ]
-        scores_negative = [
-            votes[node]["prob"] for node in votes if node in votes_negative
-        ]
-        if self.network_voting == self.NETWORK_VOTING_MAJORITY:
-            if len(votes_positive) > len(votes_negative):
-                return ("POSITIVE", mean(scores_positive))
-            if len(votes_positive) < len(votes_negative):
-                return ("NEGATIVE", mean(scores_negative))
-            if "local" in votes_positive:
-                return ("POSITIVE", mean(scores_positive))
-            return ("NEGATIVE", mean(scores_negative))
-        elif self.network_voting == self.NETWORK_VOTING_MIN_NEGATIVE:
-            if len(votes_negative) >= self.network_voting_threshold:
-                return ("NEGATIVE", mean(scores_negative))
-            return ("POSITIVE", mean(scores_positive))
-        else:  # self.network_voting == self.NETWORK_VOTING_MIN_POSITIVE:
-            if len(votes_positive) >= self.network_voting_threshold:
-                return ("POSITIVE", mean(scores_positive))
-            return ("NEGATIVE", mean(scores_negative))
+    def network_predict(self, observations, include_votes=True):
+        if not isinstance(observations, list):
+            observations = [observations]
+        votes = self._get_network_votes(observations)
+        if len(votes) > 1:
+            results_list, scores_list = [], []
+            for idx in range(0, len(observations)):
+                votes_positive = [
+                    node for node in votes
+                    if votes[node]["result"] and
+                    votes[node]["result"][idx] == "POSITIVE"
+                ]
+                votes_negative = [
+                    node for node in votes
+                    if votes[node]["result"] and
+                    votes[node]["result"][idx] == "NEGATIVE"
+                ]
+                scores_positive = [
+                    votes[node]["prob"][idx] for node in votes
+                    if node in votes_positive
+                ]
+                scores_negative = [
+                    votes[node]["prob"][idx] for node in votes
+                    if node in votes_negative
+                ]
+                if self.network_voting == self.NETWORK_VOTING_MAJORITY:
+                    if len(votes_positive) > len(votes_negative):
+                        result = ("POSITIVE", mean(scores_positive))
+                    elif len(votes_positive) < len(votes_negative):
+                        result = ("NEGATIVE", mean(scores_negative))
+                    else:
+                        if self.breaking_ties_policy == self.BTP_LOCAL:
+                            if "local" in votes_positive:
+                                result = ("POSITIVE", mean(scores_positive))
+                            else:
+                                result = ("NEGATIVE", mean(scores_negative))
+                        else:  # self.breaking_ties_policy == self.BTP_SCORE
+                            if mean(scores_positive) > mean(scores_negative):
+                                result = ("POSITIVE", mean(scores_positive))
+                            else:
+                                result = ("NEGATIVE", mean(scores_negative))
+                elif self.network_voting == self.NETWORK_VOTING_MIN_NEGATIVE:
+                    if len(votes_negative) >= self.network_voting_threshold:
+                        result = ("NEGATIVE", mean(scores_negative))
+                    else:
+                        result = ("POSITIVE", mean(scores_positive))
+                else:  # self.net_voting == self.NETWORK_VOTING_MIN_POSITIVE:
+                    if len(votes_positive) >= self.network_voting_threshold:
+                        result = ("POSITIVE", mean(scores_positive))
+                    else:
+                        result = ("NEGATIVE", mean(scores_negative))
+                results_list.append(result[0])
+                scores_list.append(result[1])
+        else:
+            only_vote = list(votes.items())[0]
+            results_list = only_vote[1]["result"]
+            scores_list = only_vote[1]["prob"]
+        if include_votes:
+            return (results_list, scores_list, votes)
+        else:
+            return (results_list, scores_list)
 
-    def _get_network_votes(self, observation):
+    def _get_network_votes(self, observations):
         votes = {}
-        local_vote = self.predict(observation, internal=True)
-        votes["local"] = {"result": local_vote[0], "prob": local_vote[1]}
-        for node in NetworkNode.objects.filter(classification_request=True):
-            try:
-                votes[node.name] = node.predict(observation)
-            except Exception:
-                pass
+        local_vote = self.predict(observations)
+        votes["local ({})".format(settings.CHTUID)] = {
+            "result": local_vote[0], "prob": local_vote[1]
+        }
+        if not self.network_voting == self.NETWORK_VOTING_DISABLED:
+            for node in \
+                    NetworkNode.objects.filter(classification_request=True):
+                try:
+                    votes[str(node)] = node.predict(observations)
+                except Exception:
+                    # Error logs are created by node.predict()
+                    pass
         return votes
 
     def clean(self):
@@ -266,21 +313,29 @@ class ExternalClassifier(models.Model):
     def is_inferred(self):
         return True
 
-    def predict(self, data, include_scores=True):
-        """
-        TODO: Use NetworkErrorLog and authentication if available
-        """
+    def predict(self, observations, include_scores=True):
+        if not isinstance(observations, list):
+            observations = [observations]
+        data = DataClassificationSerializer(observations, many=True).data
+        url = self.service_url + self.endpoint_classify_dataset
         try:
             response = self._requests_client.post(
-                self.service_url + self.endpoint_classify,
-                data=data,
-                timeout=self.timeout
+                url,
+                headers=self._get_auth_header(), timeout=self.timeout,
+                json={"dataset": data}
             )
             if response.status_code == 200:
                 return response.json()
             else:
-                raise Exception(response.content)
-        except Exception:
+                self.errors_log.create(
+                    action=NetworkErrorLog.ACTION_CLASSIFY, url=url,
+                    status_code=response.status_code, message=response.content
+                )
+                return False
+        except Exception as e:
+            self.errors_log.create(
+                action=NetworkErrorLog.ACTION_CLASSIFY, url=url, message=e
+            )
             raise Exception(_("Classification Service Unavailable"))
 
     def _get_auth_header(self):
@@ -377,7 +432,8 @@ class ExternalClassifier(models.Model):
                 self.metadata["local_data"]["scores"] = metrics_metadata
             else:
                 errors = True
-        self.metadata["last_updated"] = str(timezone.now())
+        self.metadata["last_updated"] = \
+            timezone.now().strftime('%Y-%m-%d %H:%M:%S')
         if save:
             self.save()
         return self.metadata if not errors else False
@@ -444,7 +500,7 @@ class NetworkNode(ExternalClassifier):
         verbose_name_plural = "Network Nodes"
 
     def __str__(self):
-        return "{}".format(self.name)
+        return "{} ({})".format(self.name, self.metadata.get("chtuid", "-"))
 
     def share_data(self, data):
         url = self.service_url + self.endpoint_data
@@ -539,6 +595,25 @@ class CovidHTMixin:
     def _get_data_queryset(self):
         qs = super()._get_data_queryset()
         return qs.filter(is_finished=True)
+
+    def _get_metadata_descriptions(self):
+        descriptions = super()._get_metadata_descriptions()
+        descriptions["accuracy"] = "Accuracy"
+        descriptions["accuracy_score"] = "Accuracy"
+        descriptions["precision"] = "Precision"
+        descriptions["precision_score"] = "Precision"
+        descriptions["recall"] = "Recall"
+        descriptions["recall_score"] = "Recall"
+        descriptions["fowlkes_mallows_score"] = "Fowlkes-Mallows' Score"
+        return descriptions
+
+    def perform_inference(self, save=True):
+        eo = super().perform_inference(save=save)
+        self.metadata["inference"]["current"]["conf"]["timestamp"] = \
+            timezone.now().strftime('%Y-%m-%d %H:%M:%S')
+        if save:
+            self.save()
+        return eo
 
 
 class DecisionTree(CovidHTMixin, HGBTreeClassifier):

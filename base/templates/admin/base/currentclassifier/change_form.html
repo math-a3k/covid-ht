@@ -7,7 +7,7 @@
     {% for node in nodes %}
     <dl>
       <dt><a href="{% url 'admin:base_networknode_change' node.pk %}">{{ node.name }}</a></dt>
-      <dd>{{ node.service_url }} | <b>Data Sharing</b>: {{ node.data_sharing_is_enabled|yesno }} | <b>Classification Requests</b>: {{ node.classification_requests|yesno }}</dd>
+      <dd>{{ node.service_url }} | <b>Data Sharing</b>: {{ node.data_sharing_is_enabled|yesno }} | <b>Classification Requests</b>: {{ node.classification_request|yesno }}</dd>
     </dl>
     {% endfor %}
   {% endif %}

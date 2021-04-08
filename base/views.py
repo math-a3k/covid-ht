@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import RedirectView
 from django.utils.translation import ugettext_lazy as _
@@ -15,13 +15,16 @@ def home(request):
     classifier = CurrentClassifier.objects.last()
     nodes = NetworkNode.objects.filter(classification_request=True)
     example_data = getattr(settings, "EXAMPLE_DATA", False)
-    (result, result_prob, classifier_error) = None, None, None
+    chtuid = getattr(settings, "CHTUID", "-")
+    (result, result_prob, votes, classifier_error) = None, None, None, None
     if request.method == 'POST':
         dataform = DataClassificationForm(request.POST)
         if dataform.is_valid():
             try:
-                (result, result_prob) = \
-                    classifier.predict(dataform.cleaned_data)
+                (result, result_prob, votes) = \
+                    classifier.network_predict(dataform.cleaned_data)
+                result = result[0]
+                result_prob = result_prob[0]
             except Exception as e:
                 classifier_error = str(e)
     else:
@@ -35,9 +38,11 @@ def home(request):
             'nodes': nodes,
             'classifier_error': classifier_error,
             'example_data': example_data,
+            'chtuid': chtuid,
             'dataform': dataform,
             'result': result,
-            'result_prob': result_prob
+            'result_prob': result_prob,
+            'votes': votes
         }
     )
 

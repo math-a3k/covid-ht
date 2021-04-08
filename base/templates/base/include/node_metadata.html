@@ -1,0 +1,34 @@
+{% load i18n django_ai_tags %}
+
+<p><b>{% translate "Training Data Size" %}</b>: {{ metadata.inference.current.learning_data.n_rows }}</p>
+
+{% if metadata.inference.current.scores.cv %}
+	{% for score, score_val in metadata.inference.current.scores.cv|items %}
+		{% with metadata.meta.descriptions|get_item:score as score_name %}
+		{% if score_name %}
+			<p><b>{% translate score_name %}</b>: {{ score_val.summary }}</p>
+		{% else %}
+			<p><b>{{ score|upper }}</b>: {{ score_val.summary }}</p>
+		{% endif %}
+		{% endwith %}
+	{% endfor %}
+{% endif %}
+
+{% if metadata.local_data.scores %}
+	<p>{% translate "Metrics with Local Data" %}</p>
+	<div style="margin-left: 1em;">
+	{% for score, score_val in metadata.local_data.scores|items %}
+		{% with metadata.meta.descriptions|get_item:score as score_name %}
+		{% if score_name %}
+			<p><b>{% translate score_name %}</b>: {{ score_val }}</p>
+		{% else %}
+			<p><b>{{ score|upper }}</b>: {{ score_val }}</p>
+		{% endif %}
+		{% endwith %}
+	{% endfor %}
+	</div>
+{% endif %}
+
+{% if metadata.last_updated %}
+	<p><b>{% translate "Last Updated" %}</b>: {{ metadata.last_updated|truncatechars:20 }}</p>
+{% endif %}

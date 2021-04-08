@@ -1,17 +1,30 @@
-#
-
 from django.conf import settings
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
+from rest_framework.fields import BooleanField
 from rest_framework.exceptions import ValidationError as DRFValidationError
 
 from .models import Data
 
 
-class PublicDataSerializer(serializers.ModelSerializer):
+class NullableBooleanField(BooleanField):
+    default_empty_html = None
+    initial = None
+
+
+class UseNullableBooleanFieldMixin(object):
+    serializer_field_mapping = \
+        serializers.ModelSerializer.serializer_field_mapping
+    serializer_field_mapping[models.BooleanField] = NullableBooleanField
+    serializer_field_mapping[models.NullBooleanField] = NullableBooleanField
+
+
+class PublicDataSerializer(UseNullableBooleanFieldMixin,
+                           serializers.ModelSerializer):
     unit = serializers.SerializerMethodField()
     timestamp = serializers.SerializerMethodField()
 
@@ -39,7 +52,8 @@ class DataListSerializer(PublicDataSerializer):
         return reverse('rest-api:data-ru', args=[obj.uuid, ])
 
 
-class ModelValidatedModelSerializer(serializers.ModelSerializer):
+class ModelValidatedModelSerializer(UseNullableBooleanFieldMixin,
+                                    serializers.ModelSerializer):
 
     def validate(self, data):
         model_obj = self.Meta.model(**data)
@@ -62,7 +76,7 @@ class DataClassificationSerializer(ModelValidatedModelSerializer):
         model = Data
         exclude = [
             'id', 'unit', 'user', 'unit_ii', 'uuid', 'timestamp', 'is_covid19',
-            'is_finished'
+            'is_finished', 'chtuid'
         ]
 
     def validate(self, data):
@@ -94,12 +108,8 @@ class DataInputSerializer(ModelValidatedModelSerializer):
     class Meta:
         model = Data
         exclude = [
-            'unit', 'user',  # 'timestamp',
+            'unit', 'user',
         ]
-        # extra_kwargs = {
-        #     'uuid': {'read_only': True},
-        #     'unit_ii': {'write_only': True},
-        # }
 
     def get_url(self, obj):
         return reverse('rest-api:data-ru', args=[obj.uuid, ])
