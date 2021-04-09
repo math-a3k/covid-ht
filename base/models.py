@@ -607,6 +607,23 @@ class CovidHTMixin:
         descriptions["fowlkes_mallows_score"] = "Fowlkes-Mallows' Score"
         return descriptions
 
+    def _get_field_levels(self, field):
+        """
+        To be submitted to upstream
+        """
+        data_model = self._get_data_model()
+        django_field = data_model._meta.get_field(field)
+        if isinstance(django_field, models.fields.BooleanField):
+            levels = [False, True]
+        elif django_field.choices:
+            levels = [choice for choice, choice_str in django_field.choices]
+        else:
+            levels = list(set(self._get_data_queryset()
+                                  .values_list(field, flat=True)))
+            if "" in levels:
+                levels.remove("")
+        return sorted(levels)
+
     def perform_inference(self, save=True):
         eo = super().perform_inference(save=save)
         self.metadata["inference"]["current"]["conf"]["timestamp"] = \
