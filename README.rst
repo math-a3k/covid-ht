@@ -70,6 +70,10 @@ Be sure of collecting static files before running tests:
 
     > python manage.py collecstatic
 
+Load Testing
+------------
+
+Load Testing is provided with ``locust``. See ``README_load_testing.rst`` for details.
 
 Development
 ===========
