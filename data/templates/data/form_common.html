@@ -1,84 +1,11 @@
-{% load i18n materializecss %}
+{% load i18n materializecss data_tags %}
 
-	{{ dataform.age|materializecss }}
-
-	{{ dataform.sex|materializecss }}
-
-	{{ dataform.is_diabetic|materializecss }}
-
-	{{ dataform.is_hypertense|materializecss }}
-
-	{{ dataform.is_overweight|materializecss }}
-
-	{{ dataform.is_at_altitude|materializecss }}
-
-	{{ dataform.is_with_other_conds|materializecss }}
-
-	{{ dataform.rbc|materializecss }}
-
-	{{ dataform.wbc|materializecss }}
-
-	{{ dataform.hgb|materializecss }}
-
-	{{ dataform.hct|materializecss }}
-
-	{{ dataform.mcv|materializecss }}
-
-	{{ dataform.mch|materializecss }}
-
-	{{ dataform.mchc|materializecss }}
-
-	{{ dataform.rdw|materializecss }}
-
-	{{ dataform.plt|materializecss }}
-
-	<div class="row">
-		<div class="col">
-		<h5 class="center-align">{% translate "(Percentages takes precedence over absolutes)" %}</h5>
-		</div>
+	{% for group_field in dataform.get_grouped_fields %}
+		<div class="row">
+			{% for field in group_field %}
+				<div class="col s{{ group_field|col_size }}">
+					{{ dataform|get_field:field|materializecss}}
+				</div>
+			{% endfor %}
 	</div>
-
-	<div class="row">
-		<div class="col s6">
-			{{ dataform.neut|materializecss}}
-		</div>
-		<div class="col s6">
-			{{ dataform.neut_Upercentage_Rwbc|materializecss}}
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col s6">
-			{{ dataform.lymp|materializecss }}
-		</div>
-		<div class="col s6">
-			{{ dataform.lymp_Upercentage_Rwbc|materializecss }}
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col s6">
-			{{ dataform.mono|materializecss }}
-		</div>
-		<div class="col s6">
-			{{ dataform.mono_Upercentage_Rwbc|materializecss }}
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col s6">
-			{{ dataform.eo|materializecss }}
-		</div>
-		<div class="col s6">
-			{{ dataform.eo_Upercentage_Rwbc|materializecss }}
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col s6">
-			{{ dataform.baso|materializecss }}
-		</div>
-		<div class="col s6">
-			{{ dataform.baso_Upercentage_Rwbc|materializecss }}
-		</div>
-	</div>
+	{% endfor %}

@@ -1,5 +1,6 @@
 from copy import deepcopy
 from decimal import Decimal
+from importlib import reload
 import json
 
 from django.core.exceptions import ValidationError
@@ -7,6 +8,7 @@ from django.test import SimpleTestCase, Client
 from django.urls import reverse
 
 from base.models import User
+import data.forms as data_forms
 from units.models import Unit
 
 from .models import Data
@@ -338,6 +340,37 @@ class TestData(SimpleTestCase):
             data.is_covid19 = None
             data.is_finished = True
             data.clean()
+
+    def test_data_classification_form_fields_setting(self):
+        with self.settings(
+                DATA_CLASSIFICATION_FORM_FIELDS=['rbc', 'hgb', 'hgb_UmmolL']
+                ):
+            reload(data_forms)
+            self.assertTrue(
+                'rbc' in data_forms.DataClassificationForm().fields
+            )
+            self.assertTrue(
+                'wbc' not in data_forms.DataClassificationForm().fields
+            )
+        with self.settings(
+                DATA_CLASSIFICATION_FORM_FIELDS='__all__'
+                ):
+            reload(data_forms)
+            expected_fields = Data.AUXILIARY_FIELDS + \
+                Data.get_hemogram_main_fields() + \
+                Data.get_conversion_fields()
+            for field in expected_fields:
+                self.assertTrue(
+                    field in data_forms.DataClassificationForm().fields
+                )
+
+    def test_data_input_form_fields_setting(self):
+        with self.settings(
+                DATA_INPUT_FORM_FIELDS=['rbc', 'hgb', 'hgb_UmmolL']
+                ):
+            reload(data_forms)
+            self.assertTrue('rbc' in data_forms.DataInputForm().fields)
+            self.assertTrue('wbc' not in data_forms.DataInputForm().fields)
 
     def test_rest_api_data_list(self):
         data, _ = Data.objects.get_or_create(

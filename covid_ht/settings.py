@@ -169,4 +169,76 @@ HEMOGRAM_FIELDS_MIN_NUM_SUBMIT = 6
 
 DATA_PRIVACY_MODE = True
 
+# Fields to be used Data Input forms
+# (comment out according to equipments' output)
+DATA_INPUT_FORM_FIELDS = [
+    'age',
+    'sex',
+    'is_diabetic',
+    'is_hypertense',
+    'is_overweight',
+    'is_at_altitude',
+    'is_with_other_conds',
+    'rbc',
+    'hgb',
+    'hgb_UmmolL',
+    'hgbp',
+    'hgbp_UumolL',
+    'hgbg',
+    'htg',
+    'hct',
+    'mcv',
+    'mch',
+    'mch_Ufmolcell',
+    'mchc',
+    'mchc_UgdL',
+    'mchc_UmmolL',
+    'rdw',
+    'rtc',
+    'rtc_Upercentage_Rrbc',
+    'plt',
+    'mpv',
+    'pt',
+    'inr',
+    'aptt',
+    'tct',
+    'fbg',
+    'atb',
+    'atb_UmgmL',
+    'bt',
+    'vsy',
+    'wbc',
+    'neut',
+    'neut_Upercentage_Rwbc',
+    'nbf',
+    'nbf_Upercentage_Rwbc',
+    'lymp',
+    'lymp_Upercentage_Rwbc',
+    'mono',
+    'mono_Upercentage_Rwbc',
+    'mnl',
+    'mnl_Upercentace_Rwbc',
+    'eo',
+    'eo_Upercentage_Rwbc',
+    'baso',
+    'baso_Upercentage_Rwbc',
+    'cd4',
+    'iga',
+    'igd',
+    'ige',
+    'igg',
+    'igm',
+    'esr',
+    'crp',
+    'crp_UnmolL',
+    'aat',
+    'aat_UumolL',
+    'pct'
+]
+
+# Fields to be used Data Classification forms
+# (use "__all__" for all fields, DATA_INPUT_FORM_FIELDS to match
+# Data Input or provide a list with the desired fields)
+DATA_CLASSIFICATION_FORM_FIELDS = "__all__"
+
 django_heroku.settings(locals(), test_runner=False)

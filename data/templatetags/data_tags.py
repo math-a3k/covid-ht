@@ -32,3 +32,19 @@ def get_verbose_field_name(instance, field_name):
     Returns verbose_name for a field.
     """
     return instance._meta.get_field(field_name).verbose_name
+
+
+@register.filter
+def col_size(group):
+    """
+    Returns the column size for materializecss grid
+    """
+    return 12 // len(group)
+
+
+@register.filter
+def get_field(form, field):
+    """
+    Returns the field of a form
+    """
+    return form[field]

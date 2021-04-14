@@ -7,13 +7,43 @@ from django.utils.translation import gettext_lazy as _
 from .models import Data
 
 
-class DataClassificationForm(forms.ModelForm):
+class GroupedFieldsFormMixin:
+
+    def get_grouped_fields(self):
+        grouped_fields = []
+        processed_fields = []
+        for field in self.fields:
+            if field not in processed_fields:
+                conversion_fields = [
+                    f.attname for f in self._meta.model._meta.get_fields()
+                    if f.attname.startswith(field + "_U")
+                ]
+                if not conversion_fields:
+                    grouped_fields.append([field])
+                    processed_fields.append(field)
+                else:
+                    group = [field, ]
+                    for c_field in conversion_fields:
+                        group.append(c_field)
+                    grouped_fields.append(group)
+                    processed_fields.extend(group)
+        return grouped_fields
+
+
+def get_classification_fields():
+    if settings.DATA_CLASSIFICATION_FORM_FIELDS == '__all__':
+        fields = Data.AUXILIARY_FIELDS + \
+            Data.get_hemogram_main_fields() + \
+            Data.get_conversion_fields()
+        return fields
+    else:
+        return settings.DATA_CLASSIFICATION_FORM_FIELDS
+
+
+class DataClassificationForm(GroupedFieldsFormMixin, forms.ModelForm):
     class Meta:
         model = Data
-        exclude = [
-            'unit', 'user', 'unit_ii', 'uuid', 'timestamp', 'is_covid19',
-            'chtuid', 'is_finished'
-        ]
+        fields = get_classification_fields()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -35,9 +65,10 @@ class DataClassificationForm(forms.ModelForm):
         return cleaned_data
 
 
-class DataInputForm(forms.ModelForm):
+class DataInputForm(GroupedFieldsFormMixin, forms.ModelForm):
     class Meta:
         model = Data
-        exclude = [
-            'unit', 'user', 'uuid', 'timestamp',
-        ]
+        fields = \
+            ['unit_ii', Data.LEARNING_LABELS, ] + \
+            settings.DATA_INPUT_FORM_FIELDS + \
+            ['is_finished', ]
