@@ -607,7 +607,7 @@ class CovidHTMixin:
         descriptions["fowlkes_mallows_score"] = "Fowlkes-Mallows' Score"
         return descriptions
 
-    def _get_field_levels(self, field):
+    def _get_field_levels(self, field):  # pragma: no cover
         """
         To be submitted to upstream
         """
