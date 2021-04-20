@@ -42,6 +42,21 @@ admin.site.register(User, CovidHTUserAdmin)
 @admin.register(CurrentClassifier)
 class CurrentClassifierAdmin(admin.ModelAdmin):
 
+    fieldsets = (
+        (_("Local Classifier"), {
+            'fields': (
+                ('classifier', 'external'),
+            ),
+        }),
+        (_("Network Voting"), {
+            'fields': (
+                ('network_voting', ),
+                ('breaking_ties_policy',),
+                ('network_voting_threshold',),
+            ),
+        }),
+    )
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         extra_context["nodes"] = NetworkNode.objects.all()

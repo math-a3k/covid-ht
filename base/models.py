@@ -103,12 +103,14 @@ class CurrentClassifier(models.Model):
         'supervised_learning.SupervisedLearningTechnique',
         on_delete=models.PROTECT,
         related_name='current_classifier',
+        verbose_name=_("Internal Classifier"),
         blank=True, null=True
     )
     external = models.OneToOneField(
         'base.ExternalClassifier',
         on_delete=models.PROTECT,
         related_name='current_classifier',
+        verbose_name=_("External Classifier"),
         blank=True, null=True
     )
     network_voting = models.PositiveSmallIntegerField(
