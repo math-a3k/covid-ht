@@ -145,7 +145,7 @@ class CurrentClassifier(models.Model):
         else:
             return self.classifier._get_technique()
 
-    def predict(self, observations, include_scores=True):
+    def predict(self, observations):
         local_classifier = self.get_local_classifier()
         if not isinstance(observations, list):
             observations = [observations]
@@ -155,8 +155,7 @@ class CurrentClassifier(models.Model):
                 return (result['result'], result['prob'])
             else:
                 (res, scores) = \
-                    local_classifier.predict(
-                        observations, include_scores=include_scores)
+                    local_classifier.predict(observations, include_scores=True)
                 results = ["POSITIVE" if r else "NEGATIVE" for r in res]
                 return (results, scores)
         return (None, None)
@@ -315,7 +314,7 @@ class ExternalClassifier(models.Model):
     def is_inferred(self):
         return True
 
-    def predict(self, observations, include_scores=True):
+    def predict(self, observations):
         if not isinstance(observations, list):
             observations = [observations]
         data = DataClassificationSerializer(observations, many=True).data
