@@ -139,14 +139,14 @@ class CurrentClassifier(models.Model):
     def __str__(self):
         return str(self.classifier)
 
-    def get_local_classifier(self, internal=False):
-        if self.external and not internal:
+    def get_local_classifier(self):
+        if self.external:
             return self.external
         else:
             return self.classifier._get_technique()
 
-    def predict(self, observations, include_scores=True, internal=False):
-        local_classifier = self.get_local_classifier(internal=internal)
+    def predict(self, observations, include_scores=True):
+        local_classifier = self.get_local_classifier()
         if not isinstance(observations, list):
             observations = [observations]
         if local_classifier.is_inferred:
