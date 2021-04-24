@@ -2,8 +2,10 @@
 {% load static i18n django_ai_tags %}
 
 {% block actions %}
+	{% if original %}
 	<h2>Actions</h2>
 	<ul>
 		<li><a href="{% url 'base:update_metadata' original.externalclassifier_ptr_id %}">Update Metadata</a></li>
 	</ul>
+	{% endif %}
 {% endblock actions %}

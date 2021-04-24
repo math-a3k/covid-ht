@@ -71,18 +71,29 @@ class ExternalClassifierAdmin(admin.ModelAdmin):
         (_("General"), {
             'fields': (
                 ('name', ),
+                ('service_url', ),
+            ),
+        }),
+        (_("Users"), {
+            'fields': (
                 ('remote_user', 'remote_user_token'),
             ),
         }),
-        (_("URL and Endpoints"), {
-            'fields': (
-                ('service_url', 'timeout'),
-                ('endpoint_classify', 'endpoint_classify_dataset'),
-            ),
-        }),
-        (_("Metrics"), {
+        (_("Classification Service"), {
             'fields': (
                 ('metrics',),
+            ),
+        }),
+        (_("Timeout"), {
+            'classes': ('collapse',),
+            'fields': (
+                ('timeout',),
+            ),
+        }),
+        (_("Endpoints"), {
+            'classes': ('collapse',),
+            'fields': (
+                ('endpoint_classify', 'endpoint_classify_dataset'),
             ),
         }),
         (_("Other"), {
@@ -111,23 +122,15 @@ class NetworkNodeAdmin(admin.ModelAdmin):
         (_("General"), {
             'fields': (
                 ('name', ),
+                ('service_url', ),
+            ),
+        }),
+        (_("Users"), {
+            'fields': (
                 ('unit', 'user',),
                 ('remote_user', 'remote_user_token'),
             ),
         }),
-        (_("URL and Endpoints"), {
-            'fields': (
-                ('service_url', 'timeout'),
-                ('endpoint_data',),
-                ('endpoint_classify', 'endpoint_classify_dataset'),
-            ),
-        }),
-        (_("Metrics"), {
-            'fields': (
-                ('metrics',),
-            ),
-        }),
-
         (_("Data Sharing"), {
             'fields': (
                 ('data_sharing_is_enabled',),
@@ -137,6 +140,20 @@ class NetworkNodeAdmin(admin.ModelAdmin):
         (_("Classification Service"), {
             'fields': (
                 ('classification_request', ),
+                ('metrics',),
+            ),
+        }),
+        (_("Timeout"), {
+            'classes': ('collapse',),
+            'fields': (
+                ('timeout',),
+            ),
+        }),
+        (_("Endpoints"), {
+            'classes': ('collapse',),
+            'fields': (
+                ('endpoint_data',),
+                ('endpoint_classify', 'endpoint_classify_dataset'),
             ),
         }),
         (_("Other"), {
