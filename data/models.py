@@ -1,4 +1,3 @@
-#
 import uuid
 
 from django.conf import settings
@@ -12,7 +11,91 @@ from django.urls import reverse
 from .conversions import unit_conversion
 
 
-class Data(models.Model):
+class ConversionFieldsModelMixin:
+
+    @classmethod
+    def get_conversion_fields(cls):
+        return [
+            field.attname for field in Data._meta.get_fields()
+            if "_U" in field.attname
+        ]
+
+    def parse_field_name(self, field_name):
+        main_field, conv_rule = field_name.split('_U')
+        if "R" in conv_rule:
+            unit, relative_to_field = conv_rule.split('_R')
+        else:
+            unit, relative_to_field = (conv_rule, None)
+        return (main_field, unit, relative_to_field)
+
+    def get_conversion_fields_for_field(self, field):  # pragma: no cover
+        return [
+            f.attname for f in self._meta.get_fields()
+            if f.attname.startswith(field + "_U")
+        ]
+
+    def get_converted_field_value(self, field):  # pragma: no cover
+        conversion_fields = self.get_conversion_fields_for_field(field)
+        for c_field in conversion_fields:
+            if getattr(self, c_field, None):
+                return self.get_conversion_value(c_field)
+        return None
+
+    def get_conversion_value(self, conversion_field):
+        conversion_field_value = getattr(self, conversion_field, None)
+        if not conversion_field_value:
+            return None
+        main_field, from_unit, relative_to_field = \
+            self.parse_field_name(conversion_field)
+        to_unit = self.MAIN_FIELDS_UNITS[main_field]['unit']
+        if relative_to_field:
+            relative_to_value = getattr(self, relative_to_field, None)
+            # Not used yet - for the future
+            if not relative_to_value:  # pragma: no cover
+                relative_to_value = \
+                    self.get_converted_field_value(relative_to_field)
+        else:
+            relative_to_value = None
+        #
+        return unit_conversion(
+            conversion_field_value, from_unit, to_unit, relative_to_value
+        )
+
+    def apply_conversion_fields_rules(self):
+        applied = []
+        fields = [f.attname for f in self._meta.get_fields()]
+        for field in fields:
+            if 'U' in field:
+                converted_value = self.get_conversion_value(field)
+                if converted_value:
+                    main_field, from_unit, relative_to_field = \
+                        self.parse_field_name(field)
+                    setattr(
+                        self, main_field, converted_value
+                    )
+                    applied.append(field)
+        return applied
+
+    def clean(self):
+        for conversion_field in self.get_conversion_fields():
+            if getattr(self, conversion_field, None):
+                main_field, from_unit, relative_to_field = \
+                    self.parse_field_name(conversion_field)
+                if relative_to_field and \
+                        not getattr(self, relative_to_field, None):
+                    raise ValidationError(
+                        {relative_to_field:
+                            _('This field must be present in order to use '
+                              '%(field)s' % {'field': conversion_field})}
+                    )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        self.apply_conversion_fields_rules()
+        super().save(*args, **kwargs)
+
+
+class Data(ConversionFieldsModelMixin, models.Model):
     """
     Main Data object - Hemogram result fields, auxiliary variables fields
     and input related fields
@@ -58,6 +141,8 @@ class Data(models.Model):
         'igg': {'unit': 'x109L'},
         'igm': {'unit': 'x109L'}
     }
+    MAIN_FIELDS_UNITS = HEMOGRAM_MAIN_FIELDS
+
     AUXILIARY_FIELDS = [
         'age', 'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
         'is_at_altitude', 'is_with_other_conds',
@@ -78,6 +163,7 @@ class Data(models.Model):
         (True, _("Male"))
     )
 
+    # METADATA FIELDS
     chtuid = models.CharField(
         _("Covid-HT Unique IDentifier"),
         max_length=5, blank=True,
@@ -117,10 +203,13 @@ class Data(models.Model):
         _("Timestamp"),
         default=now
     )
+    # -> CLASSIFICATION FIELDS
+    # LABELS
     is_covid19 = models.BooleanField(
         _("Is COVID19?"),
         blank=True, null=True
     )
+    # AUXILIARY FIELDS
     age = models.PositiveSmallIntegerField(
         _("Age"),
         blank=True, null=True
@@ -153,7 +242,7 @@ class Data(models.Model):
         help_text=_('Is the Patient with other Relevant Conditions? '
                     '(Transplantation, Blood disorders, etc.)'),
     )
-    # HEMOGRAM RESULTS FIELDS
+    # HEMOGRAM FIELDS
     # Red Blood Cells
     rbc = models.DecimalField(
         _("RBC (x10^12/L)"),
@@ -542,85 +631,8 @@ class Data(models.Model):
     def url(self):
         return(reverse('data:detail', args=[self.uuid]))
 
-    @classmethod
-    def get_hemogram_main_fields(cls):
-        return [field for field in Data.HEMOGRAM_MAIN_FIELDS]
-
-    @classmethod
-    def get_conversion_fields(cls):
-        return [
-            field.attname for field in Data._meta.get_fields()
-            if "_U" in field.attname
-        ]
-
-    def parse_field_name(self, field_name):
-        main_field, conv_rule = field_name.split('_U')
-        if "R" in conv_rule:
-            unit, relative_to_field = conv_rule.split('_R')
-        else:
-            unit, relative_to_field = (conv_rule, None)
-        return (main_field, unit, relative_to_field)
-
-    def get_conversion_fields_for_field(self, field):  # pragma: no cover
-        return [
-            f.attname for f in self._meta.get_fields()
-            if f.attname.startswith(field + "_U")
-        ]
-
-    def get_converted_field_value(self, field):  # pragma: no cover
-        conversion_fields = self.get_conversion_fields_for_field(field)
-        for c_field in conversion_fields:
-            if getattr(self, c_field, None):
-                return self.get_conversion_value(c_field)
-        return None
-
-    def get_conversion_value(self, conversion_field):
-        conversion_field_value = getattr(self, conversion_field, None)
-        if not conversion_field_value:
-            return None
-        main_field, from_unit, relative_to_field = \
-            self.parse_field_name(conversion_field)
-        to_unit = self.HEMOGRAM_MAIN_FIELDS[main_field]['unit']
-        if relative_to_field:
-            relative_to_value = getattr(self, relative_to_field, None)
-            # Not used yet - for the future
-            if not relative_to_value:  # pragma: no cover
-                relative_to_value = \
-                    self.get_converted_field_value(relative_to_field)
-        else:
-            relative_to_value = None
-        #
-        return unit_conversion(
-            conversion_field_value, from_unit, to_unit, relative_to_value
-        )
-
-    def apply_conversion_fields_rules(self):
-        applied = []
-        fields = [f.attname for f in self._meta.get_fields()]
-        for field in fields:
-            if 'U' in field:
-                converted_value = self.get_conversion_value(field)
-                if converted_value:
-                    main_field, from_unit, relative_to_field = \
-                        self.parse_field_name(field)
-                    setattr(
-                        self, main_field, converted_value
-                    )
-                    applied.append(field)
-        return applied
-
     def clean(self):
-        for conversion_field in self.get_conversion_fields():
-            if getattr(self, conversion_field, None):
-                main_field, from_unit, relative_to_field = \
-                    self.parse_field_name(conversion_field)
-                if relative_to_field and \
-                        not getattr(self, relative_to_field, None):
-                    raise ValidationError(
-                        {relative_to_field:
-                            _('This field must be present in order to use '
-                              '%(field)s' % {'field': conversion_field})}
-                    )
+        super().clean()
         if self.is_finished and \
                 getattr(self, self.LEARNING_LABELS, None) is None:
             raise ValidationError(
@@ -629,10 +641,9 @@ class Data(models.Model):
                       ' is not present.')}
             )
 
-    def save(self, *args, **kwargs):
-        self.clean()
-        self.apply_conversion_fields_rules()
-        super().save(*args, **kwargs)
+    @classmethod
+    def get_hemogram_main_fields(cls):
+        return [field for field in Data.HEMOGRAM_MAIN_FIELDS]
 
     @classmethod
     def _get_learning_fields(cls):
