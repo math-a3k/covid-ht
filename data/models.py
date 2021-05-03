@@ -503,7 +503,7 @@ class Data(ConversionFieldsModelMixin, models.Model):
         help_text=_('Mononuclear Leukocytes (x10^9/L)'),
         validators=[MinValueValidator(0.01), MaxValueValidator(20.0)]
     )
-    mnl_Upercentace_Rwbc = models.DecimalField(
+    mnl_Upercentage_Rwbc = models.DecimalField(
         _("MNL (% WBC)"),
         max_digits=4, decimal_places=2,
         blank=True, null=True,

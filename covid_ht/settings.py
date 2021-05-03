@@ -217,7 +217,7 @@ DATA_INPUT_FORM_FIELDS = [
     'mono',
     'mono_Upercentage_Rwbc',
     'mnl',
-    'mnl_Upercentace_Rwbc',
+    'mnl_Upercentage_Rwbc',
     'eo',
     'eo_Upercentage_Rwbc',
     'baso',
