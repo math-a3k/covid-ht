@@ -8,6 +8,7 @@ from rest_framework import status
 from data.serializers import (
     DataClassificationSerializer, DatasetClassificationSerializer
 )
+from data.models import Data
 
 from ..models import CurrentClassifier
 
@@ -21,7 +22,10 @@ class Classify(generics.GenericAPIView):
     _classifier = None
 
     def get_data(self, serializer):
-        return serializer.data
+        data = Data.apply_conversion_fields_rules_to_dict(
+            serializer.validated_data
+        )
+        return data
 
     def get_classifier(self):
         if not self._classifier:
@@ -77,4 +81,8 @@ class ClassifyDataset(Classify):
     serializer_class = DatasetClassificationSerializer
 
     def get_data(self, serializer):
-        return serializer.data['dataset']
+        data = []
+        for s_vd in serializer.validated_data['dataset']:
+            d = Data.apply_conversion_fields_rules_to_dict(s_vd)
+            data.append(d)
+        return data

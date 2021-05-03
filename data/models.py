@@ -1,3 +1,4 @@
+from copy import copy
 import uuid
 
 from django.conf import settings
@@ -16,11 +17,12 @@ class ConversionFieldsModelMixin:
     @classmethod
     def get_conversion_fields(cls):
         return [
-            field.attname for field in Data._meta.get_fields()
+            field.attname for field in cls._meta.get_fields()
             if "_U" in field.attname
         ]
 
-    def parse_field_name(self, field_name):
+    @classmethod
+    def parse_field_name(cls, field_name):
         main_field, conv_rule = field_name.split('_U')
         if "R" in conv_rule:
             unit, relative_to_field = conv_rule.split('_R')
@@ -28,32 +30,22 @@ class ConversionFieldsModelMixin:
             unit, relative_to_field = (conv_rule, None)
         return (main_field, unit, relative_to_field)
 
-    def get_conversion_fields_for_field(self, field):  # pragma: no cover
-        return [
-            f.attname for f in self._meta.get_fields()
-            if f.attname.startswith(field + "_U")
-        ]
-
-    def get_converted_field_value(self, field):  # pragma: no cover
-        conversion_fields = self.get_conversion_fields_for_field(field)
-        for c_field in conversion_fields:
-            if getattr(self, c_field, None):
-                return self.get_conversion_value(c_field)
-        return None
-
-    def get_conversion_value(self, conversion_field):
-        conversion_field_value = getattr(self, conversion_field, None)
+    @classmethod
+    def get_conversion_value(cls, conversion_field, obj):
+        if not isinstance(obj, dict):
+            conversion_field_value = getattr(obj, conversion_field, None)
+        else:
+            conversion_field_value = obj.get(conversion_field, None)
         if not conversion_field_value:
             return None
         main_field, from_unit, relative_to_field = \
-            self.parse_field_name(conversion_field)
-        to_unit = self.MAIN_FIELDS_UNITS[main_field]['unit']
+            cls.parse_field_name(conversion_field)
+        to_unit = cls.MAIN_FIELDS_UNITS[main_field]['unit']
         if relative_to_field:
-            relative_to_value = getattr(self, relative_to_field, None)
-            # Not used yet - for the future
-            if not relative_to_value:  # pragma: no cover
-                relative_to_value = \
-                    self.get_converted_field_value(relative_to_field)
+            if not isinstance(obj, dict):
+                relative_to_value = getattr(obj, relative_to_field, None)
+            else:
+                relative_to_value = obj.get(relative_to_field, None)
         else:
             relative_to_value = None
         #
@@ -61,18 +53,33 @@ class ConversionFieldsModelMixin:
             conversion_field_value, from_unit, to_unit, relative_to_value
         )
 
+    @classmethod
+    def apply_conversion_fields_rules_to_dict(cls, dict_obj):
+        _dict = copy(dict_obj)
+        # TBI:
+        # 'dictionary changed size during iteration' runtime error is
+        # triggered if dict_obj is not copied and data is submitted with
+        # 'app/json' (and in tests) while it doesn't when submitted
+        # with 'multipart/form-data' - how it gets circumvented?
+        for field in dict_obj:
+            if 'U' in field:
+                conversion_value = cls.get_conversion_value(field, dict_obj)
+                if conversion_value:
+                    main_field, from_unit, relative_to_field = \
+                        cls.parse_field_name(field)
+                    _dict[main_field] = conversion_value
+        return _dict
+
     def apply_conversion_fields_rules(self):
         applied = []
         fields = [f.attname for f in self._meta.get_fields()]
         for field in fields:
             if 'U' in field:
-                converted_value = self.get_conversion_value(field)
-                if converted_value:
+                conversion_value = self.get_conversion_value(field, self)
+                if conversion_value:
                     main_field, from_unit, relative_to_field = \
                         self.parse_field_name(field)
-                    setattr(
-                        self, main_field, converted_value
-                    )
+                    setattr(self, main_field, conversion_value)
                     applied.append(field)
         return applied
 

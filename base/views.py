@@ -7,6 +7,7 @@ from django.views.generic import RedirectView
 from django.utils.translation import ugettext_lazy as _
 
 from data.forms import DataClassificationForm
+from data.models import Data
 
 from .models import CurrentClassifier, ExternalClassifier, NetworkNode
 
@@ -20,9 +21,11 @@ def home(request):
     if request.method == 'POST':
         dataform = DataClassificationForm(request.POST)
         if dataform.is_valid():
+            data = Data.apply_conversion_fields_rules_to_dict(
+                dataform.cleaned_data
+            )
             try:
-                (result, result_prob, votes) = \
-                    classifier.network_predict(dataform.cleaned_data)
+                (result, result_prob, votes) = classifier.network_predict(data)
                 result = result[0]
                 result_prob = result_prob[0]
             except Exception as e:

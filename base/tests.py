@@ -827,11 +827,13 @@ class TestBase(SimpleTestCase):
             {"dataset": [
                     {
                         "rbc": 3, "wbc": 5, "plt": 150,
-                        "neut": 0.1, "lymp": 0.1, "mono": 0.1
+                        "neut": 0.3, "lymp": 0.3, "mono": 0.3
                     },
                     {
                         "rbc": 3, "wbc": 5, "plt": 150,
-                        "neut": 0.1, "lymp": 0.1, "mono": 0.1
+                        "neut_Upercentage_Rwbc": 10,
+                        "lymp_Upercentage_Rwbc": 10,
+                        "mono_Upercentage_Rwbc": 10
                     },
                ]
              },

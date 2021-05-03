@@ -372,6 +372,24 @@ class TestData(SimpleTestCase):
             self.assertTrue('rbc' in data_forms.DataInputForm().fields)
             self.assertTrue('wbc' not in data_forms.DataInputForm().fields)
 
+    def test_data_apply_conversion_fields_rules_to_dict(self):
+        data = {
+            'rbc': Decimal('3.5'),
+            'wbc': Decimal(3),
+            'hgb_UmmolL': Decimal(2),
+            'lymp_Upercentage_Rwbc': Decimal(10)
+        }
+        expected_result = {
+            'rbc': Decimal('3.5'),
+            'wbc': Decimal(3),
+            'hgb': Decimal(2) * Decimal('1.62'),
+            'hgb_UmmolL': Decimal(2),
+            'lymp': Decimal('0.3'),
+            'lymp_Upercentage_Rwbc': Decimal(10)
+        }
+        result = Data.apply_conversion_fields_rules_to_dict(data)
+        self.assertEqual(expected_result, result)
+
     def test_rest_api_data_list(self):
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
