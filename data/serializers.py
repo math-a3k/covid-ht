@@ -76,7 +76,7 @@ class DataClassificationSerializer(ModelValidatedModelSerializer):
         model = Data
         exclude = [
             'id', 'unit', 'user', 'unit_ii', 'uuid', 'timestamp', 'is_covid19',
-            'is_finished', 'chtuid'
+            'is_finished',
         ]
 
     def validate(self, data):
