@@ -14,3 +14,6 @@ local.py
 .tox
 nosetests.xml
 htmlcov
+
+# Sphinx documentation
+docs/_build
