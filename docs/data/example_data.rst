@@ -6,9 +6,9 @@ Example Data
 
 ``covid-ht`` project comes with example data to evaluate the functioning of the different parts of the system and the performance on your hardware.
 
-It is controlled with the :setting:`EXAMPLE_DATA` (enabled by default) and its relatived ones.
+It is controlled with the :setting:`EXAMPLE_DATA_V2` (enabled by default) and :setting:`EXAMPLE_DATA_SIZE`.
 
-By default, it consists of 1000 hemograms, 600 positives (:setting:`EXAMPLE_DATA_COVID19`) and 400 negatives(:setting:`EXAMPLE_DATA_NO_COVID19`) with only 15 fields containing data where only 5 fields "discern" the labels:
+By default, it consists of 1000 observations - 60% positives and 40% negatives (approximately) - with only 15 fields containing data where only 5 fields "discern" the labels:
 
 * 3 differs in 10% in mean only,
 * 1 differs in variance only,
@@ -18,24 +18,40 @@ while the rest are non-informative to the classification problem.
 
 Auxiliary fields also do not provide information.
 
-No data contamination - both groups are homogeneous - no outliers, no mixed populations, etc. (see :ref:`robustness`).
+There is no data contamination - both groups are homogeneous - no outliers, no mixed populations, etc. (see :ref:`robustness`).
 
-With this scenario, bundled classifiers achieve a cross-validated accuracy above 90%.
+With this scenario - COVID19 affects the results in at least 5 variables the same way in a population, bundled classifiers achieve a cross-validated accuracy, precision and recall (sensitivity) above 80% with 1000 observations.
 
-It also provides a baseline of the accuracy, precision and recall that the service can provide if 1000 observations are gathered with the same characteristics (covid and non-covid hemograms differing in 5 variables the same way).
+.. note::
 
-That baseline may be improved by tunning the classifier.
+	There is **NO WARRANTY** that real data will have the same distribution as the stated. The only way of evaluating the real performance of the test is by using real data.
 
-This also allows to evaluate the capacity of your server out-of-the-box to see if it will fulfill your expected demand (see :ref:`load_testing`).
+Further improvements can be obtained by tunning the classifier and / or increasing the sample size.
 
-The example data is generated in `0006_example_data`_ and `0014_example_data_fix`_ migrations of the ``data`` app.
+Example data also allows to evaluate the capacity of your server out-of-the-box to see if it will fulfill your expected demand (see :ref:`load_testing`).
 
-You can safely remove it at any time by issuing ``python manage.py remove_example_data``.
+Observations for the example data are generated with `data.utils.get_hemogram_data`_.
 
-To re-create the example data, re-run the migrations::
+Managing Example Data
+=====================
 
-	> python manage.py migrate data zero
-	> python manage.py migrate data
+A ``django-admin`` command, `data.management.commands.example_data`_ is provided to conveniently reset, create and remove the intance's example data.
 
-.. _0006_example_data: https://github.com/math-a3k/covid-ht/blob/master/data/migrations/0006_example_data.py
-.. _0014_example_data_fix: https://github.com/math-a3k/covid-ht/blob/master/data/migrations/00014_example_data_fix.py
+To safely remove all example data (observations, users and units), use the ``--remove`` option of the ``example_data`` command, i.e.::
+
+	> python manage.py example_data --remove
+
+For resetting example data (discard all observations) use the ``--reset`` option, i.e.::
+
+	> python manage.py example_data --reset
+
+Creating example data (observations, users and units) is done with the ``--create`` option, i.e.::
+
+	> python manage.py example_data --create
+
+For evaluating different scenarios you may use both ``--reset`` and ``--create``, i.e. after editing `data.utils.get_hemogram_data`_, for evaluating with 10000 observations use::
+
+	> COVIDHT_EXAMPLE_DATA_SIZE=10000 python manage.py example_data --reset --create
+
+.. _data.utils.get_hemogram_data: https://github.com/math-a3k/covid-ht/blob/master/data/utils.py#L13
+.. _data.management.commands.example_data: https://github.com/math-a3k/covid-ht/blob/master/data/management/commands/example_data.py

@@ -3,7 +3,7 @@ import time
 
 from locust import HttpUser, SequentialTaskSet, task
 
-from locustfiles.utils import get_hemogram_data
+from data.utils import get_hemogram_data
 
 
 class DoctorTasks(SequentialTaskSet):

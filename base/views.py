@@ -15,7 +15,7 @@ from .models import CurrentClassifier, ExternalClassifier, NetworkNode
 def home(request):
     classifier = CurrentClassifier.objects.last()
     nodes = NetworkNode.objects.filter(classification_request=True)
-    example_data = getattr(settings, "EXAMPLE_DATA", False)
+    example_data = getattr(settings, "EXAMPLE_DATA_V2", False)
     chtuid = getattr(settings, "CHTUID", "-")
     (result, result_prob, votes, classifier_error) = None, None, None, None
     if request.method == 'POST':

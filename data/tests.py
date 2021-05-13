@@ -1,10 +1,14 @@
 from copy import deepcopy
 from decimal import Decimal
 from importlib import reload
+from io import StringIO
 import json
+import numpy as np
+import random
 
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, Client
+from django.core.management import call_command
 from django.urls import reverse
 
 from base.models import User
@@ -13,6 +17,7 @@ from units.models import Unit
 
 from .models import Data
 from .serializers import (DataInputSerializer, DataListSerializer, )
+from .utils import get_hemogram_data
 
 
 class TestData(SimpleTestCase):
@@ -667,3 +672,74 @@ class TestData(SimpleTestCase):
         self.assertEqual(response.status_code, 403)
         data.refresh_from_db()
         self.assertEqual(data.rbc, Decimal("3.6"))
+
+    def test_get_hemogram_data(self):
+        random.seed(123456)
+        np.random.seed(123456)
+
+        expected_result = {
+            'sex': False,
+            'age': 51,
+            'is_at_altitude': True,
+            'is_diabetic': False,
+            'is_hypertense': False,
+            'is_overweight': False,
+            'is_with_other_conds': False,
+            'baso': 3.7,
+            'eo': 2.56,
+            'hct': 0.49,
+            'hgb': 139,
+            'iga': 4.51,
+            'igm': 46.68,
+            'lymp': 9.53,
+            'mchc': 3,
+            'mcv': 60,
+            'mono': 5.87,
+            'neut': 8.73,
+            'plt': 216,
+            'rbc': 7.27,
+            'rdw': 14.95,
+            'wbc': 4.74
+        }
+        result = get_hemogram_data()
+        self.assertEqual(expected_result, result)
+        expected_result = {
+            'is_covid19': True,
+            'is_finished': True,
+            'sex': False,
+            'age': 48,
+            'is_at_altitude': True,
+            'is_diabetic': True,
+            'is_hypertense': True,
+            'is_overweight': False,
+            'is_with_other_conds': False,
+            'baso': 1.68,
+            'eo': 7.15,
+            'hct': 0.73,
+            'hgb': 134,
+            'iga': 1.31,
+            'igm': 49.45,
+            'lymp': 6.22,
+            'mchc': 4,
+            'mcv': 63,
+            'mono': 7.26,
+            'neut': 3.06,
+            'plt': 213,
+            'rbc': 2,
+            'rdw': 7.84,
+            'wbc': 8.43
+        }
+        result = get_hemogram_data(for_input=True, is_finished=True)
+        self.assertEqual(expected_result, result)
+
+    def test_example_data_command(self):
+        # Test Command Outputs
+        out = StringIO()
+        with self.settings(EXAMPLE_DATA_SIZE=10):
+            call_command('example_data', '--create', stdout=out)
+            self.assertIn('Successfully created example data', out.getvalue())
+            call_command('example_data', '--reset', stdout=out)
+            self.assertIn('Successfully reseted example data', out.getvalue())
+            call_command('example_data', '--remove', stdout=out)
+            self.assertIn('Successfully removed example data', out.getvalue())
+        # ...

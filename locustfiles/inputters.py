@@ -4,7 +4,8 @@ import time
 
 from locust import HttpUser, SequentialTaskSet, task
 
-from locustfiles.utils import LoginTaskSetMixin, get_hemogram_data
+from data.utils import get_hemogram_data
+from locustfiles.utils import LoginTaskSetMixin
 
 seed(123456)
 
