@@ -11,7 +11,9 @@ from django.test import SimpleTestCase, Client
 from django.core.management import call_command
 from django.urls import reverse
 
-from base.models import User
+from django_ai.supervised_learning.models import SupervisedLearningTechnique
+
+from base.models import CurrentClassifier, User
 import data.forms as data_forms
 from units.models import Unit
 
@@ -733,13 +735,82 @@ class TestData(SimpleTestCase):
         self.assertEqual(expected_result, result)
 
     def test_example_data_command(self):
-        # Test Command Outputs
         out = StringIO()
         with self.settings(EXAMPLE_DATA_SIZE=10):
-            call_command('example_data', '--create', stdout=out)
-            self.assertIn('Successfully created example data', out.getvalue())
-            call_command('example_data', '--reset', stdout=out)
-            self.assertIn('Successfully reseted example data', out.getvalue())
+            # -> Test --remove
+            cc = CurrentClassifier.objects.last()
+            if cc:
+                # As SimpleTestCase shares the database with tests, cc may be
+                # already created if other tests are ran before
+                CurrentClassifier.objects.last().delete()
             call_command('example_data', '--remove', stdout=out)
             self.assertIn('Successfully removed example data', out.getvalue())
-        # ...
+            self.assertEqual(
+                Data.objects.filter(unit__name__icontains="(E)").count(), 0
+            )
+            self.assertEqual(
+                User.objects.filter(last_name__icontains="(E)").count(), 0
+            )
+            self.assertEqual(
+                Unit.objects.filter(name__icontains="(E)").count(), 0
+            )
+            self.assertEqual(
+                SupervisedLearningTechnique.objects
+                .filter(name__icontains="(Example)").count(), 0
+            )
+            # Test removal of cc
+            classifier = SupervisedLearningTechnique.objects\
+                .create(name="Test (Example)", data_model="data.Data")
+            CurrentClassifier.objects.create(classifier=classifier)
+            call_command('example_data', '--remove', stdout=out)
+            self.assertIn('Successfully removed example data', out.getvalue())
+            self.assertEqual(
+                CurrentClassifier.objects.last(), None
+            )
+            classifier = SupervisedLearningTechnique.objects\
+                .create(name="Test Example without ()", data_model="data.Data")
+            cc = CurrentClassifier.objects.create(classifier=classifier)
+            call_command('example_data', '--remove', stdout=out)
+            self.assertIn('Successfully removed example data', out.getvalue())
+            self.assertEqual(
+                CurrentClassifier.objects.last(), cc
+            )
+            # -> Test --create
+            call_command('example_data', '--create', stdout=out)
+            self.assertIn('Successfully created example data', out.getvalue())
+            self.assertEqual(
+                Data.objects.filter(unit__name__icontains="(E)").count(), 10
+            )
+            self.assertEqual(
+                User.objects.filter(last_name__icontains="(E)").count(), 2
+            )
+            self.assertEqual(
+                Unit.objects.filter(name__icontains="(E)").count(), 5
+            )
+            self.assertEqual(
+                SupervisedLearningTechnique.objects
+                .filter(name__icontains="(Example)").count(), 3
+            )
+            # Test creation of cc
+            CurrentClassifier.objects.last().delete()
+            call_command('example_data', '--create', stdout=out)
+            self.assertIn('Successfully created example data', out.getvalue())
+            self.assertEqual(
+                Data.objects.filter(unit__name__icontains="(E)").count(), 20
+            )
+            self.assertEqual(
+                User.objects.filter(last_name__icontains="(E)").count(), 2
+            )
+            self.assertEqual(
+                Unit.objects.filter(name__icontains="(E)").count(), 5
+            )
+            self.assertEqual(
+                SupervisedLearningTechnique.objects
+                .filter(name__icontains="(Example)").count(), 3
+            )
+            # -> Test --reset
+            call_command('example_data', '--reset', stdout=out)
+            self.assertIn('Successfully reseted example data', out.getvalue())
+            self.assertEqual(
+                Data.objects.filter(unit__name__icontains="(E)").count(), 0
+            )

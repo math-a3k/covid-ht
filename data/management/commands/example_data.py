@@ -18,7 +18,7 @@ from units.models import Unit
 random.seed(123456)
 
 
-class Command(BaseCommand):  # pragma: no cover
+class Command(BaseCommand):
     help = 'Create, reset and remove example data'
 
     def add_arguments(self, parser):
