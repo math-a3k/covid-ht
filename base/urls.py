@@ -14,10 +14,6 @@ urlpatterns = [
          views.UpdateMetadataView.as_view(),
          name="update_metadata"
          ),
-    path('about',
-         views.about,
-         name="about"
-         ),
     path('accounts/',
          include('django.contrib.auth.urls')
          ),

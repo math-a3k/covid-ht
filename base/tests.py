@@ -580,11 +580,6 @@ class TestBase(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'class=" validate invalid" id="id_wbc">')
 
-    def test_about(self):
-        response = self.client.get(reverse("base:about"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'About')
-
     def test_currentclassifier_no_internal_no_external(self):
         cc = CurrentClassifier()
         with self.assertRaises(ValidationError):

@@ -50,14 +50,6 @@ def home(request):
     )
 
 
-def about(request):
-    return render(
-        request,
-        'base/about.html',
-        {}
-    )
-
-
 class UpdateMetadataView(UserPassesTestMixin, RedirectView):
     """
     Updates metadata for External Classifiers
