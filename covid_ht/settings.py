@@ -147,6 +147,8 @@ REST_FRAMEWORK = {
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # -> covid-ht specifics
 
 # CHTUID: Covid-HT instance Unique IDentinfier is 5 case-sensitive alphanumeric
