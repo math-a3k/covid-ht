@@ -1,8 +1,10 @@
 import random
 import uuid
 
+from django.apps import apps
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.management import create_permissions
 from django.contrib.auth.models import Permission
 from django.core.management.base import BaseCommand
 
@@ -116,6 +118,10 @@ class Command(BaseCommand):
             hgb_ct = ContentType.objects.get_for_model(DecisionTree)
             svm_ct = ContentType.objects.get_for_model(SVM)
             cc_ct = ContentType.objects.get_for_model(CurrentClassifier)
+            if not Permission.objects.filter(content_type=hgb_ct):
+                # Trigger permission creation if they aren't available
+                for app_config in apps.get_app_configs():
+                    create_permissions(app_config, verbosity=0)
             p1 = Permission.objects.get(
                 content_type=hgb_ct, codename="add_decisiontree"
             )
