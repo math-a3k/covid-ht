@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #
-    'nested_admin',
     'materializecssform',
     'rest_framework',
     'rest_framework.authtoken',

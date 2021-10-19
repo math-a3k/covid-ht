@@ -38,8 +38,6 @@ urlpatterns = [
         ),
         name='javascript-catalog'
     ),
-    path('nested_admin/',
-         include('nested_admin.urls')),
     path('admin/', admin.site.urls),
     path('django-ai/',
          include('django_ai.ai_base.urls')),
