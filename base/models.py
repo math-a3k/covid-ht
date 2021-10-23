@@ -1,10 +1,17 @@
+from itertools import combinations
 from numpy import mean
 from numpy import nan as np_nan
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 import requests
+from scipy.special import comb
 from sklearn import metrics as sklearn_metrics
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OrdinalEncoder
+from tempfile import TemporaryFile
 
 from django.db import models
 from django.db.models.signals import post_save
@@ -15,11 +22,15 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from django_ai.ai_base.utils import allNotNone
 from django_ai.supervised_learning.models import HGBTreeClassifier, SVC
 from rest_framework import status
 
 from data.models import Data
 from data.serializers import DataClassificationSerializer, DataShareSerializer
+
+
+matplotlib.use('agg')
 
 
 class User(AbstractUser):
@@ -632,6 +643,80 @@ class CovidHTMixin:
         if save:
             self.save()
         return eo
+
+    def generate_image(self, observation):  # pragma: no cover
+        """
+        Based on https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html
+        """
+        cols = settings.IMAGE_GENERATION_FIELDS  # self.image_fields_to_graph
+        obs = self._observation_dict_to_list(observation)
+        if not allNotNone(obs):
+            return None
+        clf = self.get_engine_object()
+        data = np.array([r for r in self.get_data(cols) if allNotNone(r)])
+        targets = self.get_targets()
+
+        n_graphs = comb(len(cols), 2)
+        n_graphs_rows = int(np.ceil(n_graphs / 2))
+        fig = plt.figure()
+
+        for i, pair in enumerate(combinations(range(0, len(cols)), 2)):
+            ax = fig.add_subplot(
+                n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
+
+            x_min, x_max = data[:, pair[0]].min(), \
+                data[:, pair[0]].max()
+            margin_x = (x_max - x_min) / 20
+            x_min, x_max = x_min - margin_x, x_max + margin_x
+            y_min, y_max = data[:, pair[1]].min(), \
+                data[:, pair[1]].max()
+            margin_y = (y_max - y_min) / 20
+            h_x = (x_max - x_min) / 200
+            h_y = (y_max - y_min) / 200
+            y_min, y_max = y_min - margin_y, y_max + margin_y
+            xx, yy = np.meshgrid(np.arange(x_min, x_max, h_x),
+                                 np.arange(y_min, y_max, h_y))
+            cm = plt.cm.RdBu
+            cm_bright = ListedColormap(['#FF0000', '#0000FF'])
+
+            xx_ravel = xx.ravel()
+            yy_ravel = yy.ravel()
+            cols_for_stack = []
+            for i in range(0, len(obs)):
+                if i == pair[0]:
+                    cols_for_stack.append(xx_ravel)
+                elif i == pair[1]:
+                    cols_for_stack.append(yy_ravel)
+                else:
+                    cols_for_stack.append(np.full_like(xx_ravel, obs[i]))
+            grid = np.column_stack((*cols_for_stack, ))
+
+            if hasattr(clf, "decision_function"):
+                Z = clf.decision_function(grid)
+            else:
+                Z = clf.predict_proba(grid)[:, 1]
+            Z = Z.reshape(xx.shape)
+
+            ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
+            ax.scatter(data[:, pair[0]], data[:, pair[1]],
+                       c=targets, cmap=cm_bright, edgecolors=None, alpha=0.6)
+            ax.axvline(obs[pair[0]], c="green")
+            ax.axhline(obs[pair[1]], c="green")
+            ax.scatter(obs[pair[0]], obs[pair[1]], c="green",
+                       alpha=1, edgecolors='k')
+
+            ax.set_xlim(x_min, x_max)
+            ax.set_ylim(y_min, y_max)
+            ax.set_xticks(())
+            ax.set_yticks(())
+            ax.set_xlabel(cols[pair[0]])
+            ax.set_ylabel(cols[pair[1]])
+
+        fig.tight_layout()
+        with TemporaryFile(suffix=".svg") as tmpfile:
+            fig.savefig(tmpfile, format="svg")
+            tmpfile.seek(0)
+            return tmpfile.read().decode('utf-8')
 
 
 class DecisionTree(CovidHTMixin, HGBTreeClassifier):

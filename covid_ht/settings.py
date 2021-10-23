@@ -247,4 +247,7 @@ DATA_INPUT_FORM_FIELDS = [
 # Data Input or provide a list with the desired fields)
 DATA_CLASSIFICATION_FORM_FIELDS = "__all__"
 
+IMAGE_GENERATION = False
+IMAGE_GENERATION_FIELDS = ["rbc", "wbc", "hgb", "lymp"]
+
 django_heroku.settings(locals(), test_runner=False)

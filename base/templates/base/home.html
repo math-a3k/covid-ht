@@ -67,6 +67,9 @@
 				</dl>
 				{% else %}:</h5>
 				{% endif %}
+				{% if image %}
+					{{ image }}
+				{% endif %}
 			{% endif %}
 
 			<form action="" method="post">
@@ -94,3 +97,15 @@
 	</div>
 
 {% endblock content %}
+
+{% block extra_js %}
+	{{ block.super }}
+	<script>
+		var svg = document.querySelector("svg");
+		if (svg) {
+			svg.setAttribute("width", "100%");
+			svg.setAttribute("height", "100%");
+		};
+			
+	</script>
+{% endblock %}

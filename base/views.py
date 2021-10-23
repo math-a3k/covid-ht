@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import RedirectView
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from data.forms import DataClassificationForm
 from data.models import Data
@@ -17,7 +18,9 @@ def home(request):
     nodes = NetworkNode.objects.filter(classification_request=True)
     example_data = getattr(settings, "EXAMPLE_DATA_V2", False)
     chtuid = getattr(settings, "CHTUID", "-")
-    (result, result_prob, votes, classifier_error) = None, None, None, None
+    image_generation = getattr(settings, "IMAGE_GENERATION", False)
+    (result, result_prob, votes, classifier_error, image) = \
+        None, None, None, None, None
     if request.method == 'POST':
         dataform = DataClassificationForm(request.POST)
         if dataform.is_valid():
@@ -28,6 +31,10 @@ def home(request):
                 (result, result_prob, votes) = classifier.network_predict(data)
                 result = result[0]
                 result_prob = result_prob[0]
+                if image_generation:  # pragma: no cover
+                    image = mark_safe(
+                        classifier.get_local_classifier().generate_image(data)
+                    )
             except Exception as e:
                 classifier_error = str(e)
     else:
@@ -45,7 +52,8 @@ def home(request):
             'dataform': dataform,
             'result': result,
             'result_prob': result_prob,
-            'votes': votes
+            'votes': votes,
+            'image': image
         }
     )
 
