@@ -8,7 +8,7 @@ All the fields (variables) to be recorded in the instance's data are defined in 
 
 Along with the fields, there are configuration options defined in the model about the type and how to use the fields by the classifier and the HTML front-end.
 
-The main distinction in fields is between *Classification* and *Metadata*.
+The main distinction between fields is *Classification* and *Metadata*.
 
 Classification fields are those which are used for the Classification service (both at inference and prediction). They are grouped into *Hemogram Fields* and *Auxiliary Fields*.
 
@@ -22,11 +22,11 @@ Hemogram Fields
 
 Are those fields that store the results of a blood measurement or test.
 
-As Hematology equipment may have different outputs (measurement units) according to the country and / or their specification, Data may become not shareable and the Classification service may also become unavailable if there is not a "common denominator" in it.
+As Hematology equipment may have different outputs (measurement units) according to the country and / or their specification, Data may become not shareable and the Classification service may also become unavailable if there is not a "common denominator" on it.
 
-Addressing this is the definition of *Hemogram Main Fields*, which represent a variable with a "base unit" and will be fed to the Classification service (both at inference and prediction).
+Addressing this is the definition of *Hemogram Main Fields*, which represent "base unit" variables and will be fed to the Classification service (both at inference and prediction).
 
-For each Hemogram Main Field, *Conversions Fields* may be defined for results in other measurement units. Those values will be converted to the Main Field's unit and stored in the Main Field if applicable.
+For each Hemogram Main Field, *Conversions Fields* may be defined for results in other measurement units. Those values will be converted to the Main Field's unit and stored in the Main Field.
 
 *Hemogram Main Fields* are defined in ``Data.HEMOGRAM_MAIN_FIELDS`` with the measurement unit along the regular Django field definition, i.e.::
 
@@ -64,7 +64,7 @@ For each Hemogram Main Field, *Conversions Fields* may be defined for results in
 
     <hemogram_main_field>_U<measurment_unit>[_R<hemogram_main_field>]
 
-where ``_R`` is optional and reffers to "Relative to Main Field" (used in percentages) , i.e.::
+where ``_R`` is optional and reffers to "Relative to Main Field" for addressing percentages-like results, i.e.::
 
     mchc_UgdL = models.SmallIntegerField(
         _("MCHC (g/dL)"),
@@ -131,10 +131,13 @@ Other fields that are not Hemogram nor Auxiliary are considered Metadata.
 
 ``chtuid`` may be used in the Classification service according to the ``CHTUID_USE_IN_CLASSIFICATION`` setting.
 
+
+.. _data_model_classifier_configuration:
+
 Classifier Configuration
 ========================
 
-The constants following constants and methods are used by the internal classifier (if it is integrated through ``django-ai``):
+The constants following constants and methods are used by the internal classifier if it is integrated through ``django-ai`` (see :ref:`internal_classifiers`):
 
 ``CHTUID_FIELD``
     Sets which field is used as the instance identifier (used internally).
@@ -151,7 +154,7 @@ The constants following constants and methods are used by the internal classifie
 ``_get_learning_fields()``
     Returns a list of the fields that will be used by the classifier for learning and prediction.
 
-Those provide a default to the classifiers using the model as data source and can be overridden in a classifier basis with their respective fields or by defining them in the classifier model.
+Those provide a default to the classifiers using the model as data source and can be overridden on a classifier basis in their respective fields, i.e. through the admin interface.
 
 .. _data_model_considerations:
 
@@ -160,27 +163,28 @@ Other Considerations
 
 Hemogram and Auxiliary fields were initially provided as template.
 
-However, networking functioning depends on the Data model.
+However, :ref:`networking` functionality depends on the Data model.
 
 If the Data model of your network is not syncronized, network classification and data sharing may fail due to unrecongnized fields or validation.
 
-``covid-ht`` is designed to have all the "possible" fields on the Data model and then select which ones you will input through settings according to the output of your local haematology equipment.
+``covid-ht`` is designed to have all the "possible" fields on the Data model and then select which ones you will input through settings according to the output of your local hematology equipment and your blood testing practices.
 
-The fields that are not used (``fields_na``), i.e. because the local equiment does not supports them, are not fed to the classifier when performing inference and won't be taken into account if submitted when classifying. Missing fields which where fed to classifier will be imputed if the classifier does not suppor NA values (see :ref:`internal_classifiers`).
+The fields that are not used (``fields_na``) are not fed to the classifier when performing inference and won't be taken into account if submitted when classifying (this is not the case of missing values in an observation that will be imputed if the classifier does not suppor NA values - see :ref:`internal_classifiers`).
 
-This way, a "general" template can be developed and all instances with the template will be able to exchange Data and Classification services, independently of which variables they effectively input.
+This way, all instances will be able to exchange Data and Classification services, independently of which variables (fields) they effectively recorded.
 
-If you find yourself with the need of adding or altering a field in the Data model, consider submitting it to the project for inclusion in the project's upstream as the "general" template.
-
-In the case of customizing the instance for other purposes - i.e. :ref:`beyond_covid19` - the procedure is:
+If you find yourself with the need of adding or altering a field in the Data model, the procedure is:
 
 * Add or modify the Django field
-* Add the field to the correspondent configuration constants if applicable
-* Add the field to the correspondent setting if applicable
+* Add the field to the :ref:`correspondent configuration <data_model_classifier_configuration>` constants if applicable
+* Add the field to the :ref:`correspondent setting <settings>` if applicable
 * Generate the Django migration (``python manage.py makemigrations``)
 * Run the internal test suite (``python manage.py test``)
 * Run the migration (``python manage.py migrate``)
 * Perform inference in the local classifier if applicable
+
+If the altering is for the original purpose of the project (see :ref:`beyond_covid19`), consider submitting it to the project for inclusion in the project's upstream as the "general" template.
+
 
 .. _Django model: https://docs.djangoproject.com/en/3.2/topics/db/models/
 .. _Data model: https://github.com/math-a3k/covid-ht/blob/master/data/models.py#L105

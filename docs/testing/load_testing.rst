@@ -1,9 +1,9 @@
 .. _load_testing:
 
-Load Testing of covid-ht Instances
-==================================
+Load Testing of ``covid-ht`` Instances
+======================================
 
-covid-ht includes scripts to estimate the instance capacity and to simulate
+``covid-ht`` includes scripts to estimate the instance capacity and to simulate
 usage scenarios in order to fulfill demand.
 
 Those scripts are meant to be run with `locust <https://locust.io>`_ and
@@ -26,6 +26,8 @@ Configuration
 If the Example Data is not available, you will have to provide a user and its
 credentials by setting the counterintuitively named environment variables
 ``CHTLT_USER_USERNAME``, ``CHTLT_USER_PASSWORD`` and ``CHTLT_USER_AUTH_TOKEN``.
+
+Otherwise the example users will be used for the requests.
 
 
 Estimating Instance Capacity
@@ -90,5 +92,5 @@ Notes
 
 * Classification performance depends on the Current Classifier
   selected for the instance.
-* Data input test will generate actual data in your instance.
+* Data input test will generate actual data in your instance, which can be safely removed with the ``example_data`` command if it was created with the example users (see :ref:`managing_example_data`).
 * `locust Documentation <https://docs.locust.io/en/stable/>`_.

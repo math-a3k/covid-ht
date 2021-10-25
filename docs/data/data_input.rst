@@ -27,15 +27,16 @@ The process can be automatic and / or manual.
 Automatic
 =========
 
-In the cases where the hematology equiment can post its results via HTTP, a REST endpoint is provided for inputting data to the system (see :ref:`rest_api_classify`).
+A REST endpoint is provided for inputting data to the system (see :ref:`rest_api_data`).
 
-In the cases where the results are stored digitally and accessable, i.e. a RDBMS, the input process can be scripted through the REST enpoints (see :ref:`rest_api_classify`).
+This allows to automatize in situations where:
 
-Same is for medical records (third party) software.
+* the hematology equiment (or any third party software) can post its results via HTTP, or
+* the results are stored digitally and accessable, i.e. a RDBMS (the input process can be scripted through the REST enpoints).
 
 Manual
 ======
 
 In the other cases, where printed results are the way of exchanging information, those must be manually entered to the ``covid-ht`` instance in order to use them.
 
-For that case, ``covid-ht`` provides an HTML front-end designed for touch screens - i.e. smart-phones - and numeric keyboards with a mouse to confortably input the data.
+For that case, ``covid-ht`` provides an HTML front-end designed for touch screens - i.e. smart-phones - and numeric keyboards with a mouse to confortably input the data, accessed through the ``/data/input`` url or the keyboard icon.

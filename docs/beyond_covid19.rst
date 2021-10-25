@@ -6,7 +6,7 @@ Beyond COVID19
 
 ``covid-ht`` was motivated by helping with the struggle against the COVID19's pandemic in resource-constrainted places where specific testing wasn't available at sufficient quantities and triggered by `watching a Doctor`_ in El Salvador doing the process.
 
-It is designed to be inclusive with those who want to improve their response, leveraging already existing infrastructure, incorporated into already ongoing practices and providing knowledge while it is developed locally if needed with networking.
+It is designed to be inclusive with those who want to improve their response, leveraging already existing infrastructure (servers and smartphones), incorporated into already ongoing practices and providing knowledge  via networking.
 
 Given that vaccines are already developed, at some point in the future, the pandemic will end.
 

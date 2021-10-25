@@ -34,21 +34,11 @@ In your computer
     > source .env/bin/activate
     > pip install -r requirements.txt
 
-* Run the migrations the following order:
-
-.. code-block:: shell
-
-    > python manage.py migrate base
-    > python manage.py migrate data 0001
-
-* Review the :ref:`example_data` settings, set them accordingly and then run all the pending migrations:
+* Review the :ref:`example_data` settings, set them accordingly, and then run the migrations:
 
 .. code-block:: shell
 
     > python manage.py migrate
-
-.. note::
-  You can safely remove it at any time by issuing ``python manage.py remove_example_data``.
 
 * Create a superuser:
 

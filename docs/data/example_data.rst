@@ -32,6 +32,8 @@ Example data also allows to evaluate the capacity of your server out-of-the-box 
 
 Observations for the example data are generated with `data.utils.get_hemogram_data`_.
 
+.. _managing_example_data:
+
 Managing Example Data
 =====================
 

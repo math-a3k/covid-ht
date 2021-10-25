@@ -15,7 +15,7 @@ This is what allows to:
 
 * integrate with third-party software for:
     * *data inputing*, i.e. hematology equipements, clinical records software, alternative front-ends,
-    * *provide classification services*, i.e. clinical records software, alternative front-ends, etc.
+    * *providing classification services*, i.e. clinical records software, alternative front-ends, etc.
 
 * network with other instances to collaborate for providing a better service.
 
@@ -35,9 +35,9 @@ Classification REST API Endpoints
 
 Both endpoints provide the information of the classification service via **GET** requests and the service itself via **POST**.
 
-The difference is how the request is done. The first one accepts an observation while the second a list of observations in the ``dataset`` key.
+The difference between endpoints is how the request is done. The first one accepts an observation "directly" while the second a list of observations in the ``dataset`` key, as shown `here <https://github.com/math-a3k/covid-ht/blob/master/base/tests.py#L811>`_.
 
-If the ``use_network`` **GET** parameter is set to ``true`` with a **POST** request, it will provide network classification and include the voting information in the response.
+If the ``use_network`` **GET** parameter is set to ``true`` with a **POST** request - i.e. ``POST /api/v1/classify/?use_network=TRUE`` - it will provide network classification and include the voting information in the response.
 
 .. _rest_api_data:
 
@@ -51,7 +51,7 @@ It provides the input and retrieving of data to / from the instance.
 
 The first one (``/data``) provides listing through ``GET`` and creation through ``POST``.
 
-The second one (``/data/{uuid}``) provides retrieve through ``GET`` and update through ``PUT`` and ``PATCH`` (partial).
+The second one (``/data/{uuid}``) provides retrieve through ``GET`` and update through ``POST``.
 
 .. note::
 

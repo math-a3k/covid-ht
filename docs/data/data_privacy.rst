@@ -8,7 +8,7 @@ Privacy is taken into account very seriously: Patient's Data is Patient's Data.
 
 There may be local regulations about Health Records.
 
-The part of the data that identifies the individual that generated the data **is not needed to the purpose of building the classifier**.
+The part of the data that identifies the individual that generated the data **is not needed for the purpose of building the classifier**.
 
 Anonymization
 =============
@@ -43,7 +43,7 @@ However, the probability of identifying a specific person in the population that
 
 Therefore, a record is considered to be anoynimized when the **Unit Internal Identifier** is removed.
 
-Once the data has been anonymized, restrictions about Health records should not apply and the data may be publicly available.
+Once the data has been anonymized and consent has been granted, restrictions about Health records should not apply and the data may be publicly available.
 
 Data Privacy Mode
 =================

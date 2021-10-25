@@ -14,13 +14,13 @@ The recommended way of incorporating classifiers to ``covid-ht`` is through the 
 
 To integrate a classification technique, use a Django model which is subclass of ``django_ai.models.SupervisedLearningTechnique`` and it will be listed as an option in the Internal Classifier of CurrentClassifer.
 
-``django-ai`` integrates tightly with `scikit-learn <https://scikit-learn.org/stable/>`_, examples of how to integrate a sklearn classifier can be found in the bundled classifiers `here <https://github.com/math-a3k/django-ai/tree/covid-ht/django_ai/supervised_learning>`_.
+``django-ai`` integrates tightly with `scikit-learn <https://scikit-learn.org/stable/>`_, examples of how to integrate a sklearn classifier can be found in `the bundled classifiers`_.
 
-The rationale is to subclass them to adapt for the particular needs.
+The rationale is to subclass them to adapt for the particular needs, as shown in the `CovidHTMixin <https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L605>`_.
 
 There is no limitation on which implementation should be used, as long as the ``django-ai`` API is implemented, it will work.
 
-If you find inconvenient to use the ``django-ai`` API, you can override the ``get_local_classifier`` method of the ``CurrentClassifier`` model. The method should return an object with the ``is_inferred`` property, a metadata field and a ``predict`` method that should take a list of observations and a boolean for including scores as arguments to return the predicted class for each observation with the correspondent score, for example::
+If you find inconvenient to use the ``django-ai`` API, you can override the ``get_local_classifier`` method of the `CurrentClassifier object`_. The method should return an object with the ``is_inferred`` property, a metadata field and a ``predict`` method that should take a list of observations and a boolean for including scores as arguments to return the predicted class for each observation with the correspondent score, for example::
 
 	import random
 
@@ -64,22 +64,24 @@ Many techniques does not support NA values natively, having to resort to data im
 
 ``django-ai`` provides data imputers for integrating those techniques without loosing functionality.
 
-Data imputation have the caveat that may affect the classification results unadvertly. ``django-ai`` provides an Introspection imputer that uses the same assumptions of the classifier for the process.
+Data imputation have the caveat that may affect the classification results unadvertly. ``django-ai`` provides an `Introspection imputer`_ that uses the same assumptions of the classifier for the process.
 
 Imputting can also be incorporated within the classifier if the engine supports it.
 
-Categorical Support
--------------------
+Categorical Data Support
+------------------------
 
-Although most of the categorical data is in auxiliary fields (see :ref:`data_model`), as this can be considered as an "indirect" test (it detects not directly the presence but indirectly through its effects), the auxiliary data makes able to discern shifts in values which are not caused by presence - i.e. people with african ethnicity have lower RBC than non-african while healthy, people with leukymia have different WBC values, people living at high-altitude have lower oxygen saturation and higher hemoglobin, people at different age, etc.
+Although most of the categorical data is in auxiliary fields (see :ref:`data_model`), as this can be considered as an "indirect" test - it detects not directly the presence but indirectly through its effects) - the auxiliary data makes able to discern shifts in values which are not caused by presence.
 
-If there is no auxiliary data, those observations may be "contradictory" to the classifier, leading to poor generalization.
+For example, people with african ethnicity have lower RBC than non-african while healthy, people with leukymia have different WBC values, people living at high-altitude have lower oxygen saturation and higher hemoglobin, people at different age, etc.
+
+If there is no auxiliary data, those observations may be "contradictory" to the classifier, leading to poor generalization and poor perfomance.
 
 Many techiques does not support categorical values natively, having to resort to data transformations to take them into account.
 
-``django-ai`` provides a Categorical Indicator Function Transformation for integrating those techniques.
+``django-ai`` provides a `Categorical Indicator Function Transformation`_ for integrating those techniques.
 
-Data transformations can also be incorporated within the classifier if the engine supports it.
+Data transformations can also be incorporated within the classifier if the engine supports it, as shown `here <https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L724>`_.
 
 .. _robustness:
 
@@ -112,4 +114,9 @@ Techniques that take into account outliers are called "robust", as "contaminatio
 
 If the technique is not robust, the effect of outliers can be mitigated in the preprocess data stage with the caveat that the outlier definition may not be in line with the technique and thus affecting its results unadvertly.
 
-``django-ai`` currently does not provides outlier mitigation functionality, it has to be supported by the technique.
+``django-ai`` currently does not provides outlier mitigation functionality, it has to be supported by the technique or incorporated through the engine.
+
+.. _the bundled classifiers: https://github.com/math-a3k/django-ai/tree/covid-ht/django_ai/supervised_learning
+.. _CurrentClassifier object: https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L89
+.. _Introspection imputer: https://github.com/math-a3k/django-ai/blob/covid-ht/django_ai/supervised_learning/models/data_imputers/introspection_imputer.py
+.. _Categorical Indicator Function Transformation: https://github.com/math-a3k/django-ai/blob/covid-ht/django_ai/ai_base/models/learning_technique.py#L371

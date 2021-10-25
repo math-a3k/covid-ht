@@ -20,7 +20,7 @@ Departure from those reference values may indicate an ongoing condition - i.e. b
 
 While there are guidelines to detect an infection through hemogram results, the specific effects on hemograms of COVID19 are being studied, i.e. in `C-reactive protein`_ and `viscosity`_.
 
-*Independently of the causes of such effects, as long as those are consistent to a "considerable" part of the population, a classifier can be developed in order to improve the toolkit of Health Professionals.*
+*Independently of the causes of such effects, as long as those are consistent to a "considerable" part of the population, a classifier can be developed in order to improve the diagnosing toolkit of Health Professionals.*
 
 This project aims to provide a tool to efficiently build and manage that classifier and make it effectively available for widespread use in order to improve detection, evaluation and resource efficiency of the COVID19 pandemic.
 
@@ -28,7 +28,7 @@ Early detection is deemed to be the greatest success factor in COVID19 treatment
 
 Improvements in early detection should increase successful treatments, potentially saving lives.
 
-Improved evaluation and resource efficiency can also be achieved with the tool, i.e. by only using expensive specific COVID19 testing for assesing full recovery when the classification of the hemogram indicates so.
+Improved evaluation and resource efficiency can also be achieved with the tool, i.e. by only using expensive specific COVID19 testing - i.e. PCR testing - for assesing full recovery when the classification of the hemogram indicates so.
 
 `A machine-learning classifier can outperform top-level Human experts' classification`_. AI classifiers takes into account relations and differences that are hard to spot to most Humans systematically.
 

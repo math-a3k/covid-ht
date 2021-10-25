@@ -1,3 +1,5 @@
+.. _settings:
+
 ========
 Settings
 ========
@@ -37,12 +39,29 @@ Whether to use the CHTUID as a categorical variable in the Internal Classifier. 
 
 .. setting:: EXAMPLE_DATA
 
+``EXAMPLE_DATA_V2``
+===================
+
+Default: ``True``
+
+Whether generate example data on migrations when creating the database and alert the existance in the HTML front-end (see :ref:`example_data`).
+
+``EXAMPLE_DATA_SIZE``
+=====================
+
+Default: 1000
+
+Size of the dataset generated in the example data - either by migrations or the ``example_data`` django-admin command (see :ref:`example_data`).
+
 ``EXAMPLE_DATA``
 ================
 
 Default: ``True``
 
 Whether generate example data on migrations (see :ref:`example_data`).
+
+.. warning::
+    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_V2`.
 
 .. setting:: EXAMPLE_SIZE_COVID19
 
@@ -53,6 +72,9 @@ Default: ``600``
 
 Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (see :ref:`example_data`).
 
+.. warning::
+    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_hemogram_data`` (see :ref:`example_data`).
+
 .. setting:: EXAMPLE_SIZE_NO_COVID19
 
 ``EXAMPLE_SIZE_NO_COVID19``
@@ -61,6 +83,9 @@ Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (se
 Default: ``400``
 
 Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (see :ref:`example_data`).
+
+.. warning::
+    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_hemogram_data`` (see :ref:`example_data`).
 
 .. setting:: HEMOGRAM_MIN_NUM_SUBMIT
 
@@ -88,3 +113,20 @@ Fields to be used in the data input form in the HTML front-end. Should be adjust
 Default: ``__all__``
 
 Fields to be used in the data classification form in the HTML front-end (home).
+
+
+``IMAGE_GENERATION``
+====================
+
+Default: ``False``
+
+Enable image generation for the classification service (currently only in the HTML front-end).
+
+
+``IMAGE_GENERATION_FIELDS``
+===========================
+
+Default: ``["rbc", "wbc", "hgb", "lymp"]``
+
+Fields to be used in the image generation.
+

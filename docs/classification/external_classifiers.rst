@@ -12,17 +12,17 @@ The only requirement for third-party classifiers is to implement the classificat
 
 Set up is done by the admin interface of the instance (``/admin/base/externalclassifier``).
 
-**Remote User** reffers to the user the instance will use to authenticate its requests to the external classifier. That authentication is done via a token that the external service must generate and provide to the covid-ht instance.
+**Remote User** reffers to the user the instance will use to authenticate its requests to the external classifier. That authentication is done via a token that the external service must generate and provide to the ``covid-ht`` instance.
 
 **Metrics** are those to be evaluated on the external classifier with the data in the instance. The purpose of them is to evaluate how the classifier performs with the data generated from the instance's population, as the classifier may have been trained or inferred with another population and / or with different fields or variables.
 
-Note that these metrics are **not cross-validated** and hence not an accurate estimation of their real or true values (cross-validated estimations are done at training time).
+Note that these metrics are **not cross-validated** and hence a "not-so-accurate" estimation of their real or true values (`cross-validated estimations <https://en.wikipedia.org/wiki/Cross-validation_(statistics)>`_ are done at training time) for the instance's population.
 
-If those metrics are not inline with the cross-validated ones reported by the external service, the classifier may not be suitable for the instance's population.
+If those metrics are not in line with the cross-validated ones reported by the external service, the classifier may not be suitable for the instance's population.
 
 The list of available metrics is `here <docs.scikit-learn>`_.
 
-Values of these metrics, as well as supported and non-available fields differences are calculated and stored in the metadata which can be updated with the link at the bottom of the page.
+Values of these metrics, as well as supported and non-available fields differences are calculated and stored in the metadata which can be updated with the link at the bottom of the page of its admin interface.
 
 Other Considerations
 ====================
