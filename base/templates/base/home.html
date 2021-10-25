@@ -34,10 +34,10 @@
 					{% endfor %}
 				{% endif %}
 				{% if example_data %}
-					<h4><strong>{% translate "DUMMY DATA - NO REAL USE" %}</strong></h4>
+					<h4><strong>{% translate "EXAMPLE DATA" %}</strong></h4>
 					<p>
-						{% blocktranslate trimmed with data_link='<a href="/data">/data</a>' admin_link='<a href="/admin">/admin</a>' %}
-						    You can see how COVID19 and NO COVID19 hemograms look like in {{ data_link }}, log in with 'manager:manager' to see the data input workflow and 'staff:staff' in {{ admin_link }} to see the classifier management (database resets everyday)
+						{% blocktranslate trimmed with data_link='<a href="/data">/data</a>' admin_link='<a href="/admin">/admin</a>' docs_link='<a href="https://covid-ht.readthedocs.io/en/latest/data/example_data.html">documentation</a>' %}
+						    See {{ docs_link }} for detailed information. You can inspect how COVID19 and NO COVID19 hemograms look like in {{ data_link }}, log in with 'manager:manager' to see the data input workflow and 'staff:staff' in {{ admin_link }} to see the classifier management.
 						{% endblocktranslate %}
 					</p>
 				{% endif %}
