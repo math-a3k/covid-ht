@@ -6,6 +6,7 @@ import json
 import numpy as np
 import random
 
+from django.contrib.auth.models import Permission
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase, Client
 from django.core.management import call_command
@@ -808,6 +809,12 @@ class TestData(SimpleTestCase):
                 SupervisedLearningTechnique.objects
                 .filter(name__icontains="(Example)").count(), 3
             )
+            # Test creation of perms
+            Permission.objects.all().delete()
+            call_command('example_data', '--create', stdout=out)
+            self.assertIn('Successfully created example data', out.getvalue())
+            self.assertTrue(Permission.objects.count() > 0)
+
             # -> Test --reset
             call_command('example_data', '--reset', stdout=out)
             self.assertIn('Successfully reseted example data', out.getvalue())
