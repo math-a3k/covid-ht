@@ -659,21 +659,22 @@ class CovidHTMixin:
         n_graphs = comb(len(cols), 2)
         n_graphs_rows = int(np.ceil(n_graphs / 2))
         fig = plt.figure()
-
         for i, pair in enumerate(combinations(range(0, len(cols)), 2)):
             ax = fig.add_subplot(
                 n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
-
-            x_min, x_max = data[:, pair[0]].min(), \
-                data[:, pair[0]].max()
+            x_min = np.minimum(data[:, pair[0]].min(), obs[pair[0]])
+            x_max = np.maximum(data[:, pair[0]].max(), obs[pair[0]])
             margin_x = (x_max - x_min) / 20
             x_min, x_max = x_min - margin_x, x_max + margin_x
-            y_min, y_max = data[:, pair[1]].min(), \
-                data[:, pair[1]].max()
-            margin_y = (y_max - y_min) / 20
+
+            y_min = np.minimum(data[:, pair[1]].min(), obs[pair[1]])
+            y_max = np.maximum(data[:, pair[1]].max(), obs[pair[1]])
+            margin_y = (y_max - y_min) / 3
+            y_min, y_max = y_min - margin_y, y_max + margin_y
+
             h_x = (x_max - x_min) / 200
             h_y = (y_max - y_min) / 200
-            y_min, y_max = y_min - margin_y, y_max + margin_y
+
             xx, yy = np.meshgrid(np.arange(x_min, x_max, h_x),
                                  np.arange(y_min, y_max, h_y))
             cm = plt.cm.RdBu
@@ -698,8 +699,10 @@ class CovidHTMixin:
             Z = Z.reshape(xx.shape)
 
             ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
-            ax.scatter(data[:, pair[0]], data[:, pair[1]],
-                       c=targets, cmap=cm_bright, edgecolors=None, alpha=0.6)
+            if getattr(settings, 'IMAGE_SHOW_DATASET', True):
+                ax.scatter(data[:, pair[0]], data[:, pair[1]],
+                           c=targets, cmap=cm_bright,
+                           edgecolors=None, alpha=0.6)
             ax.axvline(obs[pair[0]], c="green")
             ax.axhline(obs[pair[1]], c="green")
             ax.scatter(obs[pair[0]], obs[pair[1]], c="green",
@@ -707,10 +710,12 @@ class CovidHTMixin:
 
             ax.set_xlim(x_min, x_max)
             ax.set_ylim(y_min, y_max)
-            ax.set_xticks(())
-            ax.set_yticks(())
-            ax.set_xlabel(cols[pair[0]])
-            ax.set_ylabel(cols[pair[1]])
+            ax.tick_params(axis='both', which='major',
+                           labelsize=4, pad=1)
+            ax.set_xticks((x_min, x_max))
+            ax.set_yticks((y_min, y_max))
+            ax.set_xlabel(cols[pair[0]], labelpad=-5, size=6)
+            ax.set_ylabel(cols[pair[1]], labelpad=-10, size=6)
 
         fig.tight_layout()
         with TemporaryFile(suffix=".svg") as tmpfile:

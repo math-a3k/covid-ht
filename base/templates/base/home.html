@@ -103,9 +103,11 @@
 	<script>
 		var svg = document.querySelector("svg");
 		if (svg) {
+			svg.setAttribute("class", "materialboxed");
 			svg.setAttribute("width", "100%");
 			svg.setAttribute("height", "100%");
+			M.Materialbox.init(svg)
 		};
-			
+		
 	</script>
 {% endblock %}
