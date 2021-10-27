@@ -69,6 +69,9 @@
 				{% endif %}
 				{% if image %}
 					{{ image }}
+					<p class="center-align">
+						<a id="svg-new-tab" class="btn-small blue" href="#">{% translate "Open Graph in new Tab" %}</a>
+					</p>
 				{% endif %}
 			{% endif %}
 
@@ -106,7 +109,20 @@
 			svg.setAttribute("class", "materialboxed");
 			svg.setAttribute("width", "100%");
 			svg.setAttribute("height", "100%");
-			M.Materialbox.init(svg)
+			M.Materialbox.init(svg);
+			// https://stackoverflow.com/questions/46203427/open-inline-svg-in-new-window-javascript
+			document.getElementById("svg-new-tab").onclick = (evt) => {
+		  	  // convert to a valid XML source
+			  const as_text = new XMLSerializer().serializeToString(svg);
+			  // store in a Blob
+			  const blob = new Blob([as_text], { type: "image/svg+xml" });
+			  // create an URI pointing to that blob
+			  const url = URL.createObjectURL(blob);
+			  const win = open(url);
+			  // so the Garbage Collector can collect the blob
+			  win.onload = (evt) => URL.revokeObjectURL(url);
+			};
+
 		};
 		
 	</script>

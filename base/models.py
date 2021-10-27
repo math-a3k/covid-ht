@@ -648,18 +648,26 @@ class CovidHTMixin:
         """
         Based on https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html
         """
-        cols = settings.IMAGE_GENERATION_FIELDS  # self.image_fields_to_graph
+        fields_to_graph = settings.GRAPHING_FIELDS
+        fields_available_obs = [
+            f for f, v in observation.items() if v is not None
+        ]
+        cols = [
+            c for c in self._get_data_learning_fields()
+            if c in fields_available_obs and c in fields_to_graph
+        ]
         obs = self._observation_dict_to_list(observation)
-        if not allNotNone(obs):
-            return None
         clf = self.get_engine_object()
-        data = np.array([r for r in self.get_data(cols) if allNotNone(r)])
+        data = np.array(self.get_data())
         targets = self.get_targets()
 
         n_graphs = comb(len(cols), 2)
         n_graphs_rows = int(np.ceil(n_graphs / 2))
         fig = plt.figure()
-        for i, pair in enumerate(combinations(range(0, len(cols)), 2)):
+        cols_indexes = [
+            self._get_field_index_by_name(col, supported=True) for col in cols
+        ]
+        for i, pair in enumerate(combinations(cols_indexes, 2)):
             ax = fig.add_subplot(
                 n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
             x_min = np.minimum(data[:, pair[0]].min(), obs[pair[0]])
@@ -672,13 +680,13 @@ class CovidHTMixin:
             margin_y = (y_max - y_min) / 3
             y_min, y_max = y_min - margin_y, y_max + margin_y
 
-            h_x = (x_max - x_min) / 200
-            h_y = (y_max - y_min) / 200
+            h_x = (x_max - x_min) / settings.GRAPHING_MESH_STEPS
+            h_y = (y_max - y_min) / settings.GRAPHING_MESH_STEPS
 
             xx, yy = np.meshgrid(np.arange(x_min, x_max, h_x),
                                  np.arange(y_min, y_max, h_y))
-            cm = plt.cm.RdBu
-            cm_bright = ListedColormap(['#FF0000', '#0000FF'])
+            cm = plt.cm.bwr
+            cm_bright = ListedColormap(['#0000FF', '#FF0000'])
 
             xx_ravel = xx.ravel()
             yy_ravel = yy.ravel()
@@ -689,9 +697,16 @@ class CovidHTMixin:
                 elif i == pair[1]:
                     cols_for_stack.append(yy_ravel)
                 else:
-                    cols_for_stack.append(np.full_like(xx_ravel, obs[i]))
+                    cols_for_stack.append(np.full(xx_ravel.shape, obs[i]))
             grid = np.column_stack((*cols_for_stack, ))
-
+            if not self.SUPPORTS_NA:
+                grid_imputed = []
+                for point in grid:
+                    if not all(point):
+                        point = self._observation_dict_to_list(
+                            self.impute(list(point)))
+                    grid_imputed.append(point)
+                grid = grid_imputed
             if hasattr(clf, "decision_function"):
                 Z = clf.decision_function(grid)
             else:
@@ -699,7 +714,7 @@ class CovidHTMixin:
             Z = Z.reshape(xx.shape)
 
             ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
-            if getattr(settings, 'IMAGE_SHOW_DATASET', True):
+            if getattr(settings, 'GRAPHING_SHOW_DATASET', True):
                 ax.scatter(data[:, pair[0]], data[:, pair[1]],
                            c=targets, cmap=cm_bright,
                            edgecolors=None, alpha=0.6)
@@ -714,8 +729,12 @@ class CovidHTMixin:
                            labelsize=4, pad=1)
             ax.set_xticks((x_min, x_max))
             ax.set_yticks((y_min, y_max))
-            ax.set_xlabel(cols[pair[0]], labelpad=-5, size=6)
-            ax.set_ylabel(cols[pair[1]], labelpad=-10, size=6)
+            ax.set_xlabel(
+                self._get_field_name_by_index(pair[0], supported=True),
+                labelpad=-5, size=6)
+            ax.set_ylabel(
+                self._get_field_name_by_index(pair[1], supported=True),
+                labelpad=-10, size=6)
 
         fig.tight_layout()
         with TemporaryFile(suffix=".svg") as tmpfile:

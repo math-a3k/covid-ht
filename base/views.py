@@ -18,7 +18,7 @@ def home(request):
     nodes = NetworkNode.objects.filter(classification_request=True)
     example_data = getattr(settings, "EXAMPLE_DATA_V2", False)
     chtuid = getattr(settings, "CHTUID", "-")
-    image_generation = getattr(settings, "IMAGE_GENERATION", False)
+    graphing = getattr(settings, "GRAPHING", False)
     (result, result_prob, votes, classifier_error, image) = \
         None, None, None, None, None
     if request.method == 'POST':
@@ -31,7 +31,7 @@ def home(request):
                 (result, result_prob, votes) = classifier.network_predict(data)
                 result = result[0]
                 result_prob = result_prob[0]
-                if image_generation:  # pragma: no cover
+                if graphing:  # pragma: no cover
                     image = mark_safe(
                         classifier.get_local_classifier().generate_image(data)
                     )
