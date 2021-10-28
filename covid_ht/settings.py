@@ -247,9 +247,13 @@ DATA_INPUT_FORM_FIELDS = [
 # Data Input or provide a list with the desired fields)
 DATA_CLASSIFICATION_FORM_FIELDS = "__all__"
 
-GRAPHING = os.environ.get("COVIDHT_GRAPHING", True)
+# Graphing
 GRAPHING = os.environ.get("COVIDHT_GRAPHING", False)
 GRAPHING_FIELDS = ["rbc", "wbc", "plt", "lymp", "neut"]
+GRAPHING_DATASET = os.environ.get(
+    "COVIDHT_GRAPHING_DATASET", True)
+GRAPHING_COND_DEC_FUNCTION = os.environ.get(
+    "COVIDHT_GRAPHING_COND_DEC_FUNCTION", True)
 GRAPHING_MESH_STEPS = \
     int(os.environ.get("COVIDHT_GRAPHING_MESH_STEPS", 200))
 

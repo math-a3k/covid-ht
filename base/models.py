@@ -22,7 +22,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from django_ai.ai_base.utils import allNotNone
 from django_ai.supervised_learning.models import HGBTreeClassifier, SVC
 from rest_framework import status
 
@@ -667,9 +666,18 @@ class CovidHTMixin:
         cols_indexes = [
             self._get_field_index_by_name(col, supported=True) for col in cols
         ]
+        cols_offset = 0
+        if self.cift_is_enabled:
+            cols_offset = self._get_cift_offset()
+        cols_indexes = [ci + cols_offset for ci in cols_indexes]
+
+        cm = plt.cm.bwr
+        cm_bright = ListedColormap(['#0000FF', '#FF0000'])
+
         for i, pair in enumerate(combinations(cols_indexes, 2)):
             ax = fig.add_subplot(
                 n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
+            
             x_min = np.minimum(data[:, pair[0]].min(), obs[pair[0]])
             x_max = np.maximum(data[:, pair[0]].max(), obs[pair[0]])
             margin_x = (x_max - x_min) / 20
@@ -680,49 +688,53 @@ class CovidHTMixin:
             margin_y = (y_max - y_min) / 3
             y_min, y_max = y_min - margin_y, y_max + margin_y
 
-            h_x = (x_max - x_min) / settings.GRAPHING_MESH_STEPS
-            h_y = (y_max - y_min) / settings.GRAPHING_MESH_STEPS
+            if getattr(settings, 'GRAPHING_COND_DEC_FUNCTION', False):
 
-            xx, yy = np.meshgrid(np.arange(x_min, x_max, h_x),
-                                 np.arange(y_min, y_max, h_y))
-            cm = plt.cm.bwr
-            cm_bright = ListedColormap(['#0000FF', '#FF0000'])
+                h_x = (x_max - x_min) / settings.GRAPHING_MESH_STEPS
+                h_y = (y_max - y_min) / settings.GRAPHING_MESH_STEPS
 
-            xx_ravel = xx.ravel()
-            yy_ravel = yy.ravel()
-            cols_for_stack = []
-            for i in range(0, len(obs)):
-                if i == pair[0]:
-                    cols_for_stack.append(xx_ravel)
-                elif i == pair[1]:
-                    cols_for_stack.append(yy_ravel)
+                xx, yy = np.meshgrid(np.arange(x_min, x_max, h_x),
+                                     np.arange(y_min, y_max, h_y))
+
+                xx_ravel = xx.ravel()
+                yy_ravel = yy.ravel()
+                cols_for_stack = []
+                for i in range(0, len(obs)):
+                    if i == pair[0]:
+                        cols_for_stack.append(xx_ravel)
+                    elif i == pair[1]:
+                        cols_for_stack.append(yy_ravel)
+                    else:
+                        cols_for_stack.append(np.full(xx_ravel.shape, obs[i]))
+                grid = np.column_stack((*cols_for_stack, ))
+                if not self.SUPPORTS_NA:
+                    grid_imputed = []
+                    imputer = self.get_data_imputer_object()
+                    for point in grid:
+                        if not all(point):
+                            point_imputed = imputer.impute_row(list(point))
+                        grid_imputed.append(point_imputed)
+                    grid = grid_imputed
+                if hasattr(clf, "decision_function"):
+                    Z = clf.decision_function(grid)
                 else:
-                    cols_for_stack.append(np.full(xx_ravel.shape, obs[i]))
-            grid = np.column_stack((*cols_for_stack, ))
-            if not self.SUPPORTS_NA:
-                grid_imputed = []
-                for point in grid:
-                    if not all(point):
-                        point = self._observation_dict_to_list(
-                            self.impute(list(point)))
-                    grid_imputed.append(point)
-                grid = grid_imputed
-            if hasattr(clf, "decision_function"):
-                Z = clf.decision_function(grid)
-            else:
-                Z = clf.predict_proba(grid)[:, 1]
-            Z = Z.reshape(xx.shape)
+                    Z = clf.predict_proba(grid)[:, 1]
+                Z = Z.reshape(xx.shape)
 
-            ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
-            if getattr(settings, 'GRAPHING_SHOW_DATASET', True):
+                ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
+
+            if getattr(settings, 'GRAPHING_DATASET', True):
                 ax.scatter(data[:, pair[0]], data[:, pair[1]],
                            c=targets, cmap=cm_bright,
                            edgecolors=None, alpha=0.6)
+
+            # Plot the observation
             ax.axvline(obs[pair[0]], c="green")
             ax.axhline(obs[pair[1]], c="green")
             ax.scatter(obs[pair[0]], obs[pair[1]], c="green",
                        alpha=1, edgecolors='k')
 
+            # Set lims, ticks and labels
             ax.set_xlim(x_min, x_max)
             ax.set_ylim(y_min, y_max)
             ax.tick_params(axis='both', which='major',
@@ -730,10 +742,12 @@ class CovidHTMixin:
             ax.set_xticks((x_min, x_max))
             ax.set_yticks((y_min, y_max))
             ax.set_xlabel(
-                self._get_field_name_by_index(pair[0], supported=True),
+                self._get_field_name_by_index(
+                    pair[0] - cols_offset, supported=True),
                 labelpad=-5, size=6)
             ax.set_ylabel(
-                self._get_field_name_by_index(pair[1], supported=True),
+                self._get_field_name_by_index(
+                    pair[1] - cols_offset, supported=True),
                 labelpad=-10, size=6)
 
         fig.tight_layout()
