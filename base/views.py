@@ -19,7 +19,7 @@ def home(request):
     example_data = getattr(settings, "EXAMPLE_DATA_V2", False)
     chtuid = getattr(settings, "CHTUID", "-")
     graphing = getattr(settings, "GRAPHING", False)
-    (result, result_prob, votes, classifier_error, image) = \
+    (result, result_prob, votes, classifier_error, graph) = \
         None, None, None, None, None
     if request.method == 'POST':
         dataform = DataClassificationForm(request.POST)
@@ -32,8 +32,8 @@ def home(request):
                 result = result[0]
                 result_prob = result_prob[0]
                 if graphing:  # pragma: no cover
-                    image = mark_safe(
-                        classifier.get_local_classifier().generate_image(data)
+                    graph = mark_safe(
+                        classifier.get_local_classifier().generate_graph(data)
                     )
             except Exception as e:
                 classifier_error = str(e)
@@ -53,7 +53,7 @@ def home(request):
             'result': result,
             'result_prob': result_prob,
             'votes': votes,
-            'image': image
+            'graph': graph
         }
     )
 

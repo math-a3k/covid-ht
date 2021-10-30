@@ -8,6 +8,7 @@ Classification
 
    internal_classifiers
    external_classifiers
+   graphing
 
 
 One of the main services that ``covid-ht`` provides is the Classification service.

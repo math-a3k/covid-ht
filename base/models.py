@@ -232,6 +232,16 @@ class CurrentClassifier(models.Model):
         else:
             return (results_list, scores_list)
 
+    def generate_graph(self, observations):
+        technique = self.classifier._get_technique()
+        if not isinstance(observations, list):
+            observations = [observations]
+        graphs = [
+            technique.generate_graph(observation)
+            for observation in observations
+        ]
+        return graphs
+
     def _get_network_votes(self, observations):
         votes = {}
         local_vote = self.predict(observations)
@@ -643,7 +653,7 @@ class CovidHTMixin:
             self.save()
         return eo
 
-    def generate_image(self, observation):  # pragma: no cover
+    def generate_graph(self, observation):  # pragma: no cover
         """
         Based on https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html
         """

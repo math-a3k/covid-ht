@@ -39,6 +39,8 @@ The difference between endpoints is how the request is done. The first one accep
 
 If the ``use_network`` **GET** parameter is set to ``true`` with a **POST** request - i.e. ``POST /api/v1/classify/?use_network=TRUE`` - it will provide network classification and include the voting information in the response.
 
+Setting the ``graph`` **GET** parameter to ``true`` in a **POST** request - i.e. ``POST /api/v1/classify/?graph=true`` will include the generated graph of the classification in SVG format under the ``graph`` key in the response.
+
 .. _rest_api_data:
 
 Data REST API Endpoints

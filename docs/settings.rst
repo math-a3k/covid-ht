@@ -115,18 +115,54 @@ Default: ``__all__``
 Fields to be used in the data classification form in the HTML front-end (home).
 
 
-``IMAGE_GENERATION``
-====================
+.. setting:: GRAPHING
 
-Default: ``False``
+``GRAPHING``
+============
 
-Enable image generation for the classification service (currently only in the HTML front-end).
+Default: ``True``
+
+Enable graph generation for the classification service (see :ref:`graphing`).
 
 
-``IMAGE_GENERATION_FIELDS``
-===========================
+.. setting:: GRAPHING_FIELDS
+
+``GRAPHING_FIELDS``
+===================
 
 Default: ``["rbc", "wbc", "hgb", "lymp"]``
 
-Fields to be used in the image generation.
+Fields to be used in the graph generation.
 
+
+.. setting:: GRAPHING_DATASET
+
+``GRAPHING_DATASET``
+===================
+
+Default: ``True``
+
+Whether to show or not the dataset in the generated graphs.
+
+
+.. setting:: GRAPHING_COND_DEC_FUNCTION
+
+``GRAPHING_COND_DEC_FUNCTION``
+==============================
+
+Default: ``True``
+
+Whether to show or not the Conditional Decision Function of the internal classifier in the generated graphs.
+
+.. warning::
+    This is computational expensive, see :ref:`graphing`.
+
+
+.. setting:: GRAPHING_MESH_STEPS
+
+``GRAPHING_MESH_STEPS``
+=======================
+
+Default: ``200``
+
+Amount of steps to be used when generating the mesh in which the Conditional Decision Function will be evaluated. Lower values will decrease the computational cost of including the Conditional Decision Function in the graphs at the expense of precision.

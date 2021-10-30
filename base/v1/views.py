@@ -19,6 +19,7 @@ class Classify(generics.GenericAPIView):
     """
     serializer_class = DataClassificationSerializer
     use_network = False
+    graph = False
     _classifier = None
 
     def get_data(self, serializer):
@@ -38,12 +39,19 @@ class Classify(generics.GenericAPIView):
         else:
             return self.get_classifier().predict(data) + (None, )
 
+    def generate_graph(self, data):
+        if self.graph and getattr(settings, "GRAPHING", False):
+            return self.get_classifier().generate_graph(data)
+        return None
+
     def post(self, request, format=None):
         """
         Return the result of classification if data submitted is valid.
         """
         self.use_network = \
             self.request.GET.get('use_network', False) in ["True", "true"]
+        self.graph = \
+            self.request.GET.get('graph', False) in ["True", "true"]
         if self.get_classifier():
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
@@ -52,6 +60,9 @@ class Classify(generics.GenericAPIView):
                 response_content = {'result': result, 'prob': result_prob}
                 if self.use_network:
                     response_content['votes'] = votes
+                if self.graph:
+                    response_content['graph'] = \
+                        self.generate_graph(self.get_data(serializer))
                 return Response(response_content, status=status.HTTP_200_OK)
             else:
                 return Response(
