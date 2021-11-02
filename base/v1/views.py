@@ -40,7 +40,7 @@ class Classify(generics.GenericAPIView):
             return self.get_classifier().predict(data) + (None, )
 
     def generate_graph(self, data):
-        if self.graph and getattr(settings, "GRAPHING", False):
+        if settings.GRAPHING:
             return self.get_classifier().generate_graph(data)
         return None
 

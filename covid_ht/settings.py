@@ -248,7 +248,7 @@ DATA_INPUT_FORM_FIELDS = [
 DATA_CLASSIFICATION_FORM_FIELDS = "__all__"
 
 # Graphing
-GRAPHING = os.environ.get("COVIDHT_GRAPHING", False)
+GRAPHING = os.environ.get("COVIDHT_GRAPHING", True)
 GRAPHING_FIELDS = ["rbc", "wbc", "plt", "lymp", "neut"]
 GRAPHING_DATASET = os.environ.get(
     "COVIDHT_GRAPHING_DATASET", True)

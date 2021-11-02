@@ -661,18 +661,14 @@ class CovidHTMixin:
         fields_available_obs = [
             f for f, v in observation.items() if v is not None
         ]
-        cols = [
-            c for c in self._get_data_learning_fields()
-            if c in fields_available_obs and c in fields_to_graph
-        ]
-        obs = self._observation_dict_to_list(observation)
-        clf = self.get_engine_object()
-        data = np.array(self.get_data())
-        targets = self.get_targets()
+        fields_supported = self._get_data_learning_fields_supported()
+        fields_na = self._get_data_learning_fields_na()
 
-        n_graphs = comb(len(cols), 2)
-        n_graphs_rows = int(np.ceil(n_graphs / 2))
-        fig = plt.figure()
+        cols = [
+            c for c in fields_supported
+            if c in fields_available_obs and c in fields_to_graph
+            and c not in fields_na
+        ]
         cols_indexes = [
             self._get_field_index_by_name(col, supported=True) for col in cols
         ]
@@ -681,84 +677,112 @@ class CovidHTMixin:
             cols_offset = self._get_cift_offset()
         cols_indexes = [ci + cols_offset for ci in cols_indexes]
 
+        obs = self._observation_dict_to_list(observation)
+
+        data = np.array(self.get_data())
+        if settings.CHTUID_USE_IN_CLASSIFICATION:
+            data = np.concatenate(
+                (data[:, :1], data[:, 1:].astype('float')), axis=1)
+        else:
+            data = data.astype('float')
+
+        targets = self.get_targets()
+
+        clf = self.get_engine_object()
+
+        n_graphs = comb(len(cols), 2)
+        n_graphs_rows = int(np.ceil(n_graphs / 2))
+
         cm = plt.cm.bwr
         cm_bright = ListedColormap(['#0000FF', '#FF0000'])
 
+        fig = plt.figure()
+
         for i, pair in enumerate(combinations(cols_indexes, 2)):
-            ax = fig.add_subplot(
-                n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
-            
-            x_min = np.minimum(data[:, pair[0]].min(), obs[pair[0]])
-            x_max = np.maximum(data[:, pair[0]].max(), obs[pair[0]])
-            margin_x = (x_max - x_min) / 20
-            x_min, x_max = x_min - margin_x, x_max + margin_x
+            obs_x = np.float(obs[pair[0]])
+            x_min = np.fmin(np.nanmin(data[:, pair[0]]), obs_x)
+            x_max = np.fmax(np.nanmax(data[:, pair[0]]), obs_x)
+            x_rec = x_max - x_min
 
-            y_min = np.minimum(data[:, pair[1]].min(), obs[pair[1]])
-            y_max = np.maximum(data[:, pair[1]].max(), obs[pair[1]])
-            margin_y = (y_max - y_min) / 3
-            y_min, y_max = y_min - margin_y, y_max + margin_y
+            obs_y = np.float(obs[pair[1]])
+            y_min = np.fmin(np.nanmin(data[:, pair[1]]), obs_y)
+            y_max = np.fmax(np.nanmax(data[:, pair[1]]), obs_y)
+            y_rec = y_max - y_min
 
-            if getattr(settings, 'GRAPHING_COND_DEC_FUNCTION', False):
+            if y_rec > 0 and x_rec > 0:
+                ax = fig.add_subplot(
+                    n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
 
-                h_x = (x_max - x_min) / settings.GRAPHING_MESH_STEPS
-                h_y = (y_max - y_min) / settings.GRAPHING_MESH_STEPS
+                margin_x = x_rec / 20
+                margin_y = y_rec / 3
+                axis_x_min, axis_x_max = x_min - margin_x, x_max + margin_x
+                axis_y_min, axis_y_max = y_min - margin_y, y_max + margin_y
 
-                xx, yy = np.meshgrid(np.arange(x_min, x_max, h_x),
-                                     np.arange(y_min, y_max, h_y))
+                if settings.GRAPHING_COND_DEC_FUNCTION:
+                    mesh_steps = settings.GRAPHING_MESH_STEPS
+                    mesh_step_x = (axis_x_max - axis_x_min) / mesh_steps
+                    mesh_step_y = (axis_y_max - axis_y_min) / mesh_steps
 
-                xx_ravel = xx.ravel()
-                yy_ravel = yy.ravel()
-                cols_for_stack = []
-                for i in range(0, len(obs)):
-                    if i == pair[0]:
-                        cols_for_stack.append(xx_ravel)
-                    elif i == pair[1]:
-                        cols_for_stack.append(yy_ravel)
+                    xx, yy = np.meshgrid(
+                        np.arange(axis_x_min, axis_x_max, mesh_step_x),
+                        np.arange(axis_y_min, axis_y_max, mesh_step_y)
+                    )
+
+                    xx_ravel, yy_ravel = xx.ravel(), yy.ravel()
+                    cols_for_stack = []
+                    for i in range(0, len(obs)):
+                        if i == pair[0]:
+                            cols_for_stack.append(xx_ravel)
+                        elif i == pair[1]:
+                            cols_for_stack.append(yy_ravel)
+                        else:
+                            cols_for_stack.append(
+                                np.full(xx_ravel.shape, obs[i])
+                            )
+                    grid = np.column_stack((*cols_for_stack, ))
+
+                    if not self.SUPPORTS_NA:
+                        grid_imputed = []
+                        imputer = self.get_data_imputer_object()
+                        for point in grid:
+                            if not all(point):
+                                point_imputed = imputer.impute_row(list(point))
+                            grid_imputed.append(point_imputed)
+                        grid = grid_imputed
+                    if hasattr(clf, "decision_function"):
+                        Z = clf.decision_function(grid)
                     else:
-                        cols_for_stack.append(np.full(xx_ravel.shape, obs[i]))
-                grid = np.column_stack((*cols_for_stack, ))
-                if not self.SUPPORTS_NA:
-                    grid_imputed = []
-                    imputer = self.get_data_imputer_object()
-                    for point in grid:
-                        if not all(point):
-                            point_imputed = imputer.impute_row(list(point))
-                        grid_imputed.append(point_imputed)
-                    grid = grid_imputed
-                if hasattr(clf, "decision_function"):
-                    Z = clf.decision_function(grid)
-                else:
-                    Z = clf.predict_proba(grid)[:, 1]
-                Z = Z.reshape(xx.shape)
+                        Z = clf.predict_proba(grid)[:, 1]
+                    Z = Z.reshape(xx.shape)
 
-                ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
+                    ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
 
-            if getattr(settings, 'GRAPHING_DATASET', True):
-                ax.scatter(data[:, pair[0]], data[:, pair[1]],
-                           c=targets, cmap=cm_bright,
-                           edgecolors=None, alpha=0.6)
+                if getattr(settings, 'GRAPHING_DATASET', True):
+                    ax.scatter(data[:, pair[0]], data[:, pair[1]],
+                               c=targets, cmap=cm_bright,
+                               edgecolors=None, alpha=0.6)
 
-            # Plot the observation
-            ax.axvline(obs[pair[0]], c="green")
-            ax.axhline(obs[pair[1]], c="green")
-            ax.scatter(obs[pair[0]], obs[pair[1]], c="green",
-                       alpha=1, edgecolors='k')
+                # Plot the observation
+                ax.axvline(obs[pair[0]], c="green")
+                ax.axhline(obs[pair[1]], c="green")
+                ax.scatter(obs[pair[0]], obs[pair[1]], c="green",
+                           alpha=1, edgecolors='k')
 
-            # Set lims, ticks and labels
-            ax.set_xlim(x_min, x_max)
-            ax.set_ylim(y_min, y_max)
-            ax.tick_params(axis='both', which='major',
-                           labelsize=4, pad=1)
-            ax.set_xticks((x_min, x_max))
-            ax.set_yticks((y_min, y_max))
-            ax.set_xlabel(
-                self._get_field_name_by_index(
-                    pair[0] - cols_offset, supported=True),
-                labelpad=-5, size=6)
-            ax.set_ylabel(
-                self._get_field_name_by_index(
-                    pair[1] - cols_offset, supported=True),
-                labelpad=-10, size=6)
+                # Set lims, ticks and labels
+                ax.set_xlim(axis_x_min, axis_x_max)
+                ax.set_ylim(axis_y_min, axis_y_max)
+                ax.tick_params(axis='both', which='major',
+                               labelsize=4, pad=1)
+                ax.set_xticks((axis_x_min, axis_x_max))
+                ax.set_yticks((axis_y_min, axis_y_max))
+                ax.set_xlabel(
+                    self._get_field_name_by_index(
+                        pair[0] - cols_offset, supported=True),
+                    labelpad=-5, size=6)
+                ax.set_ylabel(
+                    self._get_field_name_by_index(
+                        pair[1] - cols_offset, supported=True),
+                    labelpad=-10, size=6)
 
         fig.tight_layout()
         with TemporaryFile(suffix=".svg") as tmpfile:

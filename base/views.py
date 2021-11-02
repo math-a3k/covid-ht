@@ -31,10 +31,8 @@ def home(request):
                 (result, result_prob, votes) = classifier.network_predict(data)
                 result = result[0]
                 result_prob = result_prob[0]
-                if graphing:  # pragma: no cover
-                    graph = mark_safe(
-                        classifier.get_local_classifier().generate_graph(data)
-                    )
+                if graphing:
+                    graph = mark_safe(classifier.generate_graph(data)[0])
             except Exception as e:
                 classifier_error = str(e)
     else:

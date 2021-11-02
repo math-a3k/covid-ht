@@ -178,39 +178,11 @@ class TestBase(SimpleTestCase):
                              'blue darken-3" type="submit" name="action">'))
 
     def test_classification(self):
-        self.classifier.perform_inference()
-        response = self.client.post(
-            reverse("base:home"),
-            {
-                'rbc': 3,
-                'wbc': 5,
-                'plt': 150,
-                'neut': 0.1,
-                'lymp': 0.1,
-                'mono': 0.1,
-            }
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'POSITIVE')
-
-    def test_classification_external(self):
-        self.current_classifier.external = self.classifier_external
-        self.current_classifier.classifier = self.classifier
-        self.current_classifier.save()
-
-        drf_request_client = RequestsClient()
-
-        post_patch = Response(
-            {"result": "POSITIVE", "prob": 0.888}, status=200
-        )
-        post_patch.json = lambda: {"result": ["POSITIVE"], "prob": [0.888]}
-
-        with patch.object(ExternalClassifier,
-                          '_requests_client', drf_request_client):
-            with patch.object(ExternalClassifier._requests_client,
-                              'post',
-                              return_value=post_patch):
-                data = {
+        with self.settings(GRAPHING=False):
+            self.classifier.perform_inference()
+            response = self.client.post(
+                reverse("base:home"),
+                {
                     'rbc': 3,
                     'wbc': 5,
                     'plt': 150,
@@ -218,13 +190,43 @@ class TestBase(SimpleTestCase):
                     'lymp': 0.1,
                     'mono': 0.1,
                 }
-                response = self.client.post(reverse("base:home"), data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Local REST API Classifier for tests')
-        self.assertContains(response, 'POSITIVE')
-        self.current_classifier.classifier = self.classifier
-        self.current_classifier.external = None
-        self.current_classifier.save()
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'POSITIVE')
+
+    def test_classification_external(self):
+        with self.settings(GRAPHING=False):
+            self.current_classifier.external = self.classifier_external
+            self.current_classifier.classifier = self.classifier
+            self.current_classifier.save()
+
+            drf_request_client = RequestsClient()
+
+            post_patch = Response(
+                {"result": "POSITIVE", "prob": 0.888}, status=200
+            )
+            post_patch.json = lambda: {"result": ["POSITIVE"], "prob": [0.888]}
+
+            with patch.object(ExternalClassifier,
+                              '_requests_client', drf_request_client):
+                with patch.object(ExternalClassifier._requests_client,
+                                  'post',
+                                  return_value=post_patch):
+                    data = {
+                        'rbc': 3,
+                        'wbc': 5,
+                        'plt': 150,
+                        'neut': 0.1,
+                        'lymp': 0.1,
+                        'mono': 0.1,
+                    }
+                    response = self.client.post(reverse("base:home"), data=data)
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'Local REST API Classifier for tests')
+            self.assertContains(response, 'POSITIVE')
+            self.current_classifier.classifier = self.classifier
+            self.current_classifier.external = None
+            self.current_classifier.save()
 
     def test_classification_external_unavailable(self):
         self.current_classifier.external = self.classifier_external
@@ -272,22 +274,23 @@ class TestBase(SimpleTestCase):
         self.current_classifier.save()
 
     def test_classification_with_percentage_fields(self):
-        self.current_classifier.classifier = self.classifier
-        self.current_classifier.external = None
-        self.current_classifier.save()
-        response = self.client.post(
-            reverse("base:home"),
-            {
-                'rbc': 3,
-                'wbc': 5,
-                'plt': 150,
-                'neut_Upercentage_Rwbc': 10,
-                'lymp_Upercentage_Rwbc': 10,
-                'mono_Upercentage_Rwbc': 10,
-            }
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'POSITIVE')
+        with self.settings(GRAPHING=False):
+            self.current_classifier.classifier = self.classifier
+            self.current_classifier.external = None
+            self.current_classifier.save()
+            response = self.client.post(
+                reverse("base:home"),
+                {
+                    'rbc': 3,
+                    'wbc': 5,
+                    'plt': 150,
+                    'neut_Upercentage_Rwbc': 10,
+                    'lymp_Upercentage_Rwbc': 10,
+                    'mono_Upercentage_Rwbc': 10,
+                }
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'POSITIVE')
 
     def test_network_classification(self):
         cc = deepcopy(self.current_classifier)
@@ -727,6 +730,24 @@ class TestBase(SimpleTestCase):
             .metadata["inference"]["current"]["conf"]["timestamp"] is not None
         )
 
+    def test_graphing(self):
+        with self.settings(GRAPHING_MESH_STEPS=10):
+            self.classifier.perform_inference()
+            response = self.client.post(
+                reverse("base:home"),
+                {
+                    'rbc': 3,
+                    'wbc': 5,
+                    'plt': 150,
+                    'neut': 0.1,
+                    'lymp': 0.1,
+                    'mono': 0.1,
+                }
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, 'POSITIVE')
+            self.assertContains(response, 'svg')
+
     def test_rest_api_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()
         response = self.client.post(
@@ -891,3 +912,61 @@ class TestBase(SimpleTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'"wbc":["This field must be present', response.content)
+
+    def test_rest_api_graphing(self):
+        _, _ = CurrentClassifier.objects.get_or_create(
+            classifier=self.classifier
+        )
+        self.classifier.perform_inference()
+
+        with self.settings(GRAPHING_MESH_STEPS=10):
+            response = self.client.post(
+                reverse("rest-api:classify") + '?graph=True',
+                {
+                    'rbc': 3,
+                    'wbc': 5,
+                    'plt': 150,
+                    'neut': 0.1,
+                    'lymp': 0.1,
+                    'mono': 0.1,
+                }
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'POSITIVE', response.content)
+            self.assertIn(b'svg', response.content)
+
+            response = self.client.post(
+                reverse("rest-api:classify-dataset") + '?graph=True',
+                {"dataset": [
+                        {
+                            "rbc": 3, "wbc": 5, "plt": 150,
+                            "neut": 0.3, "lymp": 0.3, "mono": 0.3
+                        },
+                        {
+                            "rbc": 3, "wbc": 5, "plt": 150,
+                            "neut_Upercentage_Rwbc": 10,
+                            "lymp_Upercentage_Rwbc": 10,
+                            "mono_Upercentage_Rwbc": 10
+                        },
+                   ]
+                 },
+                content_type="application/json"
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'svg', response.content)
+
+        with self.settings(GRAPHING=False):                
+            response = self.client.post(
+                reverse("rest-api:classify") + '?graph=True',
+                {
+                    'rbc': 3,
+                    'wbc': 5,
+                    'plt': 150,
+                    'neut': 0.1,
+                    'lymp': 0.1,
+                    'mono': 0.1,
+                }
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'POSITIVE', response.content)
+            self.assertNotIn(b'svg', response.content)
