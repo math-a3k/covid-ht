@@ -16,6 +16,8 @@ To integrate a classification technique, use a Django model which is subclass of
 
 ``django-ai`` integrates tightly with `scikit-learn <https://scikit-learn.org/stable/>`_, examples of how to integrate a sklearn classifier can be found in `the bundled classifiers`_.
 
+A non-taxative list of the classifiers provided by ``scikit-learn`` with a visualization of the partitions induced by the technique on different data scenarios can be found `here <https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html>`_.
+
 The rationale is to subclass them to adapt for the particular needs, as shown in the `CovidHTMixin <https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L605>`_.
 
 There is no limitation on which implementation should be used, as long as the ``django-ai`` API is implemented, it will work.
