@@ -746,9 +746,10 @@ class CovidHTMixin:
                         imputer = self.get_data_imputer_object()
                         for point in grid:
                             if not all(point):
-                                point_imputed = imputer.impute_row(list(point))
-                            grid_imputed.append(point_imputed)
+                                point = imputer.impute_row(list(point))
+                            grid_imputed.append(point)
                         grid = grid_imputed
+
                     if hasattr(clf, "decision_function"):
                         Z = clf.decision_function(grid)
                     else:
