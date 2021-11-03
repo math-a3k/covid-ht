@@ -711,8 +711,9 @@ class CovidHTMixin:
 
             if y_rec > 0 and x_rec > 0:
                 ax = fig.add_subplot(
-                    n_graphs_rows, 2, i + 1, sharex=None, sharey=None)
-
+                    n_graphs_rows, (2 if n_graphs > 1 else 1), i + 1,
+                    sharex=None, sharey=None
+                )
                 margin_x = x_rec / 20
                 margin_y = y_rec / 3
                 axis_x_min, axis_x_max = x_min - margin_x, x_max + margin_x
@@ -758,7 +759,7 @@ class CovidHTMixin:
 
                     ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
 
-                if getattr(settings, 'GRAPHING_DATASET', True):
+                if settings.GRAPHING_DATASET:
                     ax.scatter(data[:, pair[0]], data[:, pair[1]],
                                c=targets, cmap=cm_bright,
                                edgecolors=None, alpha=0.6)
