@@ -12,15 +12,17 @@ Setting :setting:`GRAPHING_DATASET` to ``True`` will plot the dataset used for t
 
 Using :setting:`GRAPHING_COND_DEC_FUNCTION` will plot in a contour form the *Conditional Decision Function* on the variable combination, where darker blue implies more confidence on ``NEGATIVE`` and darker red on ``POSITIVE``.
 
-It is conditional because it assumes the rest of the fields to be fixed at the value of the observation, i.e. for an observation ``{rbc: 2, wbc: 2, plt: 100}``, the plot of the Conditional Decision Function on ``(rbc, wbc)`` will show how the classifier considers each point of the graph *given* ``plt = 100``, colouring classification regions on that plane.
+It is conditional because it assumes the rest of the fields to be fixed at the value of the observation, i.e. for an observation ``{rbc: 2, wbc: 2, plt: 100}``, the plot of the *Conditional Decision Function* on ``(rbc, wbc)`` will show how the classifier considers each point of the graph *given* ``plt = 100``, colouring classification regions on that plane.
 
-.. **This is not what the classifier outputs**, the classifier takes into account all learning fields "at the same time", which, if there are more than 3 is not possible to visualize.
+These planes - i.e. ``(rbc, wbc)`` - should give you the idea of how "is" the observation relative to the classes (``COVID`` / ``NO-COVID`` in this case) in those variables. **The classifier takes into account all the variables together, its result may consider interactions among them which may not be reflected in the planes**.
 
-.. **The score** (Probability) of the decision **is what should be taken into account**, as it takes all the information together, the conditional classification graphic can provide "contradictory" information - i.e. classified as ``POSITIVE`` in some variables while ``NEGATIVE`` in others.
+**The score** (Probability) of the decision **is what should be taken into account**, considering the metrics on the general perfomance of the classifier in the context - i.e. accuracy, specificity, sensitivity, etc.
 
-.. Taking all the variables / fields together, it is possible to achieve an accurracy above 80% in the Example Dataset, while considering the variables pairwise may lead to contradiction.
+There are some caveats on the *Conditional Decision Function*, it is currently provided as a technology preview.
 
-The Conditional Decision Function is expensive in computational terms, because of that the :setting:`GRAPHING_MESH_STEPS` can be specified to control the "density" of the mesh in which the function will be evaluated.
+Having this in mind, this could provide insights about specifics of the observation - i.e. "This patient has these variables in line with the ``COVID`` group yet these others are not".
+
+The *Conditional Decision Function* is expensive in computational terms, because of that the :setting:`GRAPHING_MESH_STEPS` can be specified to control the "density" of the mesh in which the function will be evaluated.
 
 Also, techniques which do not support NA values natively and it is not implemented at an engine level have to resort to ``django-ai`` imputation - i.e. SVM - which increases the computational cost.
 
