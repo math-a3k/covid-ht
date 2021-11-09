@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../classification/external_classifiers.rst:5
+msgid "External Classifiers"
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:7
+msgid ""
+"External classifiers (third-party) are those which rely on a REST API "
+"request for their service."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:9
+msgid ""
+"If an external classifier is used as the local classifier, the instance "
+"will act as a proxy for classification."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:11
+msgid ""
+"The only requirement for third-party classifiers is to implement the "
+"classification endpoints (see :ref:`rest_api_classify`)."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:13
+msgid ""
+"Set up is done by the admin interface of the instance "
+"(``/admin/base/externalclassifier``)."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:15
+msgid ""
+"**Remote User** reffers to the user the instance will use to authenticate"
+" its requests to the external classifier. That authentication is done via"
+" a token that the external service must generate and provide to the "
+"``covid-ht`` instance."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:17
+msgid ""
+"**Metrics** are those to be evaluated on the external classifier with the"
+" data in the instance. The purpose of them is to evaluate how the "
+"classifier performs with the data generated from the instance's "
+"population, as the classifier may have been trained or inferred with "
+"another population and / or with different fields or variables."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:19
+msgid ""
+"Note that these metrics are **not cross-validated** and hence a \"not-so-"
+"accurate\" estimation of their real or true values (`cross-validated "
+"estimations <https://en.wikipedia.org/wiki/Cross-"
+"validation_(statistics)>`_ are done at training time) for the instance's "
+"population."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:21
+msgid ""
+"If those metrics are not in line with the cross-validated ones reported "
+"by the external service, the classifier may not be suitable for the "
+"instance's population."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:23
+msgid "The list of available metrics is `here <docs.scikit-learn>`_."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:25
+msgid ""
+"Values of these metrics, as well as supported and non-available fields "
+"differences are calculated and stored in the metadata which can be "
+"updated with the link at the bottom of the page of its admin interface."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:28
+msgid "Other Considerations"
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:30
+msgid ""
+"Network Nodes are also External Classifiers (which also can share data) "
+"and will be listed as such."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:32
+msgid ""
+"If you want the instance to proxy its classification to another instance,"
+" set the External Classifier of the Node as the Local Classifier."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:34
+msgid ""
+"If you want to include the External Classifier as a vote in the "
+"classification service of the instance, create a Node with no data "
+"sharing."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:36
+msgid ""
+"`The R community provides`_ what can be regarded as the most "
+"comprehensive implementations of statistical techniques which allows "
+"Reproducible Research."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:38
+msgid ""
+"It makes to sense prototyping a classifier in a foreign language (to "
+"python) and integrate it as an External Service."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:40
+msgid "R users may do this with the `plumber`_ package."
+msgstr ""
+
+#: ../../classification/external_classifiers.rst:42
+msgid ""
+"Once the classifier is providing the desired results, porting to an "
+"Internal Classifier should be evaluated in order to improve system "
+"perfomance, reduce complexity and sharing with the network and / or "
+"ecosystem."
+msgstr ""
+

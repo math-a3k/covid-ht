@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../data/data_privacy.rst:5
+msgid "Data Privacy"
+msgstr ""
+
+#: ../../data/data_privacy.rst:7
+msgid ""
+"Privacy is taken into account very seriously: Patient's Data is Patient's"
+" Data."
+msgstr ""
+
+#: ../../data/data_privacy.rst:9
+msgid "There may be local regulations about Health Records."
+msgstr ""
+
+#: ../../data/data_privacy.rst:11
+msgid ""
+"The part of the data that identifies the individual that generated the "
+"data **is not needed for the purpose of building the classifier**."
+msgstr ""
+
+#: ../../data/data_privacy.rst:14
+msgid "Anonymization"
+msgstr ""
+
+#: ../../data/data_privacy.rst:16
+msgid ""
+"The process of removing the parts of the data that identifies the "
+"individual that generated the data is called *Anonymization*."
+msgstr ""
+
+#: ../../data/data_privacy.rst:18
+msgid ""
+"Perfect Anonymization is achieved when is not reasonable to preffer one "
+"individual over another as the generator of the data, given of any extra "
+"information."
+msgstr ""
+
+#: ../../data/data_privacy.rst:20
+msgid "Perfect Anonymization is not achievable due to the domain of the problem."
+msgstr ""
+
+#: ../../data/data_privacy.rst:22
+msgid ""
+"An Anonymization policy should balance the trade-off between "
+"identifiability (privacy) and usefulness of the data."
+msgstr ""
+
+#: ../../data/data_privacy.rst:24
+msgid ""
+"Although Hemogram results are \"highly anonym\" (identifying a person by "
+"the blood measurements in a certain moment of time is difficult), as a "
+"whole it is still a Health Record and should require Patient's consent "
+"for making it public as it may have consecuences - i.e. COVID19 status or"
+" certain conditions may become sensitive in certain situations - **if the"
+" record gets identified**."
+msgstr ""
+
+#: ../../data/data_privacy.rst:26
+msgid ""
+"The only field that maps the results to a specific person is the **Unit "
+"Internal Identifier**."
+msgstr ""
+
+#: ../../data/data_privacy.rst:28
+msgid ""
+"While the specific testing and blood sampling are assumed to be taken "
+"\"simultaneously\", there may be a lag between the results of both parts "
+"due to the type of testing, equipment and operational capacity. This lag "
+"may render neccesary to input the results at different moments of time, "
+"making neccesary to identify the partial data for updating."
+msgstr ""
+
+#: ../../data/data_privacy.rst:30
+msgid ""
+"Once the data is completed, the Patient identification information **is "
+"not needed to the purpose of building the classifier**."
+msgstr ""
+
+#: ../../data/data_privacy.rst:32
+msgid ""
+"By design, ``covid-ht`` requires that this field is stripped in order to "
+"use the Data as an input for the Classification service."
+msgstr ""
+
+#: ../../data/data_privacy.rst:34
+msgid ""
+"This field is only shown to Unit's members and not propagated through the"
+" network when **Data Sharing Mode** is set to **On Update**."
+msgstr ""
+
+#: ../../data/data_privacy.rst:36
+msgid ""
+"The other fields that provide information about the specific person are "
+"Auxiliary and Metadata fields:"
+msgstr ""
+
+#: ../../data/data_privacy.rst:38
+msgid ""
+"\"An obese person of african ethnicity with diabetis, hepatic failure and"
+" cancer, height 182 cm, BMI 43.7, ..., had these blood measurements and "
+"tested POSITIVE for COVID19 in Perú [, Lima, [Hospital Lab]] [on "
+"2021-02-01]\""
+msgstr ""
+
+#: ../../data/data_privacy.rst:40
+msgid ""
+"Auxixiliary fields are intended improve the Classification performance, "
+"to prescind from them may affect it considerable (see "
+":ref:`internal_classifiers`) and therefore its usefulness."
+msgstr ""
+
+#: ../../data/data_privacy.rst:42
+msgid ""
+"However, the probability of identifying a specific person in the "
+"population that may provide the data to the instance by those fields "
+"should be **very low** for most of the individuals."
+msgstr ""
+
+#: ../../data/data_privacy.rst:44
+msgid ""
+"Therefore, a record is considered to be anoynimized when the **Unit "
+"Internal Identifier** is removed."
+msgstr ""
+
+#: ../../data/data_privacy.rst:46
+msgid ""
+"Once the data has been anonymized and consent has been granted, "
+"restrictions about Health records should not apply and the data may be "
+"publicly available."
+msgstr ""
+
+#: ../../data/data_privacy.rst:49
+msgid "Data Privacy Mode"
+msgstr ""
+
+#: ../../data/data_privacy.rst:51
+msgid ""
+"Healthcare units may already have data in their historical records for "
+"using the tool and build a classifier, there shouldn't be any legal "
+"impediments to use that data internally - as it is used in their "
+"management and operation."
+msgstr ""
+
+#: ../../data/data_privacy.rst:53
+msgid ""
+"There shouldn't be also any impediments of sharing the classifier - or "
+"the classifying service - as it can be considered as sharing knowledge, "
+"just as experience about therapies and their effectiveness in their "
+"operations is usually shared."
+msgstr ""
+
+#: ../../data/data_privacy.rst:55
+msgid ""
+"However, sharing data may require patients' consent - which may be "
+"difficult to get for historical records - or other legal solutions which "
+"are exogenous to healthcare units."
+msgstr ""
+
+#: ../../data/data_privacy.rst:57
+msgid ""
+"For the cases when sharing data (disclosing) is not possible, ``covid-"
+"ht`` provides a *Data Privacy Mode* which prevents any data - anonymized "
+"or not - to be shown to any not registered within the instance, enabled "
+"by the :setting:`DATA_PRIVACY_MODE` setting."
+msgstr ""
+
+#: ../../data/data_privacy.rst:60
+msgid "Other Considerations"
+msgstr ""
+
+#: ../../data/data_privacy.rst:62
+msgid ""
+"There is no option in ``covid-ht`` for restricting the Classification "
+"service. If you wish to restrict the usage of the whole instance, it "
+"should be done by setting up authentication at a web server level."
+msgstr ""
+

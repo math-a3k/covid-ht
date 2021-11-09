@@ -1,0 +1,156 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../rest_api.rst:5
+msgid "REST API"
+msgstr ""
+
+#: ../../rest_api.rst:7
+msgid "The ``covid-ht`` REST API consists mainly of four endpoints:"
+msgstr ""
+
+#: ../../rest_api.rst:9 ../../rest_api.rst:33
+msgid "``/classify``"
+msgstr ""
+
+#: ../../rest_api.rst:10 ../../rest_api.rst:34
+msgid "``/classify-dataset``"
+msgstr ""
+
+#: ../../rest_api.rst:11 ../../rest_api.rst:49
+msgid "``/data``"
+msgstr ""
+
+#: ../../rest_api.rst:12 ../../rest_api.rst:50
+msgid "``/data/{uuid}``"
+msgstr ""
+
+#: ../../rest_api.rst:14
+msgid "This is what allows to:"
+msgstr ""
+
+#: ../../rest_api.rst:18
+msgid "integrate with third-party software for:"
+msgstr ""
+
+#: ../../rest_api.rst:17
+msgid ""
+"*data inputing*, i.e. hematology equipements, clinical records software, "
+"alternative front-ends,"
+msgstr ""
+
+#: ../../rest_api.rst:18
+msgid ""
+"*providing classification services*, i.e. clinical records software, "
+"alternative front-ends, etc."
+msgstr ""
+
+#: ../../rest_api.rst:20
+msgid ""
+"network with other instances to collaborate for providing a better "
+"service."
+msgstr ""
+
+#: ../../rest_api.rst:22
+msgid "The REST API is namespaced to ``/api/v1``."
+msgstr ""
+
+#: ../../rest_api.rst:24
+msgid ""
+"It is developed with `django-rest-framework`_, the specification is "
+"available in the ``/openapi`` endpoint and the implementation details can"
+" be found through `base.v1.views`_ and `data.v1.views`_."
+msgstr ""
+
+#: ../../rest_api.rst:26
+msgid "An HTML front-end is available for its endpoints."
+msgstr ""
+
+#: ../../rest_api.rst:31
+msgid "Classification REST API Endpoints"
+msgstr ""
+
+#: ../../rest_api.rst:36
+msgid ""
+"Both endpoints provide the information of the classification service via "
+"**GET** requests and the service itself via **POST**."
+msgstr ""
+
+#: ../../rest_api.rst:38
+msgid ""
+"The difference between endpoints is how the request is done. The first "
+"one accepts an observation \"directly\" while the second a list of "
+"observations in the ``dataset`` key, as shown `here <https://github.com"
+"/math-a3k/covid-ht/blob/master/base/tests.py#L811>`_."
+msgstr ""
+
+#: ../../rest_api.rst:40
+msgid ""
+"If the ``use_network`` **GET** parameter is set to ``true`` with a "
+"**POST** request - i.e. ``POST /api/v1/classify/?use_network=TRUE`` - it "
+"will provide network classification and include the voting information in"
+" the response."
+msgstr ""
+
+#: ../../rest_api.rst:42
+msgid ""
+"Setting the ``graph`` **GET** parameter to ``true`` in a **POST** request"
+" - i.e. ``POST /api/v1/classify/?graph=true`` will include the generated "
+"graph of the classification in SVG format under the ``graph`` key in the "
+"response."
+msgstr ""
+
+#: ../../rest_api.rst:47
+msgid "Data REST API Endpoints"
+msgstr ""
+
+#: ../../rest_api.rst:52
+msgid "It provides the input and retrieving of data to / from the instance."
+msgstr ""
+
+#: ../../rest_api.rst:54
+msgid ""
+"The first one (``/data``) provides listing through ``GET`` and creation "
+"through ``POST``."
+msgstr ""
+
+#: ../../rest_api.rst:56
+msgid ""
+"The second one (``/data/{uuid}``) provides retrieve through ``GET`` and "
+"update through ``POST``."
+msgstr ""
+
+#: ../../rest_api.rst:60
+msgid ""
+"``/data`` also provides creation and updating through ``PUT`` and "
+"``PATCH`` which are intended for data sharing between Network Nodes (see "
+":ref:`networking`)."
+msgstr ""
+
+#: ../../rest_api.rst:63
+msgid "Authentication"
+msgstr ""
+
+#: ../../rest_api.rst:65
+msgid ""
+"Token authentication is supported with the ``Authorization: Token "
+"<TOKEN>`` header and session authentication is available in "
+"``/api/auth/login`` and ``/api/auth/logout``."
+msgstr ""
+

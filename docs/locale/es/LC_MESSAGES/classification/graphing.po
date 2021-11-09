@@ -1,0 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-09 17:50-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../classification/graphing.rst:5
+msgid "Graphing"
+msgstr ""
+
+#: ../../classification/graphing.rst:7
+msgid ""
+"``covid-ht`` graphing support is enabled by the :setting:`GRAPHING` "
+"setting."
+msgstr ""
+
+#: ../../classification/graphing.rst:9
+msgid ""
+"It generates a graph per pairwise combination of the variables specified "
+"in the :setting:`GRAPHING_FIELDS` setting. Note that this variables must "
+"be continuos, categorical variables are not supported at this moment. The"
+" coordinates of the observation being classified will be plotted on each "
+"graph with vertical and horizontal green lines."
+msgstr ""
+
+#: ../../classification/graphing.rst:11
+msgid ""
+"Setting :setting:`GRAPHING_DATASET` to ``True`` will plot the dataset "
+"used for the classifier inference with blue for the ``NEGATIVE`` class "
+"(not COVID19) and red for the ``POSITIVE``. It aims to provide "
+"\"context\" to the observation."
+msgstr ""
+
+#: ../../classification/graphing.rst:13
+msgid ""
+"Using :setting:`GRAPHING_COND_DEC_FUNCTION` will plot in a contour form "
+"the *Conditional Decision Function* on the variable combination, where "
+"darker blue implies more confidence on ``NEGATIVE`` and darker red on "
+"``POSITIVE``."
+msgstr ""
+
+#: ../../classification/graphing.rst:15
+msgid ""
+"It is conditional because it assumes the rest of the fields to be fixed "
+"at the value of the observation, i.e. for an observation ``{rbc: 2, wbc: "
+"2, plt: 100}``, the plot of the *Conditional Decision Function* on "
+"``(rbc, wbc)`` will show how the classifier considers each point of the "
+"graph *given* ``plt = 100``, colouring classification regions on that "
+"plane."
+msgstr ""
+
+#: ../../classification/graphing.rst:17
+msgid ""
+"These planes - i.e. ``(rbc, wbc)`` - should give you the idea of how "
+"\"is\" the observation relative to the classes (``COVID`` / ``NO-COVID`` "
+"in this case) in those variables. **The classifier takes into account all"
+" the variables together, its result may consider interactions among them "
+"which may not be reflected in the planes**."
+msgstr ""
+
+#: ../../classification/graphing.rst:19
+msgid ""
+"**The score** (Probability) of the decision **is what should be taken "
+"into account**, considering the metrics on the general perfomance of the "
+"classifier in the context - i.e. accuracy, specificity, sensitivity, etc."
+msgstr ""
+
+#: ../../classification/graphing.rst:21
+msgid ""
+"There are some caveats on the *Conditional Decision Function*, it is "
+"currently provided as a technology preview."
+msgstr ""
+
+#: ../../classification/graphing.rst:23
+msgid ""
+"Having this in mind, this could provide insights about specifics of the "
+"observation - i.e. \"This patient has these variables in line with the "
+"``COVID`` group yet these others are not\"."
+msgstr ""
+
+#: ../../classification/graphing.rst:25
+msgid ""
+"The *Conditional Decision Function* is expensive in computational terms, "
+"because of that the :setting:`GRAPHING_MESH_STEPS` can be specified to "
+"control the \"density\" of the mesh in which the function will be "
+"evaluated."
+msgstr ""
+
+#: ../../classification/graphing.rst:27
+msgid ""
+"Also, techniques which do not support NA values natively and it is not "
+"implemented at an engine level have to resort to ``django-ai`` imputation"
+" - i.e. SVM - which increases the computational cost."
+msgstr ""
+
+#: ../../classification/graphing.rst:29
+msgid ""
+"The implementation can be found `here <https://github.com/math-a3k/covid-"
+"ht/blob/master/base/models.py#L656>`_."
+msgstr ""
+
+#~ msgid ""
+#~ "It is conditional because it assumes "
+#~ "the rest of the fields to be "
+#~ "fixed at the value of the "
+#~ "observation, i.e. for an observation "
+#~ "``{rbc: 2, wbc: 2, plt: 100}``, "
+#~ "the plot of the Conditional Decision "
+#~ "Function on ``(rbc, wbc)`` will show "
+#~ "how the classifier considers each point"
+#~ " of the graph *given* ``plt = "
+#~ "100``, colouring classification regions on "
+#~ "that plane."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The Conditional Decision Function is "
+#~ "expensive in computational terms, because "
+#~ "of that the :setting:`GRAPHING_MESH_STEPS` can"
+#~ " be specified to control the "
+#~ "\"density\" of the mesh in which "
+#~ "the function will be evaluated."
+#~ msgstr ""
+

@@ -1,0 +1,309 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-09 17:50-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../classification/internal_classifiers.rst:5
+msgid "Internal Classifiers"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:7
+msgid ""
+"Internal classifiers are those integrated to the ``covid-ht`` instance "
+"through the code base."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:9
+msgid ""
+"``covid-ht`` comes with bundled classification techniques (classifiers) "
+"which should be well suited for the task. Configuration of the "
+"classifiers is available through the corresponding admin interface."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:11
+msgid ""
+"The recommended way of incorporating classifiers to ``covid-ht`` is "
+"through the ``django-ai`` API."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:13
+msgid ""
+"``django-ai`` not only provides the neccesary glue to handle the request-"
+"response cycle on which Django is based but also takes care of the "
+"integration with the framework (i.e. using models as a data source, "
+"handling forms, dictionaries or objects as input), provides metadata "
+"generation and includes batteries for the task (i.e data imputers, "
+"transformations, admin functionality, etc.) resulting in Django model "
+"objects with a simple API that can be used across any Django application."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:15
+msgid ""
+"To integrate a classification technique, use a Django model which is "
+"subclass of ``django_ai.models.SupervisedLearningTechnique`` and it will "
+"be listed as an option in the Internal Classifier of CurrentClassifer."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:17
+msgid ""
+"``django-ai`` integrates tightly with `scikit-learn <https://scikit-"
+"learn.org/stable/>`_, examples of how to integrate a sklearn classifier "
+"can be found in `the bundled classifiers`_."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:19
+msgid ""
+"A non-taxative list of the classifiers provided by ``scikit-learn`` with "
+"a visualization of the partitions induced by the technique on different "
+"data scenarios can be found `here <https://scikit-"
+"learn.org/stable/auto_examples/classification/plot_classifier_comparison.html>`_."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:21
+msgid ""
+"The rationale is to subclass them to adapt for the particular needs, as "
+"shown in the `CovidHTMixin <https://github.com/math-a3k/covid-"
+"ht/blob/master/base/models.py#L605>`_."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:23
+msgid ""
+"There is no limitation on which implementation should be used, as long as"
+" the ``django-ai`` API is implemented, it will work."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:25
+msgid ""
+"If you find inconvenient to use the ``django-ai`` API, you can override "
+"the ``get_local_classifier`` method of the `CurrentClassifier object`_. "
+"The method should return an object with the ``is_inferred`` property, a "
+"metadata field and a ``predict`` method that should take a list of "
+"observations and a boolean for including scores as arguments to return "
+"the predicted class for each observation with the correspondent score, "
+"for example::"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:45
+msgid "will make the Classification service work."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:48
+msgid "Other considerations"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:50
+msgid "There are three important properties that classifier should have:"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:53
+msgid "Non-Available (NA) Support"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:55
+msgid "There are several sources of Non-Available fields, some of them are:"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:57
+msgid ""
+"Different blood testing prescriptions / practices according to according "
+"to circumstances and / or places"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:58
+msgid "Different capabilities among hematology equipments"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:59
+msgid "Circumstancial Errors"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:61
+msgid ""
+"If the classification technique does not support data with NA fields, an "
+"hemogram with one missing field of the expected is not classifiable."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:63
+msgid ""
+"It will also make sharing data and classification services (and hence "
+"networking) highly unlikely (see :ref:`Data model considerations "
+"<data_model_considerations>`)."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:65
+msgid ""
+"Many techniques does not support NA values natively, having to resort to "
+"data imputting."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:67
+msgid ""
+"``django-ai`` provides data imputers for integrating those techniques "
+"without loosing functionality."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:69
+msgid ""
+"Data imputation have the caveat that may affect the classification "
+"results unadvertly. ``django-ai`` provides an `Introspection imputer`_ "
+"that uses the same assumptions of the classifier for the process."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:71
+msgid ""
+"Imputting can also be incorporated within the classifier if the engine "
+"supports it."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:74
+msgid "Categorical Data Support"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:76
+msgid ""
+"Although most of the categorical data is in auxiliary fields (see "
+":ref:`data_model`), as this can be considered as an \"indirect\" test - "
+"it detects not directly the presence but indirectly through its effects) "
+"- the auxiliary data makes able to discern shifts in values which are not"
+" caused by presence."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:78
+msgid ""
+"For example, people with african ethnicity have lower RBC than non-"
+"african while healthy, people with leukymia have different WBC values, "
+"people living at high-altitude have lower oxygen saturation and higher "
+"hemoglobin, people at different age, etc."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:80
+msgid ""
+"If there is no auxiliary data, those observations may be "
+"\"contradictory\" to the classifier, leading to poor generalization and "
+"poor perfomance."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:82
+msgid ""
+"Many techiques does not support categorical values natively, having to "
+"resort to data transformations to take them into account."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:84
+msgid ""
+"``django-ai`` provides a `Categorical Indicator Function Transformation`_"
+" for integrating those techniques."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:86
+msgid ""
+"Data transformations can also be incorporated within the classifier if "
+"the engine supports it, as shown in the `DecisionTree model "
+"<https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L796>`_."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:91
+msgid "Outlier Support"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:93
+msgid ""
+"Many techniques assume that all the data comes from the same population "
+"(or process). The auxilliary variables are for discerning sub-"
+"populations, but not all sub-populations will be able to be encoded in "
+"those."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:95
+msgid ""
+"As the data size grows, there will be sub-populations not encoded that "
+"will be mixed with others, likely altering the classification boundaries "
+"for them and affecting performance (accuracy, precision, recall, etc.) - "
+"i.e. without the ``age`` auxiliary variable, newborns' hemograms will be "
+"\"mixed\" with adults'."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:97
+msgid "This scenario is sometimes regarded as \"data contamination\"."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:99
+msgid ""
+"\"Outlier\" is the technical term for \"atypical\" in the sense that it "
+"does not have \"similar characteristics\" **relative** to the \"most\" of"
+" the population considered."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:101
+msgid "There are three main sources of outliers:"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:103
+msgid "Mixed populations"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:104
+msgid "\"Just different\" members of the same population"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:105
+msgid "Errors in the data input process"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:107
+msgid "Given that:"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:109
+msgid ""
+"It is not feasible to encode all sub-populations in auxiliary variables "
+"(it's either impractical or impossible due to not knowning the existance)"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:110
+msgid "Populations have \"just different\" members"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:111
+msgid "It is not feasible to prevent all errors in the data input process"
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:113
+msgid "There will be outliers at some point of the data size."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:115
+msgid ""
+"Techniques that take into account outliers are called \"robust\", as "
+"\"contamination\" with \"outliers\" do not affect the conclusions."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:117
+msgid ""
+"If the technique is not robust, the effect of outliers can be mitigated "
+"in the preprocess data stage with the caveat that the outlier definition "
+"may not be in line with the technique and thus affecting its results "
+"unadvertly."
+msgstr ""
+
+#: ../../classification/internal_classifiers.rst:119
+msgid ""
+"``django-ai`` currently does not provides outlier mitigation "
+"functionality, it has to be supported by the technique or incorporated "
+"through the engine."
+msgstr ""
+

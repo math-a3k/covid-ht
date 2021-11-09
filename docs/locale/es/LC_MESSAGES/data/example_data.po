@@ -1,0 +1,140 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../data/example_data.rst:5
+msgid "Example Data"
+msgstr ""
+
+#: ../../data/example_data.rst:7
+msgid ""
+"``covid-ht`` project comes with example data to evaluate the functioning "
+"of the different parts of the system and the performance on your "
+"hardware."
+msgstr ""
+
+#: ../../data/example_data.rst:9
+msgid ""
+"It is controlled with the :setting:`EXAMPLE_DATA_V2` (enabled by default)"
+" and :setting:`EXAMPLE_DATA_SIZE`."
+msgstr ""
+
+#: ../../data/example_data.rst:11
+msgid ""
+"By default, it consists of 1000 observations - 60% positives and 40% "
+"negatives (approximately) - with only 15 fields containing data where "
+"only 5 fields \"discern\" the labels:"
+msgstr ""
+
+#: ../../data/example_data.rst:13
+#, python-format
+msgid "3 differs in 10% in mean only,"
+msgstr ""
+
+#: ../../data/example_data.rst:14
+msgid "1 differs in variance only,"
+msgstr ""
+
+#: ../../data/example_data.rst:15
+msgid "1 differs in both variance and mean"
+msgstr ""
+
+#: ../../data/example_data.rst:17
+msgid "while the rest are non-informative to the classification problem."
+msgstr ""
+
+#: ../../data/example_data.rst:19
+msgid "Auxiliary fields also do not provide information."
+msgstr ""
+
+#: ../../data/example_data.rst:21
+msgid ""
+"There is no data contamination - both groups are homogeneous - no "
+"outliers, no mixed populations, etc. (see :ref:`robustness`)."
+msgstr ""
+
+#: ../../data/example_data.rst:23
+msgid ""
+"With this scenario - COVID19 affects the results in at least 5 variables "
+"the same way in a population, bundled classifiers achieve a cross-"
+"validated accuracy, precision and recall (sensitivity) above 80% with "
+"1000 observations."
+msgstr ""
+
+#: ../../data/example_data.rst:27
+msgid ""
+"There is **NO WARRANTY** that real data will have the same distribution "
+"as the stated. The only way of evaluating the real performance of the "
+"test is by using real data."
+msgstr ""
+
+#: ../../data/example_data.rst:29
+msgid ""
+"Further improvements can be obtained by tunning the classifier and / or "
+"increasing the sample size."
+msgstr ""
+
+#: ../../data/example_data.rst:31
+msgid ""
+"Example data also allows to evaluate the capacity of your server out-of-"
+"the-box to see if it will fulfill your expected demand (see "
+":ref:`load_testing`)."
+msgstr ""
+
+#: ../../data/example_data.rst:33
+msgid ""
+"Observations for the example data are generated with "
+"`data.utils.get_hemogram_data`_."
+msgstr ""
+
+#: ../../data/example_data.rst:38
+msgid "Managing Example Data"
+msgstr ""
+
+#: ../../data/example_data.rst:40
+msgid ""
+"A ``django-admin`` command, `data.management.commands.example_data`_ is "
+"provided to conveniently reset, create and remove the intance's example "
+"data."
+msgstr ""
+
+#: ../../data/example_data.rst:42
+msgid ""
+"To safely remove all example data (observations, users and units), use "
+"the ``--remove`` option of the ``example_data`` command, i.e.::"
+msgstr ""
+
+#: ../../data/example_data.rst:46
+msgid ""
+"For resetting example data (discard all observations) use the ``--reset``"
+" option, i.e.::"
+msgstr ""
+
+#: ../../data/example_data.rst:50
+msgid ""
+"Creating example data (observations, users and units) is done with the "
+"``--create`` option, i.e.::"
+msgstr ""
+
+#: ../../data/example_data.rst:54
+msgid ""
+"For evaluating different scenarios you may use both ``--reset`` and "
+"``--create``, i.e. after editing `data.utils.get_hemogram_data`_, for "
+"evaluating with 10000 observations use::"
+msgstr ""
+

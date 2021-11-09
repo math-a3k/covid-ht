@@ -1,0 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../data/data_input.rst:5
+msgid "Data Input"
+msgstr ""
+
+#: ../../data/data_input.rst:7
+msgid "Each instance define *Units* to organize data input of *Users*."
+msgstr ""
+
+#: ../../data/data_input.rst:9
+msgid ""
+"A Unit is intended to be a source of data for the instance, i.e. clinical"
+" laboratories of hospitals or health services' providers, independent "
+"laboratories, network nodes, etc."
+msgstr ""
+
+#: ../../data/data_input.rst:11
+msgid ""
+"A User is who inputs data, i.e. Health Workers (clinical laboratories', "
+"health records', nurses), hematology equipment, third-pary software, "
+"network nodes, etc."
+msgstr ""
+
+#: ../../data/data_input.rst:13
+msgid ""
+"Users are organized into Units with two roles: Manager and Data Inputter."
+" The only differences between roles is that Manager can create and update"
+" users."
+msgstr ""
+
+#: ../../data/data_input.rst:15
+msgid ""
+"Each user has access to an HTML interface for inputing the data and the "
+"REST API."
+msgstr ""
+
+#: ../../data/data_input.rst:17
+msgid ""
+"To address the posible lag between the results of general and specific "
+"testing, a **Unit Internal Identifier** field is provided."
+msgstr ""
+
+#: ../../data/data_input.rst:19
+msgid ""
+"The field should contain an unique identifier to the Patient, i.e. "
+"National Identity Number, Social Security Number, Hospital Admission "
+"code, etc."
+msgstr ""
+
+#: ../../data/data_input.rst:21
+msgid ""
+"This allows to create and update the data as results arrive from "
+"different sources."
+msgstr ""
+
+#: ../../data/data_input.rst:23
+msgid ""
+"Once the specific and general results have been entered, the Unit "
+"Internal Identifier should be removed in order to mark the record as "
+"*Finished* for anonymizing (see :ref:`data_privacy`) and feeding the "
+"Classification service."
+msgstr ""
+
+#: ../../data/data_input.rst:25
+msgid "The process can be automatic and / or manual."
+msgstr ""
+
+#: ../../data/data_input.rst:28
+msgid "Automatic"
+msgstr ""
+
+#: ../../data/data_input.rst:30
+msgid ""
+"A REST endpoint is provided for inputting data to the system (see "
+":ref:`rest_api_data`)."
+msgstr ""
+
+#: ../../data/data_input.rst:32
+msgid "This allows to automatize in situations where:"
+msgstr ""
+
+#: ../../data/data_input.rst:34
+msgid ""
+"the hematology equiment (or any third party software) can post its "
+"results via HTTP, or"
+msgstr ""
+
+#: ../../data/data_input.rst:35
+msgid ""
+"the results are stored digitally and accessable, i.e. a RDBMS (the input "
+"process can be scripted through the REST enpoints)."
+msgstr ""
+
+#: ../../data/data_input.rst:38
+msgid "Manual"
+msgstr ""
+
+#: ../../data/data_input.rst:40
+msgid ""
+"In the other cases, where printed results are the way of exchanging "
+"information, those must be manually entered to the ``covid-ht`` instance "
+"in order to use them."
+msgstr ""
+
+#: ../../data/data_input.rst:42
+msgid ""
+"For that case, ``covid-ht`` provides an HTML front-end designed for touch"
+" screens - i.e. smart-phones - and numeric keyboards with a mouse to "
+"confortably input the data, accessed through the ``/data/input`` url or "
+"the keyboard icon."
+msgstr ""
+

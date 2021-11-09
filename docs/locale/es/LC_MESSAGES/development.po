@@ -1,0 +1,37 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../development.rst:2
+msgid "Development"
+msgstr ""
+
+#: ../../development.rst:4
+msgid ""
+"``covid-ht`` currently uses an unreleased branch of ``django-ai`` "
+"(``covid-ht``). If you wish to modify and / or contribute to this part of"
+" the tool, the easiest seems to be cloning the ``django-ai`` repository "
+"and install the package in \"editable mode\":"
+msgstr ""
+
+#: ../../development.rst:13
+msgid ""
+"This way, any changes you make to your local copy of ``django-ai`` will "
+"be reflected inmediately in your ``covid-ht``'s."
+msgstr ""
+

@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../index.rst:7
+msgid "Contents:"
+msgstr ""
+
+#: ../../index.rst:5
+msgid "Welcome to covid-ht's documentation!"
+msgstr ""
+
+#: ../../index.rst:23
+msgid "See it in action"
+msgstr ""
+
+#: ../../index.rst:25
+msgid "https://covid-ht.herokuapp.com"
+msgstr ""
+
+#: ../../index.rst:28
+msgid "Communication Channels"
+msgstr ""
+
+#: ../../index.rst:30
+msgid "covid-ht@googlegroups.com"
+msgstr ""
+
+#: ../../index.rst:31
+msgid "https://github.com/math-a3k/covid-ht"
+msgstr ""
+
+#: ../../index.rst:34
+msgid "License"
+msgstr ""
+
+#: ../../index.rst:36
+msgid ""
+"covid-ht is distributed under the GNU Lesser General Public License 3 "
+"(LGPLv3) or - at your choice - greater."
+msgstr ""
+
+#: ../../index.rst:39
+msgid "Indices and tables"
+msgstr ""
+
+#: ../../index.rst:41
+msgid ":ref:`genindex`"
+msgstr ""
+
+#: ../../index.rst:42
+msgid ":ref:`modindex`"
+msgstr ""
+
+#: ../../index.rst:43
+msgid ":ref:`search`"
+msgstr ""
+
+#: ../../index.rst:45
+msgid "Made with love for all humans of the world."
+msgstr ""
+

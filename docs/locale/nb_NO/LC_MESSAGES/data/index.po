@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../data/index.rst:5
+msgid "Contents:"
+msgstr ""
+
+#: ../../data/index.rst:3
+msgid "Data"
+msgstr ""
+
+#: ../../data/index.rst:14
+msgid ""
+"Data in a ``covid-ht`` instance consist of blood measurements, auxiliary "
+"information and COVID19 status of individuals in a moment of time."
+msgstr ""
+
+#: ../../data/index.rst:16
+msgid ""
+"The specifics of the data configuration is found in :doc:`data_model` and"
+" its input process in :doc:`data_input`."
+msgstr ""
+
+#: ../../data/index.rst:18
+msgid "The anonymization policy is found in :doc:`data_privacy`."
+msgstr ""
+
+#: ../../data/index.rst:20
+msgid ""
+"``covid-ht`` comes with Example Data for demostration purposes, detailed "
+"in :doc:`example_data`."
+msgstr ""
+

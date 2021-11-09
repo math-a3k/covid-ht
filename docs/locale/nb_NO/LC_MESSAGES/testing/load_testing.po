@@ -1,0 +1,183 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../testing/load_testing.rst:4
+msgid "Load Testing of ``covid-ht`` Instances"
+msgstr ""
+
+#: ../../testing/load_testing.rst:6
+msgid ""
+"``covid-ht`` includes scripts to estimate the instance capacity and to "
+"simulate usage scenarios in order to fulfill demand."
+msgstr ""
+
+#: ../../testing/load_testing.rst:9
+msgid ""
+"Those scripts are meant to be run with `locust <https://locust.io>`_ and "
+"located in the ``locustfiles/`` directory."
+msgstr ""
+
+#: ../../testing/load_testing.rst:13
+msgid "Installation"
+msgstr ""
+
+#: ../../testing/load_testing.rst:15
+msgid "Install the load testing requirements:"
+msgstr ""
+
+#: ../../testing/load_testing.rst:24
+msgid "Configuration"
+msgstr ""
+
+#: ../../testing/load_testing.rst:26
+msgid ""
+"If the Example Data is not available, you will have to provide a user and"
+" its credentials by setting the counterintuitively named environment "
+"variables ``CHTLT_USER_USERNAME``, ``CHTLT_USER_PASSWORD`` and "
+"``CHTLT_USER_AUTH_TOKEN``."
+msgstr ""
+
+#: ../../testing/load_testing.rst:30
+msgid "Otherwise the example users will be used for the requests."
+msgstr ""
+
+#: ../../testing/load_testing.rst:34
+msgid "Estimating Instance Capacity"
+msgstr ""
+
+#: ../../testing/load_testing.rst:36
+msgid ""
+"Make sure that your instance is running (i.e. already deployed or with "
+"``./manage.py runserver``)"
+msgstr ""
+
+#: ../../testing/load_testing.rst:39
+msgid "From the base dir of the distribution, run:"
+msgstr ""
+
+#: ../../testing/load_testing.rst:45
+msgid "Four tests are provided:"
+msgstr ""
+
+#: ../../testing/load_testing.rst:47
+msgid "``api_classify``"
+msgstr ""
+
+#: ../../testing/load_testing.rst:48
+msgid "for testing classification via the REST API,"
+msgstr ""
+
+#: ../../testing/load_testing.rst:49
+msgid "``api_data_input``"
+msgstr ""
+
+#: ../../testing/load_testing.rst:50
+msgid "for testing data input via the REST API,"
+msgstr ""
+
+#: ../../testing/load_testing.rst:51
+msgid "``classify``"
+msgstr ""
+
+#: ../../testing/load_testing.rst:52
+msgid "for testing classification via the HTML front-end,"
+msgstr ""
+
+#: ../../testing/load_testing.rst:55
+msgid "``data_input``"
+msgstr ""
+
+#: ../../testing/load_testing.rst:54
+msgid "for testing data input via the HTML front-end."
+msgstr ""
+
+#: ../../testing/load_testing.rst:57
+msgid ""
+"Each test will stress-test the instance in its particular way, giving an "
+"estimate of the instance capacity to fulfill demand."
+msgstr ""
+
+#: ../../testing/load_testing.rst:60
+msgid "Details of the tests are found in their respective files."
+msgstr ""
+
+#: ../../testing/load_testing.rst:63
+msgid "Simulating Usage Scenarions"
+msgstr ""
+
+#: ../../testing/load_testing.rst:65
+msgid "Two different processes are provided for simulating usage scenarios:"
+msgstr ""
+
+#: ../../testing/load_testing.rst:67
+msgid "``doctors``"
+msgstr ""
+
+#: ../../testing/load_testing.rst:68
+msgid "simulate doctors attending patients,"
+msgstr ""
+
+#: ../../testing/load_testing.rst:70
+msgid "``inputters``"
+msgstr ""
+
+#: ../../testing/load_testing.rst:70
+msgid "simulate data inputters inputting hemogram results."
+msgstr ""
+
+#: ../../testing/load_testing.rst:72
+msgid "Details of the processes are found in their respective files."
+msgstr ""
+
+#: ../../testing/load_testing.rst:74
+msgid "For running the scenario - with your instance running - from a shell run:"
+msgstr ""
+
+#: ../../testing/load_testing.rst:80
+msgid "and from *another* shell:"
+msgstr ""
+
+#: ../../testing/load_testing.rst:86
+msgid ""
+"The processes are meant to be ran simultaneously, you can add more "
+"processes simulating the classification requests incoming from the "
+"network or other local sources"
+msgstr ""
+
+#: ../../testing/load_testing.rst:91
+msgid "Notes"
+msgstr ""
+
+#: ../../testing/load_testing.rst:93
+msgid ""
+"Classification performance depends on the Current Classifier selected for"
+" the instance."
+msgstr ""
+
+#: ../../testing/load_testing.rst:95
+msgid ""
+"Data input test will generate actual data in your instance, which can be "
+"safely removed with the ``example_data`` command if it was created with "
+"the example users (see :ref:`managing_example_data`)."
+msgstr ""
+
+#: ../../testing/load_testing.rst:96
+msgid "`locust Documentation <https://docs.locust.io/en/stable/>`_."
+msgstr ""
+

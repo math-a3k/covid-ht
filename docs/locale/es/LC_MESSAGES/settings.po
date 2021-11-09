@@ -1,0 +1,240 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../settings.rst:5
+msgid "Settings"
+msgstr ""
+
+#: ../../settings.rst:11
+msgid ""
+"Here's a list of settings specific to ``covid-ht``, for Django settings "
+"reffer `here <https://docs.djangoproject.com/en/3.2/ref/settings/>`_."
+msgstr ""
+
+#: ../../settings.rst:16
+msgid "``DATA_PRIVACY_MODE``"
+msgstr ""
+
+#: ../../settings.rst:18 ../../settings.rst:36 ../../settings.rst:45
+#: ../../settings.rst:59 ../../settings.rst:123 ../../settings.rst:143
+#: ../../settings.rst:153
+msgid "Default: ``True``"
+msgstr ""
+
+#: ../../settings.rst:20
+msgid ""
+"Enables / Disables the Data Privacy Mode: data is only shown to "
+"registered users (see :ref:`data_privacy`)."
+msgstr ""
+
+#: ../../settings.rst:25
+msgid "``CHTUID``"
+msgstr ""
+
+#: ../../settings.rst:27
+msgid "Default: ``cHT00``"
+msgstr ""
+
+#: ../../settings.rst:29
+msgid ""
+"Covid-HT Unique IDentifier - a case-sensitive 5 characters alphanumeric "
+"string that will identify the instance in network (see "
+":ref:`networking`)."
+msgstr ""
+
+#: ../../settings.rst:34
+msgid "``CHTUID_USE_IN_CLASSIFICATION``"
+msgstr ""
+
+#: ../../settings.rst:38
+msgid ""
+"Whether to use the CHTUID as a categorical variable in the Internal "
+"Classifier. Switching requires perfoming inference on the classifier (see"
+" :ref:`data_model`)."
+msgstr ""
+
+#: ../../settings.rst:43
+msgid "``EXAMPLE_DATA_V2``"
+msgstr ""
+
+#: ../../settings.rst:47
+msgid ""
+"Whether generate example data on migrations when creating the database "
+"and alert the existance in the HTML front-end (see :ref:`example_data`)."
+msgstr ""
+
+#: ../../settings.rst:50
+msgid "``EXAMPLE_DATA_SIZE``"
+msgstr ""
+
+#: ../../settings.rst:52
+msgid "Default: 1000"
+msgstr ""
+
+#: ../../settings.rst:54
+msgid ""
+"Size of the dataset generated in the example data - either by migrations "
+"or the ``example_data`` django-admin command (see :ref:`example_data`)."
+msgstr ""
+
+#: ../../settings.rst:57
+msgid "``EXAMPLE_DATA``"
+msgstr ""
+
+#: ../../settings.rst:61
+msgid "Whether generate example data on migrations (see :ref:`example_data`)."
+msgstr ""
+
+#: ../../settings.rst:64
+msgid ""
+"This setting is deprecated and soon-to-be-removed, use "
+":setting:`EXAMPLE_DATA_V2`."
+msgstr ""
+
+#: ../../settings.rst:69
+msgid "``EXAMPLE_SIZE_COVID19``"
+msgstr ""
+
+#: ../../settings.rst:71
+msgid "Default: ``600``"
+msgstr ""
+
+#: ../../settings.rst:73 ../../settings.rst:85
+msgid ""
+"Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is "
+"enabled (see :ref:`example_data`)."
+msgstr ""
+
+#: ../../settings.rst:76 ../../settings.rst:88
+msgid ""
+"This setting is deprecated and soon-to-be-removed, use "
+":setting:`EXAMPLE_DATA_SIZE` and edit the proportion in "
+"``get_hemogram_data`` (see :ref:`example_data`)."
+msgstr ""
+
+#: ../../settings.rst:81
+msgid "``EXAMPLE_SIZE_NO_COVID19``"
+msgstr ""
+
+#: ../../settings.rst:83
+msgid "Default: ``400``"
+msgstr ""
+
+#: ../../settings.rst:93
+msgid "``HEMOGRAM_FIELDS_MIN_NUM_SUBMIT``"
+msgstr ""
+
+#: ../../settings.rst:95
+msgid "Default: ``6``"
+msgstr ""
+
+#: ../../settings.rst:97
+msgid ""
+"Minimum number of fields required for the Classification service. (see "
+":ref:`internal_classifiers`)."
+msgstr ""
+
+#: ../../settings.rst:102
+msgid "``DATA_INPUT_FORM_FIELDS``"
+msgstr ""
+
+#: ../../settings.rst:104
+msgid "Default: ``[ <list_of_all_fields> ]``"
+msgstr ""
+
+#: ../../settings.rst:106
+msgid ""
+"Fields to be used in the data input form in the HTML front-end. Should be"
+" adjusted according to the output of your equipment."
+msgstr ""
+
+#: ../../settings.rst:111
+msgid "``DATA_CLASSIFICATION_FORM_FIELDS``"
+msgstr ""
+
+#: ../../settings.rst:113
+msgid "Default: ``__all__``"
+msgstr ""
+
+#: ../../settings.rst:115
+msgid ""
+"Fields to be used in the data classification form in the HTML front-end "
+"(home)."
+msgstr ""
+
+#: ../../settings.rst:121
+msgid "``GRAPHING``"
+msgstr ""
+
+#: ../../settings.rst:125
+msgid ""
+"Enable graph generation for the classification service (see "
+":ref:`graphing`)."
+msgstr ""
+
+#: ../../settings.rst:131
+msgid "``GRAPHING_FIELDS``"
+msgstr ""
+
+#: ../../settings.rst:133
+msgid "Default: ``[\"rbc\", \"wbc\", \"hgb\", \"lymp\"]``"
+msgstr ""
+
+#: ../../settings.rst:135
+msgid "Fields to be used in the graph generation."
+msgstr ""
+
+#: ../../settings.rst:141
+msgid "``GRAPHING_DATASET``"
+msgstr ""
+
+#: ../../settings.rst:145
+msgid "Whether to show or not the dataset in the generated graphs."
+msgstr ""
+
+#: ../../settings.rst:151
+msgid "``GRAPHING_COND_DEC_FUNCTION``"
+msgstr ""
+
+#: ../../settings.rst:155
+msgid ""
+"Whether to show or not the Conditional Decision Function of the internal "
+"classifier in the generated graphs."
+msgstr ""
+
+#: ../../settings.rst:158
+msgid "This is computational expensive, see :ref:`graphing`."
+msgstr ""
+
+#: ../../settings.rst:164
+msgid "``GRAPHING_MESH_STEPS``"
+msgstr ""
+
+#: ../../settings.rst:166
+msgid "Default: ``200``"
+msgstr ""
+
+#: ../../settings.rst:168
+msgid ""
+"Amount of steps to be used when generating the mesh in which the "
+"Conditional Decision Function will be evaluated. Lower values will "
+"decrease the computational cost of including the Conditional Decision "
+"Function in the graphs at the expense of precision."
+msgstr ""
+

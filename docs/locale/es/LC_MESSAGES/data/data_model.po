@@ -1,0 +1,372 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Rodrigo Gadea
+# This file is distributed under the same license as the covid-ht package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: covid-ht \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../data/data_model.rst:5
+msgid "Data Model"
+msgstr ""
+
+#: ../../data/data_model.rst:7
+msgid ""
+"All the fields (variables) to be recorded in the instance's data are "
+"defined in the `Data model`_, ``data.models.Data``, a regular `Django "
+"model`_ with support for Conversion fields."
+msgstr ""
+
+#: ../../data/data_model.rst:9
+msgid ""
+"Along with the fields, there are configuration options defined in the "
+"model about the type and how to use the fields by the classifier and the "
+"HTML front-end."
+msgstr ""
+
+#: ../../data/data_model.rst:11
+msgid "The main distinction between fields is *Classification* and *Metadata*."
+msgstr ""
+
+#: ../../data/data_model.rst:13
+msgid ""
+"Classification fields are those which are used for the Classification "
+"service (both at inference and prediction). They are grouped into "
+"*Hemogram Fields* and *Auxiliary Fields*."
+msgstr ""
+
+#: ../../data/data_model.rst:15
+msgid ""
+"Metadata fields are those which provide information about the record and "
+"are used in other parts of the software."
+msgstr ""
+
+#: ../../data/data_model.rst:18
+msgid "Classification Fields"
+msgstr ""
+
+#: ../../data/data_model.rst:21
+msgid "Hemogram Fields"
+msgstr ""
+
+#: ../../data/data_model.rst:23
+msgid "Are those fields that store the results of a blood measurement or test."
+msgstr ""
+
+#: ../../data/data_model.rst:25
+msgid ""
+"As Hematology equipment may have different outputs (measurement units) "
+"according to the country and / or their specification, Data may become "
+"not shareable and the Classification service may also become unavailable "
+"if there is not a \"common denominator\" on it."
+msgstr ""
+
+#: ../../data/data_model.rst:27
+msgid ""
+"Addressing this is the definition of *Hemogram Main Fields*, which "
+"represent \"base unit\" variables and will be fed to the Classification "
+"service (both at inference and prediction)."
+msgstr ""
+
+#: ../../data/data_model.rst:29
+msgid ""
+"For each Hemogram Main Field, *Conversions Fields* may be defined for "
+"results in other measurement units. Those values will be converted to the"
+" Main Field's unit and stored in the Main Field."
+msgstr ""
+
+#: ../../data/data_model.rst:31
+msgid ""
+"*Hemogram Main Fields* are defined in ``Data.HEMOGRAM_MAIN_FIELDS`` with "
+"the measurement unit along the regular Django field definition, i.e.::"
+msgstr ""
+
+#: ../../data/data_model.rst:63
+msgid ""
+"*Conversion Fields* are those which have a ``_U`` in their name and must "
+"follow the following naming convention::"
+msgstr ""
+
+#: ../../data/data_model.rst:67
+msgid ""
+"where ``_R`` is optional and reffers to \"Relative to Main Field\" for "
+"addressing percentages-like results, i.e.::"
+msgstr ""
+
+#: ../../data/data_model.rst:89
+msgid ""
+"The Conversion Field ``lymph_Upercentage_Rwbc`` will convert its value as"
+" the percentage of ``wbc`` and store it in ``lymph`` once the record is "
+"saved or the convertion is triggered (if ``wbc`` is 3, and "
+"``lymph_Upercentage_Rwbc`` is 10, ``lymph`` will be 0.3). The fields "
+"``mchc_UgdL`` and ``mchc_UmmolL`` will convert their respective value to "
+"g/L and store it ``mchc``."
+msgstr ""
+
+#: ../../data/data_model.rst:91
+msgid "Conversions are done with the functions defined in `data.conversions`_."
+msgstr ""
+
+#: ../../data/data_model.rst:94
+msgid "Auxiliary Fields"
+msgstr ""
+
+#: ../../data/data_model.rst:96
+msgid ""
+"Are those that store auxiliary data to the hemogram results. Auxiliary "
+"data is information about the patient that is not a result from a blood "
+"measurement and its purpose is to help the classifier achieve better "
+"results."
+msgstr ""
+
+#: ../../data/data_model.rst:98
+msgid ""
+"To set a field as Auxiliary, define it in ``Data.AUXILIARY_FIELDS``, "
+"i.e.::"
+msgstr ""
+
+#: ../../data/data_model.rst:104
+msgid ""
+"Auxiliary fields will be shown before Hemogram fields in the HTML front-"
+"end."
+msgstr ""
+
+#: ../../data/data_model.rst:107
+msgid "Metadata Fields"
+msgstr ""
+
+#: ../../data/data_model.rst:109
+msgid "Other fields that are not Hemogram nor Auxiliary are considered Metadata."
+msgstr ""
+
+#: ../../data/data_model.rst:112
+msgid "``chtuid``"
+msgstr ""
+
+#: ../../data/data_model.rst:112
+msgid ""
+"Covid-HT Unique Identifier: Provides which ``covid-ht`` instance "
+"generated the record"
+msgstr ""
+
+#: ../../data/data_model.rst:115
+msgid "``unit``"
+msgstr ""
+
+#: ../../data/data_model.rst:115
+msgid "Instance's Unit: Provides which Unit of the instance generated the record"
+msgstr ""
+
+#: ../../data/data_model.rst:118
+msgid "``user``"
+msgstr ""
+
+#: ../../data/data_model.rst:118
+msgid ""
+"User: Provides which User of the instance created or last-updated the "
+"record"
+msgstr ""
+
+#: ../../data/data_model.rst:121
+msgid "``is_finished``"
+msgstr ""
+
+#: ../../data/data_model.rst:121
+msgid "Is Finished: Indicates if the data input process has been finished"
+msgstr ""
+
+#: ../../data/data_model.rst:124
+msgid "``unit_ii``"
+msgstr ""
+
+#: ../../data/data_model.rst:124
+msgid ""
+"Unit Internal Identifier: Maps the Data record to the Physical Person "
+"from whom the Data was generated"
+msgstr ""
+
+#: ../../data/data_model.rst:127
+msgid "``uuid``"
+msgstr ""
+
+#: ../../data/data_model.rst:127
+msgid ""
+"Universal Unique IDentifier: Provides an unique identifier of the record "
+"among ``covid-ht`` instances"
+msgstr ""
+
+#: ../../data/data_model.rst:130
+msgid "``timestamp``"
+msgstr ""
+
+#: ../../data/data_model.rst:130
+msgid "Timestamp: Provides the creation or last-updated timestamp of the record"
+msgstr ""
+
+#: ../../data/data_model.rst:132
+msgid ""
+"``chtuid`` may be used in the Classification service according to the "
+"``CHTUID_USE_IN_CLASSIFICATION`` setting."
+msgstr ""
+
+#: ../../data/data_model.rst:138
+msgid "Classifier Configuration"
+msgstr ""
+
+#: ../../data/data_model.rst:140
+msgid ""
+"The constants following constants and methods are used by the internal "
+"classifier if it is integrated through ``django-ai`` (see "
+":ref:`internal_classifiers`):"
+msgstr ""
+
+#: ../../data/data_model.rst:143
+msgid "``CHTUID_FIELD``"
+msgstr ""
+
+#: ../../data/data_model.rst:143
+msgid "Sets which field is used as the instance identifier (used internally)."
+msgstr ""
+
+#: ../../data/data_model.rst:146
+msgid "``LEARNING_FIELDS_CATEGORICAL``"
+msgstr ""
+
+#: ../../data/data_model.rst:146
+msgid "List of fields used for learning which are `categorical variables`_."
+msgstr ""
+
+#: ../../data/data_model.rst:149
+msgid "``LEARNING_LABELS``"
+msgstr ""
+
+#: ../../data/data_model.rst:149
+msgid "Field containing the label to be learnt to predict by the classifier."
+msgstr ""
+
+#: ../../data/data_model.rst:152
+msgid "``LEARNING_FIELDS_MONOTONIC_CONSTRAINTS``"
+msgstr ""
+
+#: ../../data/data_model.rst:152
+msgid ""
+"`Monotonic Constraints`_ for Learning Fields in the ``field: {-1|0|1}`` "
+"format separated by a comma and space, i.e. ``\"wbc: -1, rbc: 1``. "
+"Ommited fields will use 0. Use \"None\" to ensure no Monotic Constraints."
+" The constraints will be used if the classifier supports them."
+msgstr ""
+
+#: ../../data/data_model.rst:155
+msgid "``_get_learning_fields()``"
+msgstr ""
+
+#: ../../data/data_model.rst:155
+msgid ""
+"Returns a list of the fields that will be used by the classifier for "
+"learning and prediction."
+msgstr ""
+
+#: ../../data/data_model.rst:157
+msgid ""
+"Those provide a default to the classifiers using the model as data source"
+" and can be overridden on a classifier basis in their respective fields, "
+"i.e. through the admin interface."
+msgstr ""
+
+#: ../../data/data_model.rst:162
+msgid "Other Considerations"
+msgstr ""
+
+#: ../../data/data_model.rst:164
+msgid "Hemogram and Auxiliary fields were initially provided as template."
+msgstr ""
+
+#: ../../data/data_model.rst:166
+msgid "However, :ref:`networking` functionality depends on the Data model."
+msgstr ""
+
+#: ../../data/data_model.rst:168
+msgid ""
+"If the Data model of your network is not syncronized, network "
+"classification and data sharing may fail due to unrecongnized fields or "
+"validation."
+msgstr ""
+
+#: ../../data/data_model.rst:170
+msgid ""
+"``covid-ht`` is designed to have all the \"possible\" fields on the Data "
+"model and then select which ones you will input through settings "
+"according to the output of your local hematology equipment and your blood"
+" testing practices."
+msgstr ""
+
+#: ../../data/data_model.rst:172
+msgid ""
+"The fields that are not used (``fields_na``) are not fed to the "
+"classifier when performing inference and won't be taken into account if "
+"submitted when classifying (this is not the case of missing values in an "
+"observation that will be imputed if the classifier does not suppor NA "
+"values - see :ref:`internal_classifiers`)."
+msgstr ""
+
+#: ../../data/data_model.rst:174
+msgid ""
+"This way, all instances will be able to exchange Data and Classification "
+"services, independently of which variables (fields) they effectively "
+"recorded."
+msgstr ""
+
+#: ../../data/data_model.rst:176
+msgid ""
+"If you find yourself with the need of adding or altering a field in the "
+"Data model, the procedure is:"
+msgstr ""
+
+#: ../../data/data_model.rst:178
+msgid "Add or modify the Django field"
+msgstr ""
+
+#: ../../data/data_model.rst:179
+msgid ""
+"Add the field to the :ref:`correspondent configuration "
+"<data_model_classifier_configuration>` constants if applicable"
+msgstr ""
+
+#: ../../data/data_model.rst:180
+msgid "Add the field to the :ref:`correspondent setting <settings>` if applicable"
+msgstr ""
+
+#: ../../data/data_model.rst:181
+msgid "Generate the Django migration (``python manage.py makemigrations``)"
+msgstr ""
+
+#: ../../data/data_model.rst:182
+msgid "Run the internal test suite (``python manage.py test``)"
+msgstr ""
+
+#: ../../data/data_model.rst:183
+msgid "Run the migration (``python manage.py migrate``)"
+msgstr ""
+
+#: ../../data/data_model.rst:184
+msgid "Perform inference in the local classifier if applicable"
+msgstr ""
+
+#: ../../data/data_model.rst:186
+msgid ""
+"If the altering is for the original purpose of the project (see "
+":ref:`beyond_covid19`), consider submitting it to the project for "
+"inclusion in the project's upstream as the \"general\" template."
+msgstr ""
+
