@@ -83,7 +83,7 @@ Many techiques does not support categorical values natively, having to resort to
 
 ``django-ai`` provides a `Categorical Indicator Function Transformation`_ for integrating those techniques.
 
-Data transformations can also be incorporated within the classifier if the engine supports it, as shown `here <https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L724>`_.
+Data transformations can also be incorporated within the classifier if the engine supports it, as shown in the `DecisionTree model <https://github.com/math-a3k/covid-ht/blob/master/base/models.py#L796>`_.
 
 .. _robustness:
 

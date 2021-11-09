@@ -138,7 +138,7 @@ Fields to be used in the graph generation.
 .. setting:: GRAPHING_DATASET
 
 ``GRAPHING_DATASET``
-===================
+====================
 
 Default: ``True``
 
