@@ -1,0 +1,631 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-09 18:12+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/forms.py:60 data/serializers.py:93
+#, python-format
+msgid ""
+"At least %(threshold)s hemogram result fields must be submitted in order to "
+"classify an hemogram."
+msgstr ""
+
+#: data/models.py:95
+#, python-format
+msgid "This field must be present in order to use %(field)s"
+msgstr ""
+
+#: data/models.py:168 data/templatetags/data_tags.py:21
+msgid "Not Available"
+msgstr ""
+
+#: data/models.py:169
+msgid "Female"
+msgstr ""
+
+#: data/models.py:170
+msgid "Male"
+msgstr ""
+
+#: data/models.py:175
+msgid "Covid-HT Unique IDentifier"
+msgstr ""
+
+#: data/models.py:182 data/templates/data/public_list.html:25
+msgid "Unit"
+msgstr ""
+
+#: data/models.py:188
+msgid "User"
+msgstr ""
+
+#: data/models.py:192
+msgid "Is Finished?"
+msgstr ""
+
+#: data/models.py:195
+msgid ""
+"Is the record finished or complete? All data has been recorded and the "
+"internal identifier has been removed."
+msgstr ""
+
+#: data/models.py:200
+msgid "Unit Internal Identifier"
+msgstr ""
+
+#: data/models.py:203
+msgid "Unit Internal Identifier for mapping to physical record"
+msgstr ""
+
+#: data/models.py:210
+msgid "Timestamp"
+msgstr ""
+
+#: data/models.py:216
+msgid "Is COVID19?"
+msgstr ""
+
+#: data/models.py:221
+msgid "Age"
+msgstr ""
+
+#: data/models.py:225
+msgid "Sex"
+msgstr ""
+
+#: data/models.py:230
+msgid "Is Diabetic?"
+msgstr ""
+
+#: data/models.py:234
+msgid "Is Hypertense?"
+msgstr ""
+
+#: data/models.py:238
+msgid "Is Overweight Patient?"
+msgstr ""
+
+#: data/models.py:242
+msgid "Is at Altitude?"
+msgstr ""
+
+#: data/models.py:244
+msgid "Is the Patient at High Altitude (> 1500m)"
+msgstr ""
+
+#: data/models.py:247
+msgid "Is with other Relevant Conditions?"
+msgstr ""
+
+#: data/models.py:249
+msgid ""
+"Is the Patient with other Relevant Conditions? (Transplantation, Blood "
+"disorders, etc.)"
+msgstr ""
+
+#: data/models.py:255
+msgid "RBC (x10^12/L)"
+msgstr ""
+
+#: data/models.py:258
+msgid "Red Blood Cells (x10^12/L or mlm/mm^3)"
+msgstr ""
+
+#: data/models.py:262
+msgid "HGB (g/L)"
+msgstr ""
+
+#: data/models.py:264
+msgid "Hemoglobin (g/L)"
+msgstr ""
+
+#: data/models.py:268
+msgid "HGB (mmol/L)"
+msgstr ""
+
+#: data/models.py:271
+msgid "Hemoglobin (mmol/L)"
+msgstr ""
+
+#: data/models.py:275
+msgid "HGBP (mg/dL)"
+msgstr ""
+
+#: data/models.py:277
+msgid "Hemoglobin in Plasma (mg/dL)"
+msgstr ""
+
+#: data/models.py:281
+msgid "HGBP (umol/L)"
+msgstr ""
+
+#: data/models.py:284
+msgid "Hemoglobin in Plasma (umol/L)"
+msgstr ""
+
+#: data/models.py:288
+#, python-format
+msgid "Glycated Hemoglobin (% of HGB)"
+msgstr ""
+
+#: data/models.py:291
+#, python-format
+msgid "Glycated Hemoglobin (% of Hemoglobin)"
+msgstr ""
+
+#: data/models.py:295
+msgid "HTG (g/L)"
+msgstr ""
+
+#: data/models.py:298
+msgid "Haptoglobin (g/L)"
+msgstr ""
+
+#: data/models.py:302
+msgid "HCT (L/L)"
+msgstr ""
+
+#: data/models.py:305
+msgid "Hematocrit (g/L)"
+msgstr ""
+
+#: data/models.py:309
+msgid "MCV (fL)"
+msgstr ""
+
+#: data/models.py:311
+msgid "Mean Cell Volume (fL)"
+msgstr ""
+
+#: data/models.py:315
+msgid "MCH (pg/cell)"
+msgstr ""
+
+#: data/models.py:317
+msgid "Mean Cell Hemoglobin (pg/cell)"
+msgstr ""
+
+#: data/models.py:321
+msgid "MCH (fmol/cell)"
+msgstr ""
+
+#: data/models.py:323
+msgid "Mean Cell Hemoglobin (fmol/cell)"
+msgstr ""
+
+#: data/models.py:327
+msgid "MCHC (g/L)"
+msgstr ""
+
+#: data/models.py:329
+msgid "Mean Corpuscular Hemoglobin Concentration (g/L)"
+msgstr ""
+
+#: data/models.py:333
+msgid "MCHC (g/dL)"
+msgstr ""
+
+#: data/models.py:335
+msgid "Mean Corpuscular Hemoglobin Concentration (g/dL)"
+msgstr ""
+
+#: data/models.py:339
+msgid "MCHC (mmol/L)"
+msgstr ""
+
+#: data/models.py:341
+msgid "Mean Corpuscular Hemoglobin Concentration (mmol/L)"
+msgstr ""
+
+#: data/models.py:345
+msgid "RDW (%)"
+msgstr ""
+
+#: data/models.py:348
+msgid "Red Blood Cell Distribution Width (%)"
+msgstr ""
+
+#: data/models.py:352 data/models.py:355
+msgid "Reticulocytes (x10^9/L)"
+msgstr ""
+
+#: data/models.py:359
+#, python-format
+msgid "RTC (% of RBC)"
+msgstr ""
+
+#: data/models.py:362
+#, python-format
+msgid "Reticulocytes (% of RBC)"
+msgstr ""
+
+#: data/models.py:367
+msgid "PLT (x10^9/L)"
+msgstr ""
+
+#: data/models.py:369
+msgid "Platelets (x10^9/L or x1000/uL)"
+msgstr ""
+
+#: data/models.py:373
+msgid "MPV (fL)"
+msgstr ""
+
+#: data/models.py:376
+msgid "Mean Platelet Volume (fL)"
+msgstr ""
+
+#: data/models.py:380
+msgid "PT (s)"
+msgstr ""
+
+#: data/models.py:383
+msgid "Prothrombin Time (s)"
+msgstr ""
+
+#: data/models.py:387
+msgid "INR"
+msgstr ""
+
+#: data/models.py:390
+msgid "International Normalized Ratio"
+msgstr ""
+
+#: data/models.py:394
+msgid "APTT (s)"
+msgstr ""
+
+#: data/models.py:396 data/models.py:402
+msgid "Activated Partial Thromboplastin Time (s)"
+msgstr ""
+
+#: data/models.py:400
+msgid "TCT (s)"
+msgstr ""
+
+#: data/models.py:406
+msgid "FBG (g/L)"
+msgstr ""
+
+#: data/models.py:409
+msgid "Fibrogen (g/L)"
+msgstr ""
+
+#: data/models.py:413
+msgid "ATB (kIU/L)"
+msgstr ""
+
+#: data/models.py:416
+msgid "Antithrombin (kIU/L)"
+msgstr ""
+
+#: data/models.py:420
+msgid "ATB (mg/mL)"
+msgstr ""
+
+#: data/models.py:423
+msgid "Antithrombin (mg/mL)"
+msgstr ""
+
+#: data/models.py:427
+msgid "BT (minutes)"
+msgstr ""
+
+#: data/models.py:430
+msgid "Bleeding Time (minutes)"
+msgstr ""
+
+#: data/models.py:434
+msgid "VSY (cP)"
+msgstr ""
+
+#: data/models.py:437
+msgid "Viscosity (cP)"
+msgstr ""
+
+#: data/models.py:442
+msgid "WBC (x10^9/L)"
+msgstr ""
+
+#: data/models.py:446
+msgid "White Blood Cells (x10^12/L or x10^3/mm^3 or x10^3/uL^3)"
+msgstr ""
+
+#: data/models.py:451
+msgid "NEUT (x10^9/L)"
+msgstr ""
+
+#: data/models.py:454
+msgid "Neutrophil Granulocytes (x10^9/L)"
+msgstr ""
+
+#: data/models.py:458
+msgid "NEUT (% WBC)"
+msgstr ""
+
+#: data/models.py:461
+#, python-format
+msgid "Neutrophil Granulocytes (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:465
+msgid "NBF (x10^9/L)"
+msgstr ""
+
+#: data/models.py:468
+msgid "Neutrophilic Band Forms (x10^9/L)"
+msgstr ""
+
+#: data/models.py:472
+msgid "NBF (% WBC)"
+msgstr ""
+
+#: data/models.py:475
+#, python-format
+msgid "Neutrophilic Band Forms (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:479
+msgid "LYMPH (x10^9/L)"
+msgstr ""
+
+#: data/models.py:482
+msgid "Lymphocytes (x10^9/L)"
+msgstr ""
+
+#: data/models.py:486
+msgid "LYMPH (% WBC)"
+msgstr ""
+
+#: data/models.py:489
+#, python-format
+msgid "Lymphocytes (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:493
+msgid "MONO (x10^9/L)"
+msgstr ""
+
+#: data/models.py:496
+msgid "Monocytes (x10^9/L)"
+msgstr ""
+
+#: data/models.py:500
+msgid "MONO (% WBC)"
+msgstr ""
+
+#: data/models.py:503
+#, python-format
+msgid "Monocytes (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:507
+msgid "MNL (x10^9/L)"
+msgstr ""
+
+#: data/models.py:510
+msgid "Mononuclear Leukocytes (x10^9/L)"
+msgstr ""
+
+#: data/models.py:514
+msgid "MNL (% WBC)"
+msgstr ""
+
+#: data/models.py:517
+#, python-format
+msgid "Mononuclear Leukocytes (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:521
+msgid "CD4 (x10^9/L)"
+msgstr ""
+
+#: data/models.py:524
+msgid "CD4+ T cells (x10^9/L)"
+msgstr ""
+
+#: data/models.py:528
+msgid "EO (x10^9/L)"
+msgstr ""
+
+#: data/models.py:531
+msgid "Eosinophils (x10^9/L)"
+msgstr ""
+
+#: data/models.py:535
+msgid "EO (% WBC)"
+msgstr ""
+
+#: data/models.py:538
+#, python-format
+msgid "Eosinophil Granulocytes (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:542
+msgid "BASO (x10^9/L)"
+msgstr ""
+
+#: data/models.py:545
+msgid "Basophil Granulocytes (x10^9/L)"
+msgstr ""
+
+#: data/models.py:549
+msgid "BASO (% WBC)"
+msgstr ""
+
+#: data/models.py:552
+#, python-format
+msgid "Basophil Granulocytes (% of White Blood Cells)"
+msgstr ""
+
+#: data/models.py:556
+msgid "IGA (x10^9/L)"
+msgstr ""
+
+#: data/models.py:559
+msgid "Inmunoglobulines A (x10^9/L)"
+msgstr ""
+
+#: data/models.py:564
+msgid "IGD (x10^9/L)"
+msgstr ""
+
+#: data/models.py:567
+msgid "Inmunoglobulines D (x10^9/L)"
+msgstr ""
+
+#: data/models.py:571
+msgid "IGE (x10^9/L)"
+msgstr ""
+
+#: data/models.py:574
+msgid "Inmunoglobulines E (x10^9/L)"
+msgstr ""
+
+#: data/models.py:578
+msgid "IGG (x10^9/L)"
+msgstr ""
+
+#: data/models.py:581
+msgid "Inmunoglobulines G (x10^9/L)"
+msgstr ""
+
+#: data/models.py:585
+msgid "IGM (x10^9/L)"
+msgstr ""
+
+#: data/models.py:588
+msgid "Inmunoglobulines - M (x10^9/L)"
+msgstr ""
+
+#: data/models.py:593
+msgid "ESR (mm/H)"
+msgstr ""
+
+#: data/models.py:595
+msgid "Erythrocyte Sedimentation Rate (mm/H)"
+msgstr ""
+
+#: data/models.py:599
+msgid "CRP (mg/L)"
+msgstr ""
+
+#: data/models.py:601
+msgid "C Reactive Protein (mg/L)"
+msgstr ""
+
+#: data/models.py:605
+msgid "CRP (nmol/L)"
+msgstr ""
+
+#: data/models.py:607
+msgid "C Reactive Protein (nmol/L)"
+msgstr ""
+
+#: data/models.py:611
+msgid "AAT (mg/L)"
+msgstr ""
+
+#: data/models.py:613
+msgid "Alpha 1-antitrypsin (mg/dL)"
+msgstr ""
+
+#: data/models.py:617
+msgid "AAT (umol/L)"
+msgstr ""
+
+#: data/models.py:619
+msgid "Alpha 1-antitrypsin (umol/L)"
+msgstr ""
+
+#: data/models.py:623
+msgid "PCT (ng/dL)"
+msgstr ""
+
+#: data/models.py:626
+msgid "Procalcitonin (ng/dL or ug/L)"
+msgstr ""
+
+#: data/models.py:631 data/models.py:632
+msgid "Data"
+msgstr ""
+
+#: data/models.py:647
+msgid "A record can not be marked as finished when the label is not present."
+msgstr ""
+
+#: data/templates/data/detail.html:7
+msgid "Data Detail"
+msgstr ""
+
+#: data/templates/data/detail.html:49 data/templates/data/detail.html:58
+#: data/templates/data/detail.html:67 data/templates/data/detail.html:76
+#: data/templates/data/detail.html:85
+msgid "yes,no,not available"
+msgstr ""
+
+#: data/templates/data/edit.html:7
+msgid "Edit Data"
+msgstr ""
+
+#: data/templates/data/edit.html:16
+msgid "Errors prevented saving the data, check below:"
+msgstr ""
+
+#: data/templates/data/edit.html:22 data/templates/data/input.html:32
+msgid "Save"
+msgstr ""
+
+#: data/templates/data/input.html:9
+msgid "A unit must be selected for a User in order to input data."
+msgstr ""
+
+#: data/templates/data/input.html:17
+msgid "Data Input"
+msgstr ""
+
+#: data/templates/data/input.html:25
+msgid "Errors detected in the submitted data, check below:"
+msgstr ""
+
+#: data/templates/data/input.html:31
+msgid "Save and Add Another"
+msgstr ""
+
+#: data/templates/data/public_list.html:12
+msgid "Dataset Size"
+msgstr ""
+
+#: data/templates/data/public_list.html:13
+msgid "Last Updated"
+msgstr ""
+
+#: data/templates/data/public_list.html:15
+msgid ".CSV"
+msgstr ""
+
+#: data/templates/data/public_list.html:51
+msgid "No data available."
+msgstr ""
+
+#: data/templatetags/data_tags.py:24
+msgid "Yes"
+msgstr ""
+
+#: data/templatetags/data_tags.py:24
+msgid "No"
+msgstr ""

@@ -1,0 +1,422 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-09 18:12+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: base/admin.py:46
+#: base/templates/admin/base/externalclassifier/change_form.html:12
+#: base/templates/base/home.html:12
+msgid "Local Classifier"
+msgstr ""
+
+#: base/admin.py:51
+msgid "Network Voting"
+msgstr ""
+
+#: base/admin.py:71 base/admin.py:122
+msgid "General"
+msgstr ""
+
+#: base/admin.py:77 base/admin.py:128 base/models.py:66
+msgid "Users"
+msgstr ""
+
+#: base/admin.py:82 base/admin.py:140
+msgid "Classification Service"
+msgstr ""
+
+#: base/admin.py:87 base/admin.py:146
+msgid "Timeout"
+msgstr ""
+
+#: base/admin.py:93 base/admin.py:152
+msgid "Endpoints"
+msgstr ""
+
+#: base/admin.py:99 base/admin.py:159 base/models.py:558
+msgid "Other"
+msgstr ""
+
+#: base/admin.py:134
+msgid "Data Sharing"
+msgstr ""
+
+#: base/models.py:43
+msgid "Manager of Unit"
+msgstr ""
+
+#: base/models.py:44 base/templates/base/includes/header.html:110
+msgid "Data Input"
+msgstr ""
+
+#: base/models.py:48
+msgid "User Type"
+msgstr ""
+
+#: base/models.py:54 base/models.py:488
+msgid "Unit"
+msgstr ""
+
+#: base/models.py:59
+msgid "Cellphone"
+msgstr ""
+
+#: base/models.py:65 base/models.py:495
+msgid "User"
+msgstr ""
+
+#: base/models.py:101
+msgid "No Network Voting"
+msgstr ""
+
+#: base/models.py:102
+msgid "Majority"
+msgstr ""
+
+#: base/models.py:103
+msgid "Minimum of Positives"
+msgstr ""
+
+#: base/models.py:104
+msgid "Minimum of Negatives"
+msgstr ""
+
+#: base/models.py:108
+msgid "Prefer Local Vote"
+msgstr ""
+
+#: base/models.py:109
+msgid "Prefer Highest Score"
+msgstr ""
+
+#: base/models.py:116
+msgid "Internal Classifier"
+msgstr ""
+
+#: base/models.py:123 base/models.py:327
+#: base/templates/admin/base/externalclassifier/change_form.html:20
+msgid "External Classifier"
+msgstr ""
+
+#: base/models.py:127
+msgid "Network Voting Policy"
+msgstr ""
+
+#: base/models.py:131
+msgid "Breaking Ties Policy"
+msgstr ""
+
+#: base/models.py:134
+msgid "Only applicable for Majority voting policy."
+msgstr ""
+
+#: base/models.py:138
+msgid "Network Voting Threshold"
+msgstr ""
+
+#: base/models.py:141
+msgid "Only applicable for Minimum Positives / Negatives voting policies."
+msgstr ""
+
+#: base/models.py:147 base/templates/base/home.html:10
+msgid "Current Classifier"
+msgstr ""
+
+#: base/models.py:264
+msgid "Both classifier and external can't be null"
+msgstr ""
+
+#: base/models.py:272 base/templates/base/home.html:14
+msgid "Name"
+msgstr ""
+
+#: base/models.py:276
+msgid "Service URL"
+msgstr ""
+
+#: base/models.py:280
+msgid "Remote User"
+msgstr ""
+
+#: base/models.py:283
+msgid "Username in the External Service for making requests"
+msgstr ""
+
+#: base/models.py:287
+msgid "Remote User Token"
+msgstr ""
+
+#: base/models.py:290
+msgid "Token for authenticating in the External Service"
+msgstr ""
+
+#: base/models.py:294
+msgid "Endpoint for Classify"
+msgstr ""
+
+#: base/models.py:299
+msgid "Endpoint for Classify Dataset"
+msgstr ""
+
+#: base/models.py:304
+msgid "Request Timeout (s)"
+msgstr ""
+
+#: base/models.py:307
+msgid "Seconds to wait for a response from the service"
+msgstr ""
+
+#: base/models.py:314
+msgid "Last Updated Timestamp"
+msgstr ""
+
+#: base/models.py:318
+msgid "Metrics"
+msgstr ""
+
+#: base/models.py:321
+msgid ""
+"Metrics (sklearn) to be evaluated with the external classifier, separated by "
+"comma and space, i.e. 'accuracy_score, precision_score, recall_score, "
+"fowlkes_mallows_score'"
+msgstr ""
+
+#: base/models.py:328
+msgid "External Classifiers"
+msgstr ""
+
+#: base/models.py:360
+msgid "Classification Service Unavailable"
+msgstr ""
+
+#: base/models.py:477
+msgid "Unrecognized metric: {}"
+msgstr ""
+
+#: base/models.py:500
+msgid "Endpoint for Data"
+msgstr ""
+
+#: base/models.py:505
+msgid "Data Sharing - Is Enabled?"
+msgstr ""
+
+#: base/models.py:509
+msgid "Data Sharing - Mode"
+msgstr ""
+
+#: base/models.py:510
+msgid "On Update"
+msgstr ""
+
+#: base/models.py:511
+msgid "On Finished"
+msgstr ""
+
+#: base/models.py:515
+msgid "Request Classification Service"
+msgstr ""
+
+#: base/models.py:559 base/templates/base/includes/header.html:79
+msgid "Classify"
+msgstr ""
+
+#: base/models.py:560
+msgid "Share Data"
+msgstr ""
+
+#: base/models.py:564
+msgid "Timestamp"
+msgstr ""
+
+#: base/models.py:573
+msgid "Action"
+msgstr ""
+
+#: base/models.py:578
+msgid "URL"
+msgstr ""
+
+#: base/models.py:582
+msgid "Status Code"
+msgstr ""
+
+#: base/models.py:586
+msgid "Error Message"
+msgstr ""
+
+#: base/models.py:591
+msgid "Network Error Log"
+msgstr ""
+
+#: base/models.py:592
+msgid "Network Error Logs"
+msgstr ""
+
+#: base/templates/admin/base/currentclassifier/change_form.html:6
+msgid "Network Nodes"
+msgstr ""
+
+#: base/templates/admin/base/externalclassifier/change_form.html:8
+msgid "CHTUID"
+msgstr ""
+
+#: base/templates/admin/base/externalclassifier/change_form.html:10
+#: base/templates/base/home.html:19
+#: base/templates/base/include/node_metadata.html:33
+msgid "Last Updated"
+msgstr ""
+
+#: base/templates/admin/base/externalclassifier/change_form.html:16
+msgid "Local Data"
+msgstr ""
+
+#: base/templates/admin/base/externalclassifier/change_form.html:25
+#: base/templates/admin/base/externalclassifier/change_form.html:41
+msgid "Current Inference"
+msgstr ""
+
+#: base/templates/admin/base/externalclassifier/change_form.html:31
+msgid "Previous Inference"
+msgstr ""
+
+#: base/templates/base/home.html:5
+msgid "COVID19 Hemogram Test Project"
+msgstr ""
+
+#: base/templates/base/home.html:21
+#, python-format
+msgid "No training has been done yet. Training is done in %(admin_link)s"
+msgstr ""
+
+#: base/templates/base/home.html:28
+msgid "Classification Network"
+msgstr ""
+
+#: base/templates/base/home.html:37
+msgid "EXAMPLE DATA"
+msgstr ""
+
+#: base/templates/base/home.html:39
+#, python-format
+msgid ""
+"See %(docs_link)s for detailed information. You can inspect how COVID19 and "
+"NO COVID19 hemograms look like in %(data_link)s, log in with 'manager:"
+"manager' to see the data input workflow and 'staff:staff' in %(admin_link)s "
+"to see the classifier management."
+msgstr ""
+
+#: base/templates/base/home.html:45
+#, python-format
+msgid "No Current Classifier has been set up, it is done in %(admin_link)s"
+msgstr ""
+
+#: base/templates/base/home.html:53
+msgid "Classify an Hemogram"
+msgstr ""
+
+#: base/templates/base/home.html:55
+msgid "Sorry, Classification Service Unavailable."
+msgstr ""
+
+#: base/templates/base/home.html:60
+msgid "The following Hemogram has been classified as"
+msgstr ""
+
+#: base/templates/base/home.html:60 base/templates/base/home.html:65
+msgid "with a probability of"
+msgstr ""
+
+#: base/templates/base/home.html:60
+msgid ", given the following votes:"
+msgstr ""
+
+#: base/templates/base/home.html:65
+#, python-format
+msgid "%(result)s"
+msgstr ""
+
+#: base/templates/base/home.html:73
+msgid "Open Graph in new Tab"
+msgstr ""
+
+#: base/templates/base/home.html:82
+msgid "Errors detected in the submitted data, check below:"
+msgstr ""
+
+#: base/templates/base/include/node_metadata.html:3
+msgid "Training Data Size"
+msgstr ""
+
+#: base/templates/base/include/node_metadata.html:18
+msgid "Metrics with Local Data"
+msgstr ""
+
+#: base/templates/base/includes/footer.html:16
+msgid "Login"
+msgstr ""
+
+#: base/templates/base/includes/header.html:32
+#: base/templates/base/includes/header.html:123
+msgid "About"
+msgstr ""
+
+#: base/templates/base/includes/header.html:36
+#: base/templates/base/includes/header.html:115
+msgid "Units"
+msgstr ""
+
+#: base/templates/base/includes/header.html:40
+#: base/templates/base/includes/header.html:119
+msgid "Data"
+msgstr ""
+
+#: base/templates/base/includes/header.html:86
+msgid "Your Unit"
+msgstr ""
+
+#: base/templates/base/includes/header.html:129
+msgid "Logout"
+msgstr ""
+
+#: base/templates/base/includes/paginator.html:12
+msgid "Previous"
+msgstr ""
+
+#: base/templates/base/includes/paginator.html:30
+msgid "Next"
+msgstr ""
+
+#: base/templates/base/includes/submit_button.html:6
+msgid "Submit"
+msgstr ""
+
+#: base/templates/registration/login.html:8
+msgid "Log into covid-ht"
+msgstr ""
+
+#: base/v1/views.py:73 base/v1/views.py:83
+msgid "Classification Unavailable"
+msgstr ""
+
+#: base/views.py:73
+msgid "Success at updating metadata"
+msgstr ""
+
+#: base/views.py:76
+msgid "Errors ocurred while updating metadata, check network error logs"
+msgstr ""
