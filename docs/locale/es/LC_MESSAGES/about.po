@@ -3,23 +3,26 @@
 # This file is distributed under the same license as the covid-ht package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: covid-ht \n"
+"Project-Id-Version: covid-ht\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-06 08:24-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2021-11-09 22:14+0000\n"
+"Last-Translator: Matemática A3K <matematica.a3k@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/covid-ht/about/"
+"es/>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.9-dev\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: ../../about.rst:5
 msgid "About ``covid-ht``"
-msgstr ""
+msgstr "Acerca de ``covid-ht``"
 
 #: ../../about.rst:7
 msgid ""
@@ -27,6 +30,9 @@ msgid ""
 "Professionals as part of the toolkit to diagnose and evaluate a wide "
 "variety of health conditions."
 msgstr ""
+"Mediciones Sanguíneas (*hemogram*) es una práctica común entre los "
+"Profesionales de la Salud como parte de las herramientas para diagnosticar y "
+"evaluar una variedad de afecciones de la salud."
 
 #: ../../about.rst:9
 msgid ""
@@ -34,6 +40,9 @@ msgid ""
 "others provide information about \"general functioning\" which may "
 "reflect the ongoing of conditions."
 msgstr ""
+"Mientras algunas de las mediciones pueden caracterizar ciertas afecciones, "
+"otras proveen de información acerca del \"funcionamiento general\" que puede "
+"reflejar el transcurso de afecciones."
 
 #: ../../about.rst:11
 msgid ""
@@ -41,6 +50,9 @@ msgid ""
 "is done by Health Professionals based on individual knowledge and "
 "experience."
 msgstr ""
+"El diagnóstico y evaluación de afecciones que toma en cuenta hemogramas es "
+"realizado por Profesionales de la Salud basados en el conocimiento y la "
+"experiencia individual."
 
 #: ../../about.rst:13
 msgid ""
@@ -49,6 +61,10 @@ msgid ""
 "other tools for the diagnosis, i.e. x-rays, tomographies, non-specific "
 "Blood Measurements, etc."
 msgstr ""
+"Mientras que hay mediciones sanguíneas específicas para COVID19, estas no "
+"han estado ampliamente disponibles en muchos lugares - i.e. Perú - teniendo "
+"que recurrir a otras herramientas de diagnóstico, i.e. rayos X, tomografías, "
+"mediciones sanguíneas no específicas, etc."
 
 #: ../../about.rst:15
 msgid ""
@@ -56,6 +72,9 @@ msgid ""
 " available, affordable and already incorporated into the Health "
 "Professional practice."
 msgstr ""
+"Las Mediciones Sanguíneas No-Específicas - i.e. Conteo Completo de Células "
+"Sanguíneas - están ampliamente disponibles, asequibles y ya incorporadas en "
+"la práctica de los Profesionales de la Salud."
 
 #: ../../about.rst:17
 msgid ""
@@ -63,6 +82,9 @@ msgid ""
 "values in order to help \"classify\" the patient (i.e. healthy or non-"
 "healthy)."
 msgstr ""
+"Una \"guía general\" es comúnmente provista en los resultados con valores de "
+"referencia de forma de ayudar a \"clasificar\" al paciente (i.e. saludable o "
+"no saludable)."
 
 #: ../../about.rst:19
 msgid ""
@@ -71,6 +93,10 @@ msgid ""
 " (and perhaps other diagnosis tools) leads to the diagnosis and therefore"
 " treatment."
 msgstr ""
+"El alejamiento de esos valores de referencia pueden indicar el transcurso de "
+"una afección - i.e. infección bacteriana o viral - lo cual, con la "
+"evaluación de los síntomas (y quizás otras herramientas de diagnóstico) "
+"conlleva al diagnóstico y por ende al tratamiento."
 
 #: ../../about.rst:21
 msgid ""
@@ -78,6 +104,9 @@ msgid ""
 "results, the specific effects on hemograms of COVID19 are being studied, "
 "i.e. in `C-reactive protein`_ and `viscosity`_."
 msgstr ""
+"Mientras existen guías para detectar una infección a través de los "
+"resultados de hemogramas, los efectos específicos del COVID19 están siendo "
+"estudiados, i.e. en `proteína C-reactiva`_ y `viscosidad`_."
 
 #: ../../about.rst:23
 msgid ""
@@ -86,6 +115,10 @@ msgid ""
 " be developed in order to improve the diagnosing toolkit of Health "
 "Professionals.*"
 msgstr ""
+"*Independientemente de las causas de tales efectos, en tanto los mismos sean "
+"consistentes a una \"considerable\" parte de la población, un clasificador "
+"puede ser desarrollado de forma de mejorar las herramientas de diagnóstico "
+"de los Profesionales de la Salud.*"
 
 #: ../../about.rst:25
 msgid ""
@@ -94,18 +127,26 @@ msgid ""
 "to improve detection, evaluation and resource efficiency of the COVID19 "
 "pandemic."
 msgstr ""
+"Este provecto apunta a proveer una herramienta para construir y manejar "
+"eficientemente ese clasificador y hacerlo disponible efectivamente para su "
+"uso masivo de forma de mejorar la detección, evaluación y la eficiencia de "
+"recursos la pandemia de COVID19."
 
 #: ../../about.rst:27
 msgid ""
 "Early detection is deemed to be the greatest success factor in COVID19 "
 "treatments."
 msgstr ""
+"La detección temprana es considerada el factor de mayor éxito en los "
+"tratamientos de COVID19."
 
 #: ../../about.rst:29
 msgid ""
 "Improvements in early detection should increase successful treatments, "
 "potentially saving lives."
 msgstr ""
+"Mejoras en la detección temprana debería incrementar los tratamientos "
+"exitosos, salvando vidas potencialmente."
 
 #: ../../about.rst:31
 msgid ""
@@ -114,6 +155,10 @@ msgid ""
 "testing - for assesing full recovery when the classification of the "
 "hemogram indicates so."
 msgstr ""
+"Mejoras en la evaluación y en la eficiencia de recursos puede ser alcanzada "
+"con la herramienta. i.e. mediante el uso de pruebas específicas de COVID19 - "
+"i.e. pruebas PCR - para evaluar la recuperación completa únicamente cuando "
+"la clasificación del hemograma lo indica."
 
 #: ../../about.rst:33
 msgid ""
@@ -121,6 +166,10 @@ msgid ""
 "classification`_. AI classifiers takes into account relations and "
 "differences that are hard to spot to most Humans systematically."
 msgstr ""
+"`Los clasificadores de aprendizaje automático pueden superar a los expertos "
+"Humanos de primer nivel`. Los clasificadores de IA toman en cuenta "
+"relaciones y diferencias que son difíciles de encontrar para la mayoría de "
+"los Humanos de forma sistemática."
 
 #: ../../about.rst:35
 msgid ""
@@ -131,6 +180,12 @@ msgid ""
 " the measurement for the case with little to no infrastructure "
 "modifications."
 msgstr ""
+"Si este clasificador alcanza una adecuada precisión a través de hemogramas y "
+"es hecho público, todos los Profesionales de la Salud con un smarphone y "
+"acceso a Internet pueden clasificar cualquier hemograma con la misma "
+"precisión que los expertos de primer nivel en la materia, mejorando la "
+"información disponible de las mediciones para el caso con poca - o ninguna - "
+"modificación en la infraestructura."
 
 #: ../../about.rst:37
 msgid ""
@@ -140,10 +195,16 @@ msgid ""
 "audit it entirely to fully understand how it works, what it provides and "
 "its limitations. It is distributed under the GNU LGPLv3 license."
 msgstr ""
+"`Esta herramienta es totalmente transparente <https://github.com/math-a3k/"
+"covid-ht>`_ - basada en Software Libre y de Código Abierto y en Estándares "
+"Abiertos a todos los niveles de su pila - y adecuada para realizar "
+"Investigación Reproducible. Se puede auditar completamente para entender "
+"cómo funciona, lo que provee y sus limitaciones. Está distribuida bajo la "
+"licencia LGPLv3 de GNU."
 
 #: ../../about.rst:39
 msgid "The tool is not a replacement of Health Professionals."
-msgstr ""
+msgstr "Esta herramienta no es un remplazo de los Profesionales de la Salud."
 
 #: ../../about.rst:41
 msgid ""
@@ -152,6 +213,10 @@ msgid ""
 " the tool may indicate to take preemptive care and seek a Health "
 "Professional."
 msgstr ""
+"Cualquier diagnóstico y tratamiento debería ser decido por un Profesional de "
+"la Salud con el paciente. Si usted es un individuo con resultado de "
+"hemograma reciente, la herramienta puede indicarle tomar cuidados preventivo "
+"y buscar un Profesional de la Salud."
 
 #: ../../about.rst:43
 msgid ""
@@ -163,6 +228,13 @@ msgid ""
 " OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR"
 " THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr ""
+"También, no culpe a los proveedores del cuchillo: Este programa es "
+"distribuido con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; sin "
+"ninguna garantía explícita de COMERCIABILIDAD o ADECUACIÓN PARA UN PROPÓSITO "
+"PARTICULAR. EN NINGÚN EVENTO PUEDEN LOS AUTORES O LOS TITULARES DEL "
+"COPYRIGHT SER RESPONSABLES DE ALGUN RECLAMO, DAÑO U OTRA RESPONSABILIDAD, YA "
+"SEA EN UNA ACCIÓN DE CONTRATO, PERJUICIO U OTRO, PROVENIENTE O EN CONECCIÓN "
+"CON EL SOFTWARE O SU USO O SUS ACTIVIDADES."
 
 #: ../../about.rst:45
 msgid ""
@@ -170,12 +242,14 @@ msgid ""
 "questions? Everybody is welcome to join the community for building and "
 "using it:"
 msgstr ""
+"Hay algo que no está funcionando adecuadamente? Puede algo ser hecho mejor? "
+"Alguna pregunta? Todo el mundo es bienvenido a unirse a la comunidad para "
+"construirlo y usarlo:"
 
 #: ../../about.rst:47
 msgid "covid-ht+subscribe@googlegroups.com"
-msgstr ""
+msgstr "covid-ht+subscribe@googlegroups.com"
 
 #: ../../about.rst:48
 msgid "https://github.com/math-a3k/covid-ht"
-msgstr ""
-
+msgstr "https://github.com/math-a3k/covid-ht"
