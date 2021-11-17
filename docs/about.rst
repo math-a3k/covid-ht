@@ -4,6 +4,41 @@
 About ``covid-ht``
 ==================
 
+``covid-ht`` aims to provide a tool for implementing an AI layer on clinical classification effectively in order to improve detection, information availability and resource efficiency in medical environments.
+
+It provides the IT infrastructure for:
+
+- Data collection
+- Classification
+- Collaboration
+
+Designed with the loosely coupled principle and the lowest common denominator in mind, from a single individual with a smart-phone scaling up to hundreds easily.
+
+There are three main scenarios that ``covid-ht`` tries to address:
+
+- The particularization of a previously established classification criteria to a specific case and population
+- Evidence gathering for supporting heuristics 
+- Augmented information from currently-taken measurements
+
+Motivated by helping with the struggle against the COVID19's pandemic in resource-constrainted places where specific testing wasn't available at sufficient quantities (see :ref:`history`) and triggered by watching a Doctor in El Salvador explaining the classification criteria particular to a COVID19 infection of blood measurements [#barrientos]_, and hence the name (``covid-hemogram-test``) and the data template provided.
+
+There is no restriction on any particular condition or hematology only: any diagnostic procedure which includes classification according to numeric real-valued measurements or encoded categories, i.e. results from a clinical laboratory, can benefit from it.
+
+The only requirement is that effects of the conditions on the measurements are consistant to some degree.
+
+`This tool is totally transparent <https://github.com/math-a3k/covid-ht>`_ - built on Free and Open Source Software, Open Standards and distributed under the GNU LGPLv3 license. You may audit it entirely to fully understand how it works, what it provides and its limitations.
+
+Is something not working correctly? Could something be done better? Any questions? Everybody is welcome to join the community for building and using it:
+
+* covid-ht+subscribe@googlegroups.com
+* https://github.com/math-a3k/covid-ht
+
+
+.. _history:
+
+History
+=======
+
 Blood Measurement (*hemogram*) is a common practice among Health Professionals as part of the toolkit to diagnose and evaluate a wide variety of health conditions.
 
 While some of the measurements can characterize certain conditions, others provide information about "general functioning" which may reflect the ongoing of conditions.
@@ -34,19 +69,11 @@ Improved evaluation and resource efficiency can also be achieved with the tool, 
 
 If this classifier achieves an adequate accuracy through hemograms and is made publicly available, all Health Professionals with a smart-phone and Internet access could classify any hemogram with the same accuracy as top-level experts on the matter, improving the information available from the measurement for the case with little to no infrastructure modifications.
 
-`This tool is totally transparent <https://github.com/math-a3k/covid-ht>`_ - based on Free and Open Source Software and Open Standards at all levels of its stack - and suitable for Reproducible Research. You may audit it entirely to fully understand how it works, what it provides and its limitations. It is distributed under the GNU LGPLv3 license.
-
-The tool is not a replacement of Health Professionals.
-
-Any diagnostic and treatment should be decided by a Health Professional with the patient. If you are an individual with a recent hemogram result, the tool may indicate to take preemptive care and seek a Health Professional.
-
-Also, don't blame the knife providers: This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Is something not working correctly? Could something be done better? Any questions? Everybody is welcome to join the community for building and using it:
-
-* covid-ht+subscribe@googlegroups.com
-* https://github.com/math-a3k/covid-ht
-
 .. _C-reactive protein: https://onlinelibrary.wiley.com/doi/10.1111/bjh.17306
 .. _viscosity: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8010604/
 .. _A machine-learning classifier can outperform top-level Human experts' classification: https://www.theguardian.com/society/2020/jan/01/ai-system-outperforms-experts-in-spotting-breast-cancer
+
+
+.. rubric:: Footnotes
+
+.. [#barrientos] https://youtu.be/ZO6EaAz465Y?t=570
