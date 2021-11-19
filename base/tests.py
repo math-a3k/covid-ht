@@ -1,8 +1,11 @@
+from collections.abc import Iterable, Mapping
 from copy import deepcopy
 from decimal import Decimal
+from itertools import zip_longest
 import numpy as np
 import random
 from unittest.mock import patch
+from unittest import TestCase
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -19,6 +22,55 @@ from units.models import Unit
 
 from .models import (CurrentClassifier, DecisionTree, ExternalClassifier,
                      NetworkErrorLog, NetworkNode, User,)
+
+
+# BIG thanks to https://stackoverflow.com/a/58275486
+# thanks to https://stackoverflow.com/q/32954486
+def zip_equal(*iterables):
+    sentinel = object()
+    for combo in zip_longest(*iterables, fillvalue=sentinel):
+        if sentinel in combo:
+            raise ValueError('Iterables have different lengths')
+        yield combo
+
+
+def assert_deep(instance: TestCase, method, first, second, *args, path=tuple(),
+                **kwargs):
+    # It may be better to let the method fail instead of preventing the run
+    # beacause of types - 'method' may be valid for 'first' and 'second',
+    # not sure how to check that in advance so generically.
+    # Here float is not instance of numpy.float64 but
+    # numpy.float64 is from float (order shouldn't matter)
+    # instance.assertIsInstance(second, type(first))
+    instance.assertIsInstance(first, type(second))
+    if isinstance(first, Mapping):
+        instance.assertEqual(first.keys(), second.keys())
+        for key in first:
+            subtest_path = path + (key,)
+            with instance.subTest(subtest_path):
+                assert_deep(instance, method, first[key], second[key],
+                            path=subtest_path, *args, **kwargs)
+        return instance
+
+    # thanks to https://stackoverflow.com/q/1952464
+    if isinstance(first, Iterable):
+        index = 0
+        try:
+            for first_el, second_el in zip_equal(first, second):
+                # avoid infinite recursions on iterables that return themselves
+                # as elements, e.g. strings
+                if first_el is first:
+                    return method(first, second, *args, **kwargs)
+                subtest_path = path + (index,)
+                with instance.subTest(subtest_path):
+                    assert_deep(instance, method, first_el, second_el, *args,
+                                path=subtest_path, **kwargs)
+                index += 1
+        except ValueError as e:
+            instance.fail(e)
+        return instance
+
+    return method(first, second, *args, **kwargs) 
 
 
 class TestBase(SimpleTestCase):
@@ -309,7 +361,7 @@ class TestBase(SimpleTestCase):
             'local ({})'.format(settings.CHTUID):
                 {"result": ["POSITIVE"], "prob": [0.6300912038351191]}
         }
-        self.assertEqual(votes, expected_result)
+        assert_deep(self, self.assertAlmostEqual, votes, expected_result)
         with patch.object(NetworkNode,
                           '_requests_client', drf_request_client):
             cc.network_voting = cc.NETWORK_VOTING_MAJORITY
@@ -326,14 +378,14 @@ class TestBase(SimpleTestCase):
                 'Node for Tests 2 (-)': {
                     'result': ['POSITIVE'], 'prob': [0.6300912038351191]}
             }
-            self.assertEqual(votes, expected_result)
+            assert_deep(self, self.assertAlmostEqual, votes, expected_result)
 
         # -> Test network_predict()
         cc.network_voting = cc.NETWORK_VOTING_MAJORITY
         p1, s1, v1 = cc.network_predict([observation])
         self.assertEqual(p1, ["POSITIVE"])
-        self.assertEqual(s1, [0.6300912038351191])
-        self.assertEqual(v1, {
+        assert_deep(self, self.assertAlmostEqual, s1, [0.6300912038351191])
+        assert_deep(self, self.assertAlmostEqual, v1, {
             'local ({})'.format(settings.CHTUID):
                 {"result": ["POSITIVE"], "prob": [0.6300912038351191]}
         })
@@ -342,7 +394,7 @@ class TestBase(SimpleTestCase):
                           '_requests_client', drf_request_client):
             p1, s1, v1 = cc.network_predict([observation])
             self.assertEqual(p1, ["POSITIVE"])
-            self.assertEqual(s1, [0.6300912038351191])
+            assert_deep(self, self.assertAlmostEqual, s1, [0.6300912038351191])
 
         votes_patch = {
             'local': {'result': ['POSITIVE'], 'prob': [0.6300912038351191]},
@@ -452,7 +504,8 @@ class TestBase(SimpleTestCase):
                               '_requests_client', drf_request_client):
                 p1, s1, v1 = cc.network_predict(observation)
                 self.assertEqual(p1, ["POSITIVE"])
-                self.assertEqual(s1, [0.6300912038351191])
+                assert_deep(self, self.assertAlmostEqual,
+                            s1, [0.6300912038351191])
 
         # -> Test with local internal classifier not inferred
         cc.external = None
@@ -462,7 +515,7 @@ class TestBase(SimpleTestCase):
                           '_requests_client', drf_request_client):
             p1, s1, v1 = cc.network_predict(observation)
             self.assertEqual(p1, ["POSITIVE"])
-            self.assertEqual(s1, [0.6300912038351191])
+            assert_deep(self, self.assertAlmostEqual, s1, [0.6300912038351191])
 
     def test_network_data_sharing(self):
         self.node_1.data_sharing_is_enabled = True
