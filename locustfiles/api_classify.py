@@ -16,7 +16,7 @@ class ClassifyRESTAPITasks(SequentialTaskSet):
 
     @task
     def classify(self):
-        data = get_hemogram_data(include_label=False)
+        data = get_hemogram_data(for_input=False)
         self.client.post(
             "/api/v1/classify", data=data,
             headers={"Authorization": "Token {}".format(self.user_auth_token)}
