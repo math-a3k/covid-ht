@@ -5,19 +5,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: covid-ht\n"
+"Project-Id-Version:  covid-ht\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-06 08:24-0300\n"
+"POT-Creation-Date: 2021-11-18 22:03-0300\n"
 "PO-Revision-Date: 2021-11-16 00:52+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
-"covid-ht/about/nb_NO/>\n"
 "Language: nb_NO\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects"
+"/covid-ht/about/nb_NO/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1-dev\n"
 "Generated-By: Babel 2.9.1\n"
 
 #: ../../about.rst:5
@@ -26,26 +25,125 @@ msgstr "Om ``covid-ht``"
 
 #: ../../about.rst:7
 msgid ""
+"``covid-ht`` aims to provide a tool for implementing an AI layer on "
+"clinical classification effectively in order to improve detection, "
+"information availability and resource efficiency in medical environments."
+msgstr ""
+
+#: ../../about.rst:9
+msgid "It provides the IT infrastructure for:"
+msgstr ""
+
+#: ../../about.rst:11
+msgid "Data collection"
+msgstr ""
+
+#: ../../about.rst:12
+msgid "Classification"
+msgstr ""
+
+#: ../../about.rst:13
+msgid "Collaboration"
+msgstr ""
+
+#: ../../about.rst:15
+msgid ""
+"Designed with the loosely coupled principle and the lowest common "
+"denominator in mind, from a single individual with a smart-phone scaling "
+"up to hundreds easily."
+msgstr ""
+
+#: ../../about.rst:17
+msgid "There are three main scenarios that ``covid-ht`` tries to address:"
+msgstr ""
+
+#: ../../about.rst:19
+msgid ""
+"The particularization of a previously established classification criteria"
+" to a specific case and population"
+msgstr ""
+
+#: ../../about.rst:20
+msgid "Evidence gathering for supporting heuristics"
+msgstr ""
+
+#: ../../about.rst:21
+msgid "Augmented information from currently-taken measurements"
+msgstr ""
+
+#: ../../about.rst:23
+msgid ""
+"Motivated by helping with the struggle against the COVID19's pandemic in "
+"resource-constrainted places where specific testing wasn't available at "
+"sufficient quantities (see :ref:`history`) and triggered by watching a "
+"Doctor in El Salvador explaining the classification criteria particular "
+"to a COVID19 infection of blood measurements [#barrientos]_, and hence "
+"the name (``covid-hemogram-test``) and the data template provided."
+msgstr ""
+
+#: ../../about.rst:25
+msgid ""
+"There is no restriction on any particular condition or hematology only: "
+"any diagnostic procedure which includes classification according to "
+"numeric real-valued measurements or encoded categories, i.e. results from"
+" a clinical laboratory, can benefit from it."
+msgstr ""
+
+#: ../../about.rst:27
+msgid ""
+"The only requirement is that effects of the conditions on the "
+"measurements are consistant to some degree."
+msgstr ""
+
+#: ../../about.rst:29
+msgid ""
+"`This tool is totally transparent <https://github.com/math-a3k/covid-"
+"ht>`_ - built on Free and Open Source Software, Open Standards and "
+"distributed under the GNU LGPLv3 license. You may audit it entirely to "
+"fully understand how it works, what it provides and its limitations."
+msgstr ""
+
+#: ../../about.rst:31
+msgid ""
+"Is something not working correctly? Could something be done better? Any "
+"questions? Everybody is welcome to join the community for building and "
+"using it:"
+msgstr ""
+
+#: ../../about.rst:33
+msgid "covid-ht+subscribe@googlegroups.com"
+msgstr ""
+
+#: ../../about.rst:34
+msgid "https://github.com/math-a3k/covid-ht"
+msgstr ""
+
+#: ../../about.rst:40
+msgid "History"
+msgstr ""
+
+#: ../../about.rst:42
+msgid ""
 "Blood Measurement (*hemogram*) is a common practice among Health "
 "Professionals as part of the toolkit to diagnose and evaluate a wide "
 "variety of health conditions."
 msgstr ""
 
-#: ../../about.rst:9
+#: ../../about.rst:44
 msgid ""
 "While some of the measurements can characterize certain conditions, "
 "others provide information about \"general functioning\" which may "
 "reflect the ongoing of conditions."
 msgstr ""
 
-#: ../../about.rst:11
+#: ../../about.rst:46
 msgid ""
 "Diagnosis and evaluation of conditions which take into account hemograms "
 "is done by Health Professionals based on individual knowledge and "
 "experience."
 msgstr ""
 
-#: ../../about.rst:13
+#: ../../about.rst:48
 msgid ""
 "While there are specific blood measurements for COVID19, those haven't "
 "been widely available in many places - i.e. Perú - having to resort to "
@@ -53,21 +151,21 @@ msgid ""
 "Blood Measurements, etc."
 msgstr ""
 
-#: ../../about.rst:15
+#: ../../about.rst:50
 msgid ""
 "Non-specific Blood Measurements - i.e. Complete Blood Counts - are widely"
 " available, affordable and already incorporated into the Health "
 "Professional practice."
 msgstr ""
 
-#: ../../about.rst:17
+#: ../../about.rst:52
 msgid ""
 "A \"general guide\" is commonly provided in the results with reference "
 "values in order to help \"classify\" the patient (i.e. healthy or non-"
 "healthy)."
 msgstr ""
 
-#: ../../about.rst:19
+#: ../../about.rst:54
 msgid ""
 "Departure from those reference values may indicate an ongoing condition -"
 " i.e. bacterial or viral infection - which, with the assement of symptoms"
@@ -75,14 +173,14 @@ msgid ""
 " treatment."
 msgstr ""
 
-#: ../../about.rst:21
+#: ../../about.rst:56
 msgid ""
 "While there are guidelines to detect an infection through hemogram "
 "results, the specific effects on hemograms of COVID19 are being studied, "
 "i.e. in `C-reactive protein`_ and `viscosity`_."
 msgstr ""
 
-#: ../../about.rst:23
+#: ../../about.rst:58
 msgid ""
 "*Independently of the causes of such effects, as long as those are "
 "consistent to a \"considerable\" part of the population, a classifier can"
@@ -90,7 +188,7 @@ msgid ""
 "Professionals.*"
 msgstr ""
 
-#: ../../about.rst:25
+#: ../../about.rst:60
 msgid ""
 "This project aims to provide a tool to efficiently build and manage that "
 "classifier and make it effectively available for widespread use in order "
@@ -98,19 +196,19 @@ msgid ""
 "pandemic."
 msgstr ""
 
-#: ../../about.rst:27
+#: ../../about.rst:62
 msgid ""
 "Early detection is deemed to be the greatest success factor in COVID19 "
 "treatments."
 msgstr ""
 
-#: ../../about.rst:29
+#: ../../about.rst:64
 msgid ""
 "Improvements in early detection should increase successful treatments, "
 "potentially saving lives."
 msgstr ""
 
-#: ../../about.rst:31
+#: ../../about.rst:66
 msgid ""
 "Improved evaluation and resource efficiency can also be achieved with the"
 " tool, i.e. by only using expensive specific COVID19 testing - i.e. PCR "
@@ -118,14 +216,14 @@ msgid ""
 "hemogram indicates so."
 msgstr ""
 
-#: ../../about.rst:33
+#: ../../about.rst:68
 msgid ""
 "`A machine-learning classifier can outperform top-level Human experts' "
 "classification`_. AI classifiers takes into account relations and "
 "differences that are hard to spot to most Humans systematically."
 msgstr ""
 
-#: ../../about.rst:35
+#: ../../about.rst:70
 msgid ""
 "If this classifier achieves an adequate accuracy through hemograms and is"
 " made publicly available, all Health Professionals with a smart-phone and"
@@ -135,49 +233,54 @@ msgid ""
 "modifications."
 msgstr ""
 
-#: ../../about.rst:37
-msgid ""
-"`This tool is totally transparent <https://github.com/math-a3k/covid-"
-"ht>`_ - based on Free and Open Source Software and Open Standards at all "
-"levels of its stack - and suitable for Reproducible Research. You may "
-"audit it entirely to fully understand how it works, what it provides and "
-"its limitations. It is distributed under the GNU LGPLv3 license."
+#: ../../about.rst:78
+msgid "Footnotes"
 msgstr ""
 
-#: ../../about.rst:39
-msgid "The tool is not a replacement of Health Professionals."
+#: ../../about.rst:79
+msgid "https://youtu.be/ZO6EaAz465Y?t=570"
 msgstr ""
 
-#: ../../about.rst:41
-msgid ""
-"Any diagnostic and treatment should be decided by a Health Professional "
-"with the patient. If you are an individual with a recent hemogram result,"
-" the tool may indicate to take preemptive care and seek a Health "
-"Professional."
-msgstr ""
+#~ msgid ""
+#~ "`This tool is totally transparent "
+#~ "<https://github.com/math-a3k/covid-ht>`_ - "
+#~ "based on Free and Open Source "
+#~ "Software and Open Standards at all "
+#~ "levels of its stack - and suitable"
+#~ " for Reproducible Research. You may "
+#~ "audit it entirely to fully understand"
+#~ " how it works, what it provides "
+#~ "and its limitations. It is distributed"
+#~ " under the GNU LGPLv3 license."
+#~ msgstr ""
 
-#: ../../about.rst:43
-msgid ""
-"Also, don't blame the knife providers: This program is distributed in the"
-" hope that it will be useful, but WITHOUT ANY WARRANTY; without even the "
-"implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. "
-"IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY "
-"CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT"
-" OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR"
-" THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr ""
+#~ msgid "The tool is not a replacement of Health Professionals."
+#~ msgstr ""
 
-#: ../../about.rst:45
-msgid ""
-"Is something not working correctly? Could something be done better? Any "
-"questions? Everybody is welcome to join the community for building and "
-"using it:"
-msgstr ""
+#~ msgid ""
+#~ "Any diagnostic and treatment should be"
+#~ " decided by a Health Professional "
+#~ "with the patient. If you are an"
+#~ " individual with a recent hemogram "
+#~ "result, the tool may indicate to "
+#~ "take preemptive care and seek a "
+#~ "Health Professional."
+#~ msgstr ""
 
-#: ../../about.rst:47
-msgid "covid-ht+subscribe@googlegroups.com"
-msgstr ""
+#~ msgid ""
+#~ "Also, don't blame the knife providers:"
+#~ " This program is distributed in the"
+#~ " hope that it will be useful, "
+#~ "but WITHOUT ANY WARRANTY; without even"
+#~ " the implied warranty of MERCHANTABILITY"
+#~ " or FITNESS FOR A PARTICULAR PURPOSE."
+#~ " IN NO EVENT SHALL THE AUTHORS "
+#~ "OR COPYRIGHT HOLDERS BE LIABLE FOR "
+#~ "ANY CLAIM, DAMAGES OR OTHER LIABILITY,"
+#~ " WHETHER IN AN ACTION OF CONTRACT,"
+#~ " TORT OR OTHERWISE, ARISING FROM, OUT"
+#~ " OF OR IN CONNECTION WITH THE "
+#~ "SOFTWARE OR THE USE OR OTHER "
+#~ "DEALINGS IN THE SOFTWARE."
+#~ msgstr ""
 
-#: ../../about.rst:48
-msgid "https://github.com/math-a3k/covid-ht"
-msgstr ""
