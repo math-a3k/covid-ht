@@ -8,7 +8,7 @@ covid-ht
 .. image:: https://codecov.io/gh/math-a3k/covid-ht/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/math-a3k/covid-ht
 
-covid-ht aims to provide a tool to efficiently build and manage an hemogram classifier and make it effectively available for widespread use in order to improve detection and increase the use efficiency of specific testing of COVID19 cases. See `About <https://covid-ht.herokuapp.com/about>`_.
+``covid-ht`` aims to provide a tool for implementing an AI layer on clinical classification effectively in order to improve detection, information availability and resource efficiency in medical environments. See `About <https://covid-ht.readthedocs.io/en/latest/about.html>`_.
 
 Documentation
 =============
@@ -29,7 +29,7 @@ Communication Channels
 License
 =======
 
-covid-ht is distributed under the GNU Lesser General Public License 3 (LGPLv3) or - at your choice - greater.
+``covid-ht`` is distributed under the GNU Lesser General Public License 3 (LGPLv3) or - at your choice - greater.
 
 
 Made with love for all humans of the world.
