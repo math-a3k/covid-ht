@@ -20,7 +20,7 @@ There are three main scenarios that ``covid-ht`` tries to address:
 - Evidence gathering for supporting heuristics 
 - Augmented information from currently-taken measurements
 
-Motivated by helping with the struggle against the COVID19's pandemic in resource-constrainted places where specific testing wasn't available at sufficient quantities (see :ref:`history`) and triggered by watching a Doctor in El Salvador explaining the classification criteria particular to a COVID19 infection of blood measurements [#barrientos]_, and hence the name (``covid-hemogram-test``) and the data template provided.
+Motivated by helping with the struggle against the COVID19's pandemic in resource-constrainted places where specific testing wasn't available at sufficient quantities (see :ref:`history`) and triggered by watching a Doctor in El Salvador explaining the classification criteria particular to a COVID19 infection of blood measurements [#barrientos]_, the project concebes its name (``covid-hemogram-test``) and is built from that paricular case.
 
 There is no restriction on any particular condition or hematology only: any diagnostic procedure which includes classification according to numeric real-valued measurements or encoded categories, i.e. results from a clinical laboratory, can benefit from it.
 
