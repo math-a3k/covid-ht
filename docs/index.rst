@@ -30,6 +30,11 @@ Communication Channels
 * covid-ht@googlegroups.com
 * https://github.com/math-a3k/covid-ht
 
+Translations
+============
+
+``covid-ht`` is being translated using `Weblate <https://weblate.org/>`_, a web tool designed to ease translating for both developers and translators. You can contribute `here <https://hosted.weblate.org/engage/covid-ht/>`_.
+
 License
 =======
 
