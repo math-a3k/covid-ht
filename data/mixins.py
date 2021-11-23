@@ -34,7 +34,7 @@ class ConversionFieldsModelMixin:
             return None
         main_field, from_unit, relative_to_field = \
             cls.parse_field_name(conversion_field)
-        to_unit = cls.MAIN_FIELDS_UNITS[main_field]['unit']
+        to_unit = cls.MAIN_FIELDS[main_field]['unit']
         if relative_to_field:
             if not isinstance(obj, dict):
                 relative_to_value = getattr(obj, relative_to_field, None)

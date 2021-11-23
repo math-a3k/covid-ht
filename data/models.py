@@ -56,7 +56,6 @@ class Data(ConversionFieldsModelMixin, models.Model):
         'igg': {'unit': 'x109L'},
         'igm': {'unit': 'x109L'}
     }
-    MAIN_FIELDS_UNITS = MAIN_FIELDS
 
     AUXILIARY_FIELDS = [
         'age', 'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
