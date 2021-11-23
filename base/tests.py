@@ -614,7 +614,7 @@ class TestBase(SimpleTestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'hemogram result fields must be')
+        self.assertContains(response, 'clinical fields must be')
 
     def test_no_wbc_with_percentage_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(
@@ -944,7 +944,7 @@ class TestBase(SimpleTestCase):
             }
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b'hemogram result fields must be', response.content)
+        self.assertIn(b'clinical fields must be', response.content)
 
     def test_rest_api_no_wbc_with_percentage_fields(self):
         _, _ = CurrentClassifier.objects.get_or_create(

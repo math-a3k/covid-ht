@@ -48,17 +48,17 @@ class DataClassificationForm(GroupedFieldsFormMixin, forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        hemogram_fields_count = 0
-        threshold = getattr(settings, 'HEMOGRAM_FIELDS_MIN_NUM_SUBMIT', 6)
-        fields = self.Meta.model.get_main_fields() + \
+        clinical_fields_count = 0
+        threshold = getattr(settings, 'CLINICAL_FIELDS_MIN_NUM_SUBMIT', 6)
+        clinical_fields = self.Meta.model.get_main_fields() + \
             self.Meta.model.get_conversion_fields()
-        for hfield in fields:
-            if cleaned_data.get(hfield, None):
-                hemogram_fields_count += 1
-        if hemogram_fields_count < threshold:
+        for field in clinical_fields:
+            if cleaned_data.get(field, None):
+                clinical_fields_count += 1
+        if clinical_fields_count < threshold:
             raise ValidationError(
-                _("At least %(threshold)s hemogram result fields must be "
-                  "submitted in order to classify an hemogram."),
+                _("At least %(threshold)s clinical fields must be "
+                  "submitted in order to classify a clinical result."),
                 code="not_enough_fields",
                 params={'threshold': threshold}
             )

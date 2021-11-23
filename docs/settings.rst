@@ -87,14 +87,14 @@ Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (se
 .. warning::
     This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_hemogram_data`` (see :ref:`example_data`).
 
-.. setting:: HEMOGRAM_MIN_NUM_SUBMIT
+.. setting:: CLINICAL_FIELDS_MIN_NUM_SUBMIT
 
-``HEMOGRAM_FIELDS_MIN_NUM_SUBMIT``
+``CLINICAL_FIELDS_MIN_NUM_SUBMIT``
 ==================================
 
 Default: ``6``
 
-Minimum number of fields required for the Classification service. (see :ref:`internal_classifiers`).
+Minimum number of clinical fields (main or conversion) required for the Classification service. (see :ref:`internal_classifiers`).
 
 .. setting:: DATA_INPUT_FORM_FIELDS
 
