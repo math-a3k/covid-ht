@@ -13,10 +13,9 @@ from .mixins import ConversionFieldsModelMixin
 
 class Data(ConversionFieldsModelMixin, models.Model):
     """
-    Main Data object - Hemogram result fields, auxiliary variables fields
-    and input related fields
+    Main Data object: Metadata, Auxiliary and Clinical Results (Main)
     """
-    HEMOGRAM_MAIN_FIELDS = {
+    MAIN_FIELDS = {
         'rbc': {'unit': 'x1012L', },
         'wbc': {'unit': 'x109L', },
         'hgb': {'unit': 'gL', },
@@ -57,7 +56,7 @@ class Data(ConversionFieldsModelMixin, models.Model):
         'igg': {'unit': 'x109L'},
         'igm': {'unit': 'x109L'}
     }
-    MAIN_FIELDS_UNITS = HEMOGRAM_MAIN_FIELDS
+    MAIN_FIELDS_UNITS = MAIN_FIELDS
 
     AUXILIARY_FIELDS = [
         'age', 'sex', 'is_diabetic', 'is_hypertense', 'is_overweight',
@@ -158,7 +157,7 @@ class Data(ConversionFieldsModelMixin, models.Model):
         help_text=_('Is the Patient with other Relevant Conditions? '
                     '(Transplantation, Blood disorders, etc.)'),
     )
-    # HEMOGRAM FIELDS
+    # MAIN FIELDS
     # Red Blood Cells
     rbc = models.DecimalField(
         _("RBC (x10^12/L)"),
@@ -558,10 +557,10 @@ class Data(ConversionFieldsModelMixin, models.Model):
             )
 
     @classmethod
-    def get_hemogram_main_fields(cls):
-        return [field for field in Data.HEMOGRAM_MAIN_FIELDS]
+    def get_main_fields(cls):
+        return [field for field in Data.MAIN_FIELDS]
 
     @classmethod
     def _get_learning_fields(cls):
         return cls.CHTUID_FIELD + cls.AUXILIARY_FIELDS \
-            + cls.get_hemogram_main_fields()
+            + cls.get_main_fields()

@@ -33,7 +33,7 @@ class GroupedFieldsFormMixin:
 def get_classification_fields():
     if settings.DATA_CLASSIFICATION_FORM_FIELDS == '__all__':
         fields = Data.AUXILIARY_FIELDS + \
-            Data.get_hemogram_main_fields() + \
+            Data.get_main_fields() + \
             Data.get_conversion_fields()
         return fields
     else:
@@ -50,7 +50,7 @@ class DataClassificationForm(GroupedFieldsFormMixin, forms.ModelForm):
 
         hemogram_fields_count = 0
         threshold = getattr(settings, 'HEMOGRAM_FIELDS_MIN_NUM_SUBMIT', 6)
-        fields = self.Meta.model.get_hemogram_main_fields() + \
+        fields = self.Meta.model.get_main_fields() + \
             self.Meta.model.get_conversion_fields()
         for hfield in fields:
             if cleaned_data.get(hfield, None):

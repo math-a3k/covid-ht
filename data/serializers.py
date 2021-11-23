@@ -32,7 +32,7 @@ class PublicDataSerializer(UseNullableBooleanFieldMixin,
         model = Data
         fields = [
             'chtuid', 'unit', 'timestamp', 'uuid', model.LEARNING_LABELS
-            ] + model.get_hemogram_main_fields()
+            ] + model.get_main_fields()
 
     def get_unit(self, obj):
         return obj.unit.pk
@@ -83,7 +83,7 @@ class DataClassificationSerializer(ModelValidatedModelSerializer):
         cleaned_data = super().validate(data)
         hemogram_fields_count = 0
         threshold = getattr(settings, 'HEMOGRAM_FIELDS_MIN_NUM_SUBMIT', 6)
-        fields = self.Meta.model.get_hemogram_main_fields() + \
+        fields = self.Meta.model.get_main_fields() + \
             self.Meta.model.get_conversion_fields()
         for hfield in fields:
             if cleaned_data.get(hfield, None):

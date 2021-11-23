@@ -365,7 +365,7 @@ class TestData(SimpleTestCase):
                 ):
             reload(data_forms)
             expected_fields = Data.AUXILIARY_FIELDS + \
-                Data.get_hemogram_main_fields() + \
+                Data.get_main_fields() + \
                 Data.get_conversion_fields()
             for field in expected_fields:
                 self.assertTrue(
