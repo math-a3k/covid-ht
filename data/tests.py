@@ -54,7 +54,7 @@ class TestData(SimpleTestCase):
         cls.user2.set_password("test")
         cls.user2.save()
 
-    def test_is_allowed_in_data_privacy_mode(self):
+    def test_is_not_allowed_in_data_privacy_mode(self):
         # Test Public Access
         with self.settings(DATA_PRIVACY_MODE=False):
             response = self.client.get(
