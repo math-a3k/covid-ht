@@ -4,9 +4,7 @@ from django.http import Http404
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import (
-    BasePermission, IsAuthenticatedOrReadOnly, SAFE_METHODS
-)
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.request import clone_request
 from rest_framework.response import Response
 
@@ -26,6 +24,19 @@ class IsOwnerOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return obj.user == request.user
+
+
+class DataPrivacyMode(BasePermission):
+    """
+    Restricts safe methods for not authenticated users on DATA_PRIVACY_MODE
+    and always require authentication for not safe ones.
+    """
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return (
+                not settings.DATA_PRIVACY_MODE or request.user.is_authenticated
+            )
+        return request.user.is_authenticated
 
 
 class NetworkPUTAsCreateMixin(object):
@@ -88,7 +99,7 @@ class DataListCreateUpdate(
     queryset = Data.objects.all()
     serializer_class = DataInputSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [DataPrivacyMode, ]
     lookup_field = 'uuid'
 
     def perform_create(self, serializer):
@@ -129,4 +140,4 @@ class DataReadUpdate(generics.RetrieveUpdateAPIView):
     queryset = Data.objects.all()
     serializer_class = DataInputSerializer
     lookup_field = 'uuid'
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [DataPrivacyMode, IsOwnerOrReadOnly]

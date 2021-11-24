@@ -13,6 +13,7 @@ from .forms import (DataInputForm, )
 from .models import Data
 from .renderers import PublicCSVRenderer
 from .serializers import PublicDataSerializer
+from .v1.views import DataPrivacyMode
 
 
 def is_not_allowed_in_data_privacy_mode(function):
@@ -65,11 +66,11 @@ def public_list(request):
     )
 
 
-@method_decorator(is_not_allowed_in_data_privacy_mode, name='dispatch')
 class CSV(generics.ListAPIView):
     renderer_classes = (PublicCSVRenderer, )
     serializer_class = PublicDataSerializer
     queryset = Data.objects.filter(is_finished=True)
+    permission_classes = [DataPrivacyMode, ]
 
     def finalize_response(self, request, response, *args, **kwargs):
         response['Content-Disposition'] = \

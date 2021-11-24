@@ -74,7 +74,7 @@ class TestData(SimpleTestCase):
         response = self.client.get(
             reverse("data:csv"),
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
         # Test Logged-In Access
         self.client.force_login(user=self.user)
         response = self.client.get(
@@ -403,22 +403,35 @@ class TestData(SimpleTestCase):
             user=self.user, unit=self.unit,
             is_covid19=True, rbc=2, wbc=3, plt=240, neut=1
         )
+        with self.settings(DATA_PRIVACY_MODE=False):        
+            response = self.client.get(
+                reverse("rest-api:data-lc"),
+            )
+            serializer = DataListSerializer(data)
+            self.assertEqual(
+                dict(response.data['results'][0]), serializer.data
+            )
         response = self.client.get(
-            reverse("rest-api:data-lc"),
-        )
-        serializer = DataListSerializer(data)
-        self.assertEqual(dict(response.data['results'][0]), serializer.data)
+                reverse("rest-api:data-lc"),
+            )
+        self.assertEqual(response.status_code, 403)
 
     def test_rest_api_data_list_unpaginated(self):
         data, _ = Data.objects.get_or_create(
             user=self.user, unit=self.unit,
             is_covid19=True, rbc=2, wbc=3, plt=240, neut=1
         )
+        with self.settings(DATA_PRIVACY_MODE=False):
+            response = self.client.get(
+                reverse("rest-api:data-lc"), {'page': 'no'}
+            )
+            serializer = DataListSerializer(data)
+            self.assertEqual(response.data[0], serializer.data)
         response = self.client.get(
             reverse("rest-api:data-lc"), {'page': 'no'}
         )
-        serializer = DataListSerializer(data)
-        self.assertEqual(response.data[0], serializer.data)
+        self.assertEqual(response.status_code, 403)
+
 
     def test_rest_api_data_creation(self):
         self.client.force_login(user=self.user)
