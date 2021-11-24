@@ -3,7 +3,7 @@ import time
 
 from locust import HttpUser, SequentialTaskSet, task
 
-from data.utils import get_hemogram_data
+from data.utils import get_simulated_data
 
 
 class DoctorTasks(SequentialTaskSet):
@@ -26,7 +26,7 @@ class DoctorTasks(SequentialTaskSet):
     @task
     def submit_data(self):
         self.client.post(
-            "/", get_hemogram_data(),
+            "/", get_simulated_data(),
             headers={"X-CSRFToken": self.csrf_token}
         )
 

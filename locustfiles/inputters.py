@@ -4,7 +4,7 @@ import time
 
 from locust import HttpUser, SequentialTaskSet, task
 
-from data.utils import get_hemogram_data
+from data.utils import get_simulated_data
 from locustfiles.utils import LoginTaskSetMixin
 
 seed(123456)
@@ -35,7 +35,7 @@ class DataInputterTasks(LoginTaskSetMixin, SequentialTaskSet):
     @task
     def submit_data(self):
         self.client.post(
-            "/data/input", get_hemogram_data(for_input=True),
+            "/data/input", get_simulated_data(for_input=True),
             headers={"X-CSRFToken": self.csrf_token}
         )
 

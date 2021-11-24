@@ -13,7 +13,7 @@ from django_ai.supervised_learning.models import SupervisedLearningTechnique
 
 from base.models import CurrentClassifier, DecisionTree, SVM, User
 from data.models import Data
-from data.utils import get_hemogram_data
+from data.utils import get_simulated_data
 from units.models import Unit
 
 
@@ -204,7 +204,7 @@ class Command(BaseCommand):
                         uuid=uuid.uuid4(),
                         user=u,
                         unit=u.unit,
-                        **get_hemogram_data(for_input=True, is_finished=True)
+                        **get_simulated_data(for_input=True, is_finished=True)
                     )
                 # Add some missing data
                 d.is_diabetic = d.is_diabetic \

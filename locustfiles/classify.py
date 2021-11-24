@@ -1,6 +1,6 @@
 from locust import HttpUser, SequentialTaskSet, task
 
-from data.utils import get_hemogram_data
+from data.utils import get_simulated_data
 
 
 class ClassifyHTMLTasks(SequentialTaskSet):
@@ -17,7 +17,7 @@ class ClassifyHTMLTasks(SequentialTaskSet):
     @task
     def classify(self):
         self.client.post(
-            "/", get_hemogram_data(),
+            "/", get_simulated_data(),
             headers={"X-CSRFToken": self.csrf_token}
         )
 

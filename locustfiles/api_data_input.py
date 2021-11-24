@@ -2,7 +2,7 @@ from os import environ
 
 from locust import HttpUser, SequentialTaskSet, task
 
-from data.utils import get_hemogram_data
+from data.utils import get_simulated_data
 
 
 class DataInputRESTAPITasks(SequentialTaskSet):
@@ -16,7 +16,7 @@ class DataInputRESTAPITasks(SequentialTaskSet):
 
     @task
     def data_input(self):
-        data = get_hemogram_data(for_input=True)
+        data = get_simulated_data(for_input=True)
         self.client.post(
             "/api/v1/data", data=data,
             headers={"Authorization": "Token {}".format(self.user_auth_token)}

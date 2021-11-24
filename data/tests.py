@@ -20,7 +20,7 @@ from units.models import Unit
 
 from .models import Data
 from .serializers import (DataInputSerializer, DataListSerializer, )
-from .utils import get_hemogram_data
+from .utils import get_simulated_data
 
 
 class TestData(SimpleTestCase):
@@ -676,7 +676,7 @@ class TestData(SimpleTestCase):
         data.refresh_from_db()
         self.assertEqual(data.rbc, Decimal("3.6"))
 
-    def test_get_hemogram_data(self):
+    def test_get_simulated_data(self):
         random.seed(123456)
         np.random.seed(123456)
 
@@ -704,7 +704,7 @@ class TestData(SimpleTestCase):
             'rdw': 14.95,
             'wbc': 4.74
         }
-        result = get_hemogram_data()
+        result = get_simulated_data()
         self.assertEqual(expected_result, result)
         expected_result = {
             'is_covid19': True,
@@ -732,7 +732,7 @@ class TestData(SimpleTestCase):
             'rdw': 7.84,
             'wbc': 8.43
         }
-        result = get_hemogram_data(for_input=True, is_finished=True)
+        result = get_simulated_data(for_input=True, is_finished=True)
         self.assertEqual(expected_result, result)
 
     def test_example_data_command(self):

@@ -30,7 +30,7 @@ Further improvements can be obtained by tunning the classifier and / or increasi
 
 Example data also allows to evaluate the capacity of your server out-of-the-box to see if it will fulfill your expected demand (see :ref:`load_testing`).
 
-Observations for the example data are generated with `data.utils.get_hemogram_data`_.
+Observations for the example data are generated with `data.utils.get_simulated_data`_.
 
 .. _managing_example_data:
 
@@ -51,9 +51,9 @@ Creating example data (observations, users and units) is done with the ``--creat
 
 	> python manage.py example_data --create
 
-For evaluating different scenarios you may use both ``--reset`` and ``--create``, i.e. after editing `data.utils.get_hemogram_data`_, for evaluating with 10000 observations use::
+For evaluating different scenarios you may use both ``--reset`` and ``--create``, i.e. after editing `data.utils.get_simulated_data`_, for evaluating with 10000 observations use::
 
 	> COVIDHT_EXAMPLE_DATA_SIZE=10000 python manage.py example_data --reset --create
 
-.. _data.utils.get_hemogram_data: https://github.com/math-a3k/covid-ht/blob/master/data/utils.py#L13
+.. _data.utils.get_simulated_data: https://github.com/math-a3k/covid-ht/blob/master/data/utils.py#L13
 .. _data.management.commands.example_data: https://github.com/math-a3k/covid-ht/blob/master/data/management/commands/example_data.py

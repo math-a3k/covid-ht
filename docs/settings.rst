@@ -73,7 +73,7 @@ Default: ``600``
 Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (see :ref:`example_data`).
 
 .. warning::
-    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_hemogram_data`` (see :ref:`example_data`).
+    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_simulated_data`` (see :ref:`example_data`).
 
 .. setting:: EXAMPLE_SIZE_NO_COVID19
 
@@ -85,7 +85,7 @@ Default: ``400``
 Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (see :ref:`example_data`).
 
 .. warning::
-    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_hemogram_data`` (see :ref:`example_data`).
+    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_simulated_data`` (see :ref:`example_data`).
 
 .. setting:: CLINICAL_FIELDS_MIN_NUM_SUBMIT
 

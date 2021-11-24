@@ -10,7 +10,7 @@ def trunc_normal(a, b, mean, sd, size):
     return rs2
 
 
-def get_hemogram_data(for_input=False, is_finished=False):
+def get_simulated_data(for_input=False, is_finished=False):
     data = {}
     is_covid19 = bool(np.random.binomial(1, 0.6, 1)[0])
     if for_input:
