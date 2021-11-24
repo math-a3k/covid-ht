@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (
-    BasePermission, IsAuthenticatedOrReadOnly
+    BasePermission, IsAuthenticatedOrReadOnly, SAFE_METHODS
 )
 from rest_framework.request import clone_request
 from rest_framework.response import Response
@@ -20,9 +20,12 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 10000
 
 
-class IsOwnerEditOnly(BasePermission):
+class IsOwnerOrReadOnly(BasePermission):
+    # https://www.django-rest-framework.org/api-guide/permissions/#custom-permissions
     def has_object_permission(self, request, view, obj):
-        return request.user == obj.user
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.user == request.user
 
 
 class NetworkPUTAsCreateMixin(object):
@@ -126,4 +129,4 @@ class DataReadUpdate(generics.RetrieveUpdateAPIView):
     queryset = Data.objects.all()
     serializer_class = DataInputSerializer
     lookup_field = 'uuid'
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerEditOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

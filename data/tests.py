@@ -625,6 +625,13 @@ class TestData(SimpleTestCase):
         data_dict = json.loads(response.content)
         serializer = DataInputSerializer(data)
         self.assertEqual(data_dict, serializer.data)
+        #
+        self.client.logout()
+        self.client.login(username="testuser3", password="test")
+        response = self.client.get(
+            reverse("rest-api:data-ru", args=[data.uuid, ]),
+        )
+        self.assertEqual(response.status_code, 200)
 
     def test_rest_api_data_edit(self):
         self.client.force_login(user=self.user)
