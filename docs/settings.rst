@@ -53,39 +53,6 @@ Default: 1000
 
 Size of the dataset generated in the example data - either by migrations or the ``example_data`` django-admin command (see :ref:`example_data`).
 
-``EXAMPLE_DATA``
-================
-
-Default: ``True``
-
-Whether generate example data on migrations (see :ref:`example_data`).
-
-.. warning::
-    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_V2`.
-
-.. setting:: EXAMPLE_SIZE_COVID19
-
-``EXAMPLE_SIZE_COVID19``
-========================
-
-Default: ``600``
-
-Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (see :ref:`example_data`).
-
-.. warning::
-    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_simulated_data`` (see :ref:`example_data`).
-
-.. setting:: EXAMPLE_SIZE_NO_COVID19
-
-``EXAMPLE_SIZE_NO_COVID19``
-===========================
-
-Default: ``400``
-
-Size of COVID19 sample to be generated if :setting:`EXAMPLE_DATA` is enabled (see :ref:`example_data`).
-
-.. warning::
-    This setting is deprecated and soon-to-be-removed, use :setting:`EXAMPLE_DATA_SIZE` and edit the proportion in ``get_simulated_data`` (see :ref:`example_data`).
 
 .. setting:: CLINICAL_FIELDS_MIN_NUM_SUBMIT
 
