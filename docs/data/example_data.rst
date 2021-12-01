@@ -24,20 +24,20 @@ With this scenario - the condition (``COVID19``) affects the results in at least
 
 .. note::
 
-	There is **NO WARRANTY** that real data will have the same distribution as the stated. The only way of evaluating the real performance of the test is by using real data. Its purpose is to demonstrate how negligible impacts or complex patterns to the human eye can be captured by the techniques, or in the other direction, impacts captured by the human eye can be outperformed, and hence, its uselfullness as a tool.
+	There is **NO WARRANTY** that real data will have the same distribution as the stated. The only way of evaluating the real performance of the test is by using real data. Its purpose is to demonstrate how negligible impacts or complex patterns to the human eye can be captured by the techniques, or in the other direction, impacts captured by the human eye can be outperformed, and hence, its usefulness as a tool.
 
 Further improvements can be obtained by tunning the classifier and / or increasing the sample size.
 
 Example data also allows to evaluate the capacity of your server out-of-the-box to see if it will fulfill your expected demand (see :ref:`load_testing`).
 
-Observations for the example data are generated with ``data.utils.get_simulated_data``[#get_simulated_data]_.
+Observations for the example data are generated with ``data.utils.get_simulated_data`` [#get_simulated_data]_.
 
 .. _managing_example_data:
 
 Managing Example Data
 =====================
 
-A ``django-admin`` command, ``example_data``[#example_data_command]_, is provided to conveniently reset, create and remove the intance's example data.
+A ``django-admin`` command, ``example_data`` [#example_data_command]_, is provided to conveniently reset, create and remove the intance's example data.
 
 To safely remove all example data (observations, users and units), use the ``--remove`` option, i.e.::
 
@@ -51,7 +51,7 @@ Creating example data (observations, users and units) is done with the ``--creat
 
 	> python manage.py example_data --create
 
-For evaluating different scenarios you may use both ``--reset`` and ``--create``, i.e. after editing `data.utils.get_simulated_data`_, for evaluating with 10000 observations use::
+For evaluating different scenarios you may use both ``--reset`` and ``--create``, i.e. after editing data.utils.get_simulated_data , for evaluating with 10000 observations use::
 
 	> COVIDHT_EXAMPLE_DATA_SIZE=10000 python manage.py example_data --reset --create
 
@@ -60,12 +60,14 @@ Other Considerations
 
 Statistically independent fields (variables) is not a realistic scenario for the effects of a condition, it is more likely to have dependency among variables which may "highlight the pattern to the classifier".
 
-Consider defining in ``get_simulated_data`` the following instead::
+Consider defining in ``get_simulated_data`` [#get_simulated_data]_ the following instead::
+	
 	data["neut"] = round(data["lymp"] + trunc_normal(0.2, 2, 1, 1, 1)[0]
                          if is_covid19 else
                          trunc_normal(0.1, 30, 8, 4, 1)[0], 2)
 
 and after, in a console issue::
+	
 	python manage.py example_data --reset --create
 
 then perform inference in the classifier's admin to compare results and classify an observation with the HTML front-end to visualize the new pattern.
