@@ -9,7 +9,7 @@ Code repository: https://github.com/math-a3k/covid-ht
 Requirements
 ============
 
-* A working `Python`_ 3.6 or newer (3.9 recommended) installation so you can issue succesfully its version:
+* A working `Python`_ 3.6 or newer (3.10 recommended) installation so you can issue succesfully its version:
 
 .. code-block:: shell
 

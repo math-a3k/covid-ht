@@ -300,9 +300,8 @@ class ExternalClassifier(models.Model):
         max_length=100,
         default='/api/v1/classify-dataset'
     )
-    timeout = models.DecimalField(
+    timeout = models.PositiveSmallIntegerField(
         _("Request Timeout (s)"),
-        max_digits=5, decimal_places=2,
         default=10,
         help_text=_("Seconds to wait for a response from the service")
     )
