@@ -756,7 +756,7 @@ class CovidHTMixin:
                         Z = clf.predict_proba(grid)[:, 1]
                     Z = Z.reshape(xx.shape)
 
-                    ax.contourf(xx, yy, Z, cmap=cm, alpha=.8)
+                    ax.contourf(xx, yy, Z, cmap=cm, alpha=.6, vmax=5, vmin=-5)
 
                 if settings.GRAPHING_DATASET:
                     ax.scatter(data[:, pair[0]], data[:, pair[1]],
