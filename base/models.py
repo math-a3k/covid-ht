@@ -696,8 +696,9 @@ class CovidHTMixin:
         cm_bright = ListedColormap(['#0000FF', '#FF0000'])
 
         fig = plt.figure()
+        gridspec = fig.add_gridspec(n_graphs_rows, (2 if n_graphs > 1 else 1))
 
-        for i, pair in enumerate(combinations(cols_indexes, 2)):
+        for graph_index, pair in enumerate(combinations(cols_indexes, 2)):
             obs_x = np.float(obs[pair[0]])
             x_min = np.fmin(np.nanmin(data[:, pair[0]]), obs_x)
             x_max = np.fmax(np.nanmax(data[:, pair[0]]), obs_x)
@@ -710,7 +711,7 @@ class CovidHTMixin:
 
             if y_rec > 0 and x_rec > 0:
                 ax = fig.add_subplot(
-                    n_graphs_rows, (2 if n_graphs > 1 else 1), i + 1,
+                    gridspec[graph_index],
                     sharex=None, sharey=None
                 )
                 margin_x = x_rec / 20
@@ -770,20 +771,16 @@ class CovidHTMixin:
                            alpha=1, edgecolors='k')
 
                 # Set lims, ticks and labels
-                ax.set_xlim(axis_x_min, axis_x_max)
-                ax.set_ylim(axis_y_min, axis_y_max)
                 ax.tick_params(axis='both', which='major',
                                labelsize=4, pad=1)
-                ax.set_xticks((axis_x_min, axis_x_max))
-                ax.set_yticks((axis_y_min, axis_y_max))
                 ax.set_xlabel(
                     self._get_field_name_by_index(
                         pair[0] - cols_offset, supported=True),
-                    labelpad=-5, size=6)
+                    labelpad=0, size=6)
                 ax.set_ylabel(
                     self._get_field_name_by_index(
                         pair[1] - cols_offset, supported=True),
-                    labelpad=-10, size=6)
+                    labelpad=0, size=6)
 
         fig.tight_layout()
         with TemporaryFile(suffix=".svg") as tmpfile:
