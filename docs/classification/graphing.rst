@@ -6,23 +6,25 @@ Graphing
 
 ``covid-ht`` graphing support is enabled by the :setting:`GRAPHING` setting.
 
-It generates a graph per pairwise combination of the variables specified in the :setting:`GRAPHING_FIELDS` setting. Note that this variables must be continuos, categorical variables are not supported at this moment. The coordinates of the observation being classified will be plotted on each graph with vertical and horizontal green lines.
+It aims to provide "context" for the classification of an observation.
 
-Setting :setting:`GRAPHING_DATASET` to ``True`` will plot the dataset used for the classifier inference with blue for the ``NEGATIVE`` class (not COVID19) and red for the ``POSITIVE``. It aims to provide "context" to the observation.
+It generates a graph per pairwise combination of the variables specified in the :setting:`GRAPHING_FIELDS` setting. Note that this variables must be quantitative, categorical variables are not supported at this moment.
 
-Using :setting:`GRAPHING_COND_DEC_FUNCTION` will plot in a contour form the *Conditional Decision Function* on the variable combination, where darker blue implies more confidence on ``NEGATIVE`` and darker red on ``POSITIVE``.
+The coordinates of the observation being classified will be plotted on each graph with vertical and horizontal green lines.
 
-It is conditional because it assumes the rest of the fields to be fixed at the value of the observation, i.e. for an observation ``{rbc: 2, wbc: 2, plt: 100}``, the plot of the *Conditional Decision Function* on ``(rbc, wbc)`` will show how the classifier considers each point of the graph *given* ``plt = 100``, colouring classification regions on that plane.
+Setting :setting:`GRAPHING_DATASET` to ``True`` will plot the dataset used for the classifier inference with blue for the ``NEGATIVE`` class (condition not present) and red for the ``POSITIVE``.
 
-These planes - i.e. ``(rbc, wbc)`` - should give you the idea of how "is" the observation relative to the classes (``COVID`` / ``NO-COVID`` in this case) in those variables. **The classifier takes into account all the variables together, its result may consider interactions among them which may not be reflected in the planes**.
+Using :setting:`GRAPHING_COND_DEC_FUNCTION` will include in a contour form the *Conditional Decision Function* of the classifier, where darker blue implies more confidence on ``NEGATIVE`` while darker red on ``POSITIVE``.
 
-**The score** (Probability) of the decision **is what should be taken into account**, considering the metrics on the general perfomance of the classifier in the context - i.e. accuracy, specificity, sensitivity, etc.
+It is *conditional* because each plane is plotted considering the rest of the fields to be fixed at the value of the observation, i.e. for ``{rbc: 2, wbc: 2, plt: 100}``, the plot of the *Conditional Decision Function* on ``(rbc, wbc)`` will show how the classifier considers each point of the graph *given* ``plt = 100``, while the plot on ``(wbc, plt)`` will be *given* ``rbc = 2``.
 
-There are some caveats on the *Conditional Decision Function*, it is currently provided as a technology preview.
+These planes aim to provide an approximation to the higher dimensional decision function of the classifier - which is not possible to graph - and should give you the idea of how "is" the observation relative to the classes (``POSITIVE`` / ``NEGATIVE``) in those variables, providing insights about the specifics - i.e. "This patient has these variables in line with the ``POSITIVE`` group yet these others are not, to be considered ``POSITIVE`` it would have had these variables at these values".
 
-Having this in mind, this could provide insights about specifics of the observation - i.e. "This patient has these variables in line with the ``COVID`` group yet these others are not".
+**The classifier takes into account all the variables together, its result may consider interactions among them which may not be reflected in the planes**.
 
-The *Conditional Decision Function* is expensive in computational terms, because of that the :setting:`GRAPHING_MESH_STEPS` can be specified to control the "density" of the mesh in which the function will be evaluated.
+**The score** (Probability) of the decision **is what should be taken into account** for reliance, considering the metrics on the general perfomance of the classifier - i.e. accuracy, specificity, sensitivity, etc.
+
+The *Conditional Decision Function* is expensive in computational terms, because of that the :setting:`GRAPHING_MESH_STEPS` can be specified to control the resolution of the mesh in which the function will be evaluated.
 
 Also, techniques which do not support NA values natively and it is not implemented at an engine level have to resort to ``django-ai`` imputation - i.e. SVM - which increases the computational cost.
 
