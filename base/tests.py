@@ -20,6 +20,7 @@ from data.utils import trunc_normal
 from data.models import Data
 from units.models import Unit
 
+from .metrics import specificity_score
 from .models import (CurrentClassifier, DecisionTree, ExternalClassifier,
                      NetworkErrorLog, NetworkNode, User,)
 
@@ -90,7 +91,7 @@ class TestBase(SimpleTestCase):
             learning_target="is_covid19",
             cv_is_enabled=True,
             cv_folds=2,
-            cv_metrics="accuracy",
+            cv_metrics="accuracy, specificity",
             max_iter=10,
             random_state=123456
         )
@@ -800,6 +801,11 @@ class TestBase(SimpleTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, 'POSITIVE')
             self.assertContains(response, 'svg')
+
+    def test_metrics(self):
+        # Test specificity
+        self.assertEqual(specificity_score([1, 1, 0, 0], [0, 0, 0, 0]), 0.5)
+        self.assertEqual(specificity_score([1, 1, 0, 0], [1, 1, 1, 1]), 0)
 
     def test_rest_api_no_current_classifier(self):
         CurrentClassifier.objects.all().delete()

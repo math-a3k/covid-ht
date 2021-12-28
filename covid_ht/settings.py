@@ -153,6 +153,22 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# django-ai
+
+DJANGO_AI_METRICS = [
+    'sklearn.metrics.SCORERS',
+    'base.metrics.METRICS'
+]
+
+DJANGO_AI_METRICS_FORMATS = [
+    'django_ai.ai_base.metrics_formats.BASE_METRICS_FORMATS',
+]
+
+DJANGO_AI_METRICS_FORMATS_MAPPING = [
+    'django_ai.ai_base.metrics_formats.BASE_METRICS_FORMATS_MAPPING',
+    'base.metrics_formats.METRICS_FORMATS_MAPPING'
+]
+
 # -> covid-ht specifics
 
 # CHTUID: Covid-HT instance Unique IDentinfier is 5 case-sensitive alphanumeric

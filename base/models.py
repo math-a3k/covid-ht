@@ -624,6 +624,8 @@ class CovidHTMixin:
         descriptions["precision_score"] = "Precision"
         descriptions["recall"] = "Recall"
         descriptions["recall_score"] = "Recall"
+        descriptions["specificity"] = "Specificity"
+        descriptions["specificity_score"] = "Specificity"
         descriptions["fowlkes_mallows_score"] = "Fowlkes-Mallows' Score"
         return descriptions
 

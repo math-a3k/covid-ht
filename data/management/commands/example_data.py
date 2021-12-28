@@ -165,7 +165,7 @@ class Command(BaseCommand):
                                      "IntrospectionImputer"),
                     'cv_is_enabled': True,
                     'cv_folds': 10,
-                    'cv_metrics': ("accuracy, precision, recall, "
+                    'cv_metrics': ("accuracy, precision, recall, specificity, "
                                    "fowlkes_mallows_score"),
                     'random_state': 123456
                 }
@@ -177,7 +177,7 @@ class Command(BaseCommand):
                     "learning_target": "is_covid19",
                     "cv_is_enabled": True,
                     "cv_folds": 10,
-                    "cv_metrics": ("accuracy, precision, recall, "
+                    "cv_metrics": ("accuracy, precision, recall, specificity, "
                                    "fowlkes_mallows_score"),
                     "random_state": 123456
                 }
@@ -187,7 +187,7 @@ class Command(BaseCommand):
                 data_model="data.Data",
                 cv_is_enabled=True,
                 cv_folds=10,
-                cv_metrics=("accuracy, precision, recall, "
+                cv_metrics=("accuracy, precision, recall, specificity, "
                             "fowlkes_mallows_score"),
                 random_state=123456
             )
