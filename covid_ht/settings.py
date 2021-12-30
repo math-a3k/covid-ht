@@ -272,4 +272,14 @@ GRAPHING_COND_DEC_FUNCTION = os.environ.get(
 GRAPHING_MESH_STEPS = \
     int(os.environ.get("COVIDHT_GRAPHING_MESH_STEPS", 200))
 
+# Use CHTUID as a Cache key prefix and for location in Local Memory
+KEY_PREFIX = CHTUID
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': CHTUID
+    }
+}
+
 django_heroku.settings(locals(), test_runner=False)

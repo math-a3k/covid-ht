@@ -15,6 +15,7 @@ from tempfile import TemporaryFile
 
 from django.db import models
 from django.db.models.signals import post_save
+from django.core.cache import cache
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -85,6 +86,12 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 
+class CurrentClassifierManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()\
+            .prefetch_related('classifier', 'external')
+
+
 class CurrentClassifier(models.Model):
     """
     Singleton Model for selecting which classifier should be used
@@ -143,11 +150,45 @@ class CurrentClassifier(models.Model):
         )
     )
 
+    objects = CurrentClassifierManager()
+
     class Meta:
         verbose_name = _("Current Classifier")
 
     def __str__(self):
         return str(self.classifier)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_cache()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        cache.set("CurrentClassifier", None)
+
+    @classmethod
+    def get(cls):
+        return cache.get('CurrentClassifier', CurrentClassifier.set())
+
+    @classmethod
+    def set(cls, instance=None):
+        if instance is None:
+            last_instance = CurrentClassifier.objects.last()
+            if not last_instance:
+                cache.set('CurrentClassifier', None)
+                return None
+            else:
+                instance = last_instance
+        # Trigger fk queries and property loading
+        local_classifier = instance.get_local_classifier()
+        if not hasattr(local_classifier, 'service_url'):
+            local_classifier.get_engine_object()
+        #
+        cache.set('CurrentClassifier', instance)
+        return instance
+
+    def update_cache(self):
+        CurrentClassifier.set(instance=self)
 
     def get_local_classifier(self):
         if self.external:
@@ -328,6 +369,12 @@ class ExternalClassifier(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cc = CurrentClassifier.get()
+        if cc:
+            cc.update_cache()
 
     @property
     def is_inferred(self):
@@ -611,6 +658,12 @@ post_save.connect(data_saved, sender='data.Data')
 
 
 class CovidHTMixin:
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cc = CurrentClassifier.get()
+        if cc:
+            cc.update_cache()
 
     def _get_data_queryset(self):
         qs = super()._get_data_queryset()

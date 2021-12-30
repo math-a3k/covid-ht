@@ -14,7 +14,7 @@ from django.urls import reverse
 
 from django_ai.supervised_learning.models import SupervisedLearningTechnique
 
-from base.models import CurrentClassifier, User
+from base.models import CurrentClassifier, DecisionTree, User
 import data.forms as data_forms
 from units.models import Unit
 
@@ -780,16 +780,18 @@ class TestData(SimpleTestCase):
                 .filter(name__icontains="(Example)").count(), 0
             )
             # Test removal of cc
-            classifier = SupervisedLearningTechnique.objects\
-                .create(name="Test (Example)", data_model="data.Data")
+            classifier = DecisionTree.objects\
+                .create(name="Test (Example)", data_model="data.Data",
+                        learning_target="is_covid19")
             CurrentClassifier.objects.create(classifier=classifier)
             call_command('example_data', '--remove', stdout=out)
             self.assertIn('Successfully removed example data', out.getvalue())
             self.assertEqual(
                 CurrentClassifier.objects.last(), None
             )
-            classifier = SupervisedLearningTechnique.objects\
-                .create(name="Test Example without ()", data_model="data.Data")
+            classifier = DecisionTree.objects\
+                .create(name="Test Example without ()", data_model="data.Data",
+                        learning_target="is_covid19")
             cc = CurrentClassifier.objects.create(classifier=classifier)
             call_command('example_data', '--remove', stdout=out)
             self.assertIn('Successfully removed example data', out.getvalue())

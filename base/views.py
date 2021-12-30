@@ -14,7 +14,7 @@ from .models import CurrentClassifier, ExternalClassifier, NetworkNode
 
 
 def home(request):
-    classifier = CurrentClassifier.objects.last()
+    classifier = CurrentClassifier.get()
     nodes = NetworkNode.objects.filter(classification_request=True)
     example_data = getattr(settings, "EXAMPLE_DATA_V2", False)
     chtuid = getattr(settings, "CHTUID", "-")

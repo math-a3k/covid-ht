@@ -649,6 +649,13 @@ class TestBase(SimpleTestCase):
         cc.external = self.classifier_external
         cc.clean()
 
+    def test_currentclassifier_caching(self):
+        cc = CurrentClassifier(external=self.classifier_external)
+        cc.save()
+        cached = CurrentClassifier.get()
+        self.assertTrue(cc == cached)
+        cc.delete()
+
     def test_currentclassifier_admin(self):
         self.client.force_login(user=self.user)
         response = self.client.get(

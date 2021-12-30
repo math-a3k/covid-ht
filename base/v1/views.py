@@ -30,7 +30,7 @@ class Classify(generics.GenericAPIView):
 
     def get_classifier(self):
         if not self._classifier:
-            self._classifier = CurrentClassifier.objects.last()
+            self._classifier = CurrentClassifier.get()
         return self._classifier
 
     def predict(self, data):
