@@ -89,7 +89,7 @@ class User(AbstractUser):
 class CurrentClassifierManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset()\
-            .prefetch_related('classifier', 'external')
+            .select_related('classifier', 'external')
 
 
 class CurrentClassifier(models.Model):
