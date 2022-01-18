@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-import django_heroku
 import os
 
 from pathlib import Path
@@ -26,7 +25,7 @@ SECRET_KEY = 'DonTLoOkaTMeIMSeCrEt-rEsPeCt-OtHeRs-PrIvaCY!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("COVIDHT_DEBUG", False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
 
 
 # Application definition
@@ -281,5 +280,3 @@ CACHES = {
         'LOCATION': CHTUID
     }
 }
-
-django_heroku.settings(locals(), test_runner=False)
