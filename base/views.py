@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 # from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import RedirectView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
 
 from data.forms import DataClassificationForm
