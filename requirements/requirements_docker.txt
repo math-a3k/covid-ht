@@ -1,0 +1,4 @@
+-r requirements_base.txt
+
+uWSGI==2.0.20
+redis==4.1.0

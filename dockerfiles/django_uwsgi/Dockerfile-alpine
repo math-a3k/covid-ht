@@ -1,0 +1,68 @@
+FROM python:3.10.1-alpine as builder
+
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/home/covid-ht/:/home/covid-ht/.local/bin/:${PATH}"
+
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache --virtual .build-deps \
+    	build-base bash git make gcc g++ gfortran wget freetype freetype-dev \
+    	libpng-dev openblas-dev musl-dev openssh-client linux-headers pcre-dev && \
+    apk add jpeg-dev zlib-dev libjpeg nano && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /var/cache/apk/*
+
+RUN adduser --disabled-password --gecos "" covid-ht
+
+WORKDIR /home/covid-ht
+USER covid-ht
+
+COPY requirements/requirements_base.txt requirements/requirements_docker.txt ./
+
+RUN pip install --user --upgrade wheel pip && pip wheel --wheel-dir=./wheels -r requirements_docker.txt
+
+FROM python:3.10.1-alpine
+
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache git openblas libstdc++ libgomp libjpeg libpng pcre freetype && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /var/cache/apk/*
+
+RUN adduser --disabled-password --gecos "" covid-ht && \
+    mkdir -p /vol/covid-ht/{media,static,db,log} && \
+    chown -R covid-ht:covid-ht /vol/covid-ht && \
+    chmod -R 755 /vol/covid-ht
+
+WORKDIR /home/covid-ht
+USER covid-ht
+ENV PATH="/home/covid-ht/:/home/covid-ht/.local/bin/:${PATH}"
+
+COPY --from=builder /home/covid-ht/wheels /home/covid-ht/wheels
+COPY --from=builder /home/covid-ht/src /home/covid-ht/src
+COPY requirements/requirements_base.txt requirements/requirements_docker.txt ./
+
+RUN pip install --user --upgrade pip && \
+    pip install --user --no-index --find-links=./wheels -r requirements_docker.txt && \
+    pip cache purge && \
+    rm ./requirements_*
+
+COPY dockerfiles/django_uwsgi/covid-ht_uwsgi.ini \
+    dockerfiles/django_uwsgi/entrypoint.sh \
+    manage.py \
+    ./
+
+COPY ./covid_ht covid_ht
+COPY ./base base
+COPY ./data data
+COPY ./units units
+
+USER root
+RUN chown -R covid-ht:covid-ht /home/covid-ht && \
+    chmod +x /home/covid-ht/entrypoint.sh && \
+    rm -rf /hom/covid-ht/wheels
+
+USER covid-ht
+ENV PYTHONUNBUFFERED=1
+
+CMD ["/home/covid-ht/entrypoint.sh"]

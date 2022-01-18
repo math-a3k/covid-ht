@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  django_uwsgi:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/django_uwsgi/Dockerfile-archlinux
+    env_file:
+      - ./dockerfiles/django_uwsgi/.env_file
+    volumes:
+      - static:/vol/covid-ht/static
+      - db:/vol/covid-ht/db
+    depends_on:
+      - redis
+  redis:
+    image: "redis:alpine"
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+  nginx:
+    build: ./dockerfiles/nginx
+    volumes:
+      - static:/vol/covid-ht/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_uwsgi
+
+volumes:
+  static:
+  db:

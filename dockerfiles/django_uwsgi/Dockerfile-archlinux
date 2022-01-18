@@ -1,0 +1,51 @@
+FROM archlinux:base-devel as builder
+
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/home/covid-ht/:/home/covid-ht/.local/bin/:${PATH}"
+
+RUN pacman-key --init && \
+    pacman -Syu python python-pip git --noconfirm && \
+    yes | pacman -Scc
+
+RUN useradd -mU covid-ht 
+
+WORKDIR /home/covid-ht
+USER covid-ht
+
+COPY requirements/requirements_base.txt requirements/requirements_docker.txt ./
+
+RUN pip install --user -r requirements_docker.txt
+
+FROM archlinux:base
+
+RUN pacman -Syu python python-pip --noconfirm && yes | pacman -Scc
+
+RUN useradd -mU covid-ht && \
+    mkdir -p /vol/covid-ht/{media,static,db,log} && \
+    chown -R covid-ht:covid-ht /vol/covid-ht && \
+    chmod -R 755 /vol/covid-ht
+
+WORKDIR /home/covid-ht
+
+COPY --from=builder /home/covid-ht/src /home/covid-ht/src
+COPY --from=builder /home/covid-ht/.local /home/covid-ht/.local
+
+COPY dockerfiles/django_uwsgi/covid-ht_uwsgi.ini \
+    dockerfiles/django_uwsgi/entrypoint.sh \
+    manage.py \
+    ./
+
+RUN chmod +x entrypoint.sh
+
+COPY ./covid_ht covid_ht
+COPY ./base base
+COPY ./data data
+COPY ./units units
+
+RUN chown -R covid-ht:covid-ht /home/covid-ht
+USER covid-ht
+
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/home/covid-ht/:/home/covid-ht/.local/bin/:${PATH}"
+
+CMD ["/home/covid-ht/entrypoint.sh"]
